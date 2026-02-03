@@ -457,6 +457,31 @@ footer {
 }
 
 /* ============================================
+   FAQ Styling
+   ============================================ */
+
+.faq-item {
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.faq-item:last-child {
+  border-bottom: none;
+}
+
+.faq-item h3 {
+  color: var(--primary-color);
+  font-size: 1.2rem;
+  margin-bottom: var(--spacing-sm);
+}
+
+.faq-item p {
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* ============================================
    Utility Classes
    ============================================ */
 
