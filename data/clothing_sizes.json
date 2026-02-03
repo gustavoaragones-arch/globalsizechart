@@ -1,1 +1,74 @@
-{}
+{
+  "men": {
+    "tops": [
+      {"us": "XS", "uk": "XS", "eu": "XS", "jp": "S", "cn": "S", "chest_cm": 86, "waist_cm": 71, "hips_cm": 91},
+      {"us": "S", "uk": "S", "eu": "S", "jp": "M", "cn": "M", "chest_cm": 91, "waist_cm": 76, "hips_cm": 96},
+      {"us": "M", "uk": "M", "eu": "M", "jp": "L", "cn": "L", "chest_cm": 96, "waist_cm": 81, "hips_cm": 101},
+      {"us": "L", "uk": "L", "eu": "L", "jp": "XL", "cn": "XL", "chest_cm": 101, "waist_cm": 86, "hips_cm": 106},
+      {"us": "XL", "uk": "XL", "eu": "XL", "jp": "XXL", "cn": "XXL", "chest_cm": 106, "waist_cm": 91, "hips_cm": 111},
+      {"us": "XXL", "uk": "XXL", "eu": "XXL", "jp": "XXXL", "cn": "XXXL", "chest_cm": 111, "waist_cm": 96, "hips_cm": 116},
+      {"us": "XXXL", "uk": "XXXL", "eu": "XXXL", "jp": "XXXXL", "cn": "XXXXL", "chest_cm": 116, "waist_cm": 101, "hips_cm": 121}
+    ],
+    "pants": [
+      {"us": "28", "uk": "28", "eu": "42", "jp": "S", "cn": "S", "chest_cm": 0, "waist_cm": 71, "hips_cm": 91},
+      {"us": "30", "uk": "30", "eu": "44", "jp": "M", "cn": "M", "chest_cm": 0, "waist_cm": 76, "hips_cm": 96},
+      {"us": "32", "uk": "32", "eu": "46", "jp": "L", "cn": "L", "chest_cm": 0, "waist_cm": 81, "hips_cm": 101},
+      {"us": "34", "uk": "34", "eu": "48", "jp": "XL", "cn": "XL", "chest_cm": 0, "waist_cm": 86, "hips_cm": 106},
+      {"us": "36", "uk": "36", "eu": "50", "jp": "XXL", "cn": "XXL", "chest_cm": 0, "waist_cm": 91, "hips_cm": 111},
+      {"us": "38", "uk": "38", "eu": "52", "jp": "XXXL", "cn": "XXXL", "chest_cm": 0, "waist_cm": 96, "hips_cm": 116},
+      {"us": "40", "uk": "40", "eu": "54", "jp": "XXXXL", "cn": "XXXXL", "chest_cm": 0, "waist_cm": 101, "hips_cm": 121},
+      {"us": "42", "uk": "42", "eu": "56", "jp": "XXXXXL", "cn": "XXXXXL", "chest_cm": 0, "waist_cm": 106, "hips_cm": 126}
+    ]
+  },
+  "women": {
+    "tops": [
+      {"us": "XS", "uk": "6", "eu": "34", "jp": "S", "cn": "S", "chest_cm": 81, "waist_cm": 61, "hips_cm": 86},
+      {"us": "S", "uk": "8", "eu": "36", "jp": "M", "cn": "M", "chest_cm": 86, "waist_cm": 66, "hips_cm": 91},
+      {"us": "M", "uk": "10", "eu": "38", "jp": "L", "cn": "L", "chest_cm": 91, "waist_cm": 71, "hips_cm": 96},
+      {"us": "L", "uk": "12", "eu": "40", "jp": "XL", "cn": "XL", "chest_cm": 96, "waist_cm": 76, "hips_cm": 101},
+      {"us": "XL", "uk": "14", "eu": "42", "jp": "XXL", "cn": "XXL", "chest_cm": 101, "waist_cm": 81, "hips_cm": 106},
+      {"us": "XXL", "uk": "16", "eu": "44", "jp": "XXXL", "cn": "XXXL", "chest_cm": 106, "waist_cm": 86, "hips_cm": 111},
+      {"us": "XXXL", "uk": "18", "eu": "46", "jp": "XXXXL", "cn": "XXXXL", "chest_cm": 111, "waist_cm": 91, "hips_cm": 116}
+    ],
+    "pants": [
+      {"us": "0", "uk": "4", "eu": "32", "jp": "S", "cn": "S", "chest_cm": 0, "waist_cm": 61, "hips_cm": 86},
+      {"us": "2", "uk": "6", "eu": "34", "jp": "M", "cn": "M", "chest_cm": 0, "waist_cm": 66, "hips_cm": 91},
+      {"us": "4", "uk": "8", "eu": "36", "jp": "L", "cn": "L", "chest_cm": 0, "waist_cm": 71, "hips_cm": 96},
+      {"us": "6", "uk": "10", "eu": "38", "jp": "XL", "cn": "XL", "chest_cm": 0, "waist_cm": 76, "hips_cm": 101},
+      {"us": "8", "uk": "12", "eu": "40", "jp": "XXL", "cn": "XXL", "chest_cm": 0, "waist_cm": 81, "hips_cm": 106},
+      {"us": "10", "uk": "14", "eu": "42", "jp": "XXXL", "cn": "XXXL", "chest_cm": 0, "waist_cm": 86, "hips_cm": 111},
+      {"us": "12", "uk": "16", "eu": "44", "jp": "XXXXL", "cn": "XXXXL", "chest_cm": 0, "waist_cm": 91, "hips_cm": 116},
+      {"us": "14", "uk": "18", "eu": "46", "jp": "XXXXXL", "cn": "XXXXXL", "chest_cm": 0, "waist_cm": 96, "hips_cm": 121}
+    ],
+    "dresses": [
+      {"us": "XS", "uk": "6", "eu": "34", "jp": "S", "cn": "S", "chest_cm": 81, "waist_cm": 61, "hips_cm": 86},
+      {"us": "S", "uk": "8", "eu": "36", "jp": "M", "cn": "M", "chest_cm": 86, "waist_cm": 66, "hips_cm": 91},
+      {"us": "M", "uk": "10", "eu": "38", "jp": "L", "cn": "L", "chest_cm": 91, "waist_cm": 71, "hips_cm": 96},
+      {"us": "L", "uk": "12", "eu": "40", "jp": "XL", "cn": "XL", "chest_cm": 96, "waist_cm": 76, "hips_cm": 101},
+      {"us": "XL", "uk": "14", "eu": "42", "jp": "XXL", "cn": "XXL", "chest_cm": 101, "waist_cm": 81, "hips_cm": 106},
+      {"us": "XXL", "uk": "16", "eu": "44", "jp": "XXXL", "cn": "XXXL", "chest_cm": 106, "waist_cm": 86, "hips_cm": 111}
+    ]
+  },
+  "kids": {
+    "tops": [
+      {"us": "4", "uk": "4", "eu": "110", "jp": "110", "cn": "110", "chest_cm": 56, "waist_cm": 51, "hips_cm": 61},
+      {"us": "5", "uk": "5", "eu": "120", "jp": "120", "cn": "120", "chest_cm": 61, "waist_cm": 56, "hips_cm": 66},
+      {"us": "6", "uk": "6", "eu": "130", "jp": "130", "cn": "130", "chest_cm": 66, "waist_cm": 61, "hips_cm": 71},
+      {"us": "7", "uk": "7", "eu": "140", "jp": "140", "cn": "140", "chest_cm": 71, "waist_cm": 66, "hips_cm": 76},
+      {"us": "8", "uk": "8", "eu": "150", "jp": "150", "cn": "150", "chest_cm": 76, "waist_cm": 71, "hips_cm": 81},
+      {"us": "10", "uk": "10", "eu": "160", "jp": "160", "cn": "160", "chest_cm": 81, "waist_cm": 76, "hips_cm": 86},
+      {"us": "12", "uk": "12", "eu": "170", "jp": "170", "cn": "170", "chest_cm": 86, "waist_cm": 81, "hips_cm": 91},
+      {"us": "14", "uk": "14", "eu": "180", "jp": "180", "cn": "180", "chest_cm": 91, "waist_cm": 86, "hips_cm": 96}
+    ],
+    "pants": [
+      {"us": "4", "uk": "4", "eu": "110", "jp": "110", "cn": "110", "chest_cm": 0, "waist_cm": 51, "hips_cm": 61},
+      {"us": "5", "uk": "5", "eu": "120", "jp": "120", "cn": "120", "chest_cm": 0, "waist_cm": 56, "hips_cm": 66},
+      {"us": "6", "uk": "6", "eu": "130", "jp": "130", "cn": "130", "chest_cm": 0, "waist_cm": 61, "hips_cm": 71},
+      {"us": "7", "uk": "7", "eu": "140", "jp": "140", "cn": "140", "chest_cm": 0, "waist_cm": 66, "hips_cm": 76},
+      {"us": "8", "uk": "8", "eu": "150", "jp": "150", "cn": "150", "chest_cm": 0, "waist_cm": 71, "hips_cm": 81},
+      {"us": "10", "uk": "10", "eu": "160", "jp": "160", "cn": "160", "chest_cm": 0, "waist_cm": 76, "hips_cm": 86},
+      {"us": "12", "uk": "12", "eu": "170", "jp": "170", "cn": "170", "chest_cm": 0, "waist_cm": 81, "hips_cm": 91},
+      {"us": "14", "uk": "14", "eu": "180", "jp": "180", "cn": "180", "chest_cm": 0, "waist_cm": 86, "hips_cm": 96}
+    ]
+  }
+}

@@ -1,1 +1,183 @@
-<!DOCTYPE html><html><head><title>Shoe Size Converter</title></head><body></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Free shoe size converter. Convert between US, UK, EU, Japan, China shoe sizes and CM measurements. Accurate international shoe size conversion tool.">
+  <meta name="keywords" content="shoe size converter, US shoe size, UK shoe size, EU shoe size, Japan shoe size, China shoe size, CM to shoe size">
+  <link rel="canonical" href="https://globalsizechart.com/shoe-size-converter.html">
+  
+  <title>Shoe Size Converter - US, UK, EU, JP, CN, CM | GlobalSizeChart.com</title>
+  
+  <link rel="stylesheet" href="styles.css">
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Shoe Size Converter",
+    "description": "Convert shoe sizes between US, UK, EU, Japan, China, and CM measurements",
+    "url": "https://globalsizechart.com/shoe-size-converter.html",
+    "applicationCategory": "UtilityApplication"
+  }
+  </script>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <a href="index.html" class="logo">GlobalSizeChart.com</a>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="shoe-size-converter.html">Shoe Sizes</a></li>
+          <li><a href="clothing-size-converter.html">Clothing Sizes</a></li>
+          <li><a href="legal/about.html">About</a></li>
+          <li><a href="legal/contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <section class="converter-card">
+        <h1>Shoe Size Converter</h1>
+        <p class="mb-lg">Convert shoe sizes between US, UK, EU, Japan, China, and centimeter measurements. Get accurate conversions for men's, women's, and kids' shoes.</p>
+        
+        <form class="converter-form" id="shoeConverter">
+          <div class="form-group">
+            <label for="gender">Gender</label>
+            <select name="gender" id="gender" required>
+              <option value="men">Men</option>
+              <option value="women">Women</option>
+              <option value="kids">Kids</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="fromRegion">From Region</label>
+            <select name="fromRegion" id="fromRegion" required>
+              <option value="US">United States (US)</option>
+              <option value="UK">United Kingdom (UK)</option>
+              <option value="EU">European Union (EU)</option>
+              <option value="JP">Japan (JP)</option>
+              <option value="CN">China (CN)</option>
+              <option value="CM">Centimeters (CM)</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="size">Size</label>
+            <input type="text" name="size" id="size" placeholder="Enter size" required>
+          </div>
+          
+          <input type="hidden" name="category" value="shoes">
+          
+          <button type="submit" class="btn">Convert Shoe Size</button>
+        </form>
+
+        <div class="results">
+          <h3>Converted Sizes</h3>
+          <div class="results-grid"></div>
+        </div>
+      </section>
+
+      <!-- Content Sections -->
+      <section class="content-section">
+        <h2>How to Measure Your Shoe Size</h2>
+        <div class="collapsible">
+          <div class="collapsible-header">
+            <h3>Measuring Your Foot in Centimeters</h3>
+            <span class="collapsible-icon">▼</span>
+          </div>
+          <div class="collapsible-content">
+            <p>For the most accurate shoe size conversion, measure your foot in centimeters:</p>
+            <ol>
+              <li>Place a piece of paper on a hard, flat surface against a wall</li>
+              <li>Stand on the paper with your heel against the wall</li>
+              <li>Mark the longest point of your foot (usually the big toe)</li>
+              <li>Measure from the wall to the mark in centimeters</li>
+              <li>Repeat for both feet and use the larger measurement</li>
+            </ol>
+            <p><strong>Pro Tip:</strong> Measure your feet in the evening when they're at their largest, and wear the type of socks you'll wear with the shoes.</p>
+          </div>
+        </div>
+
+        <div class="collapsible">
+          <div class="collapsible-header">
+            <h3>Understanding Shoe Size Systems</h3>
+            <span class="collapsible-icon">▼</span>
+          </div>
+          <div class="collapsible-content">
+            <p><strong>US Sizing:</strong> Uses whole and half sizes. Men's and women's sizes are different scales.</p>
+            <p><strong>UK Sizing:</strong> Typically 1 size smaller than US. Uses whole and half sizes.</p>
+            <p><strong>EU Sizing:</strong> Uses metric-based sizing, typically 1-1.5 sizes larger than US. Uses whole sizes primarily.</p>
+            <p><strong>Japan Sizing:</strong> Based on centimeter measurements. Generally runs smaller than US/EU.</p>
+            <p><strong>China Sizing:</strong> Similar to Japanese sizing, metric-based.</p>
+            <p><strong>CM (Centimeters):</strong> Direct foot length measurement - the most accurate method.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <h2>Common Shoe Size Conversions</h2>
+        <p>Here are some common shoe size conversions to help you get started:</p>
+        <ul>
+          <li><strong>US Men's 9</strong> = UK 8 = EU 42 = JP 28 = CN 42 = 27.0 cm</li>
+          <li><strong>US Women's 7</strong> = UK 5 = EU 38 = JP 25 = CN 38 = 24.0 cm</li>
+          <li><strong>EU 42</strong> = US Men's 9 = UK 8 = JP 28 = CN 42</li>
+          <li><strong>UK 8</strong> = US Men's 9 = EU 42 = JP 28 = CN 42</li>
+        </ul>
+        <p>Use our converter above for precise conversions based on your specific measurements.</p>
+      </section>
+
+      <!-- Ad Placeholder -->
+      <div class="ad-placeholder">
+        <p>Advertisement</p>
+      </div>
+
+      <!-- Related Links -->
+      <section class="content-section">
+        <h2>Related Converters</h2>
+        <ul>
+          <li><a href="clothing-size-converter.html">Clothing Size Converter</a></li>
+          <li><a href="us-to-eu-size.html">US to EU Size Converter</a></li>
+          <li><a href="uk-to-us-size.html">UK to US Size Converter</a></li>
+          <li><a href="cm-to-us-shoe-size.html">CM to US Shoe Size Converter</a></li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Converters</h3>
+          <ul>
+            <li><a href="shoe-size-converter.html">Shoe Size Converter</a></li>
+            <li><a href="clothing-size-converter.html">Clothing Size Converter</a></li>
+            <li><a href="us-to-eu-size.html">US to EU Size</a></li>
+            <li><a href="uk-to-us-size.html">UK to US Size</a></li>
+            <li><a href="cm-to-us-shoe-size.html">CM to US Shoe Size</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Information</h3>
+          <ul>
+            <li><a href="legal/about.html">About Us</a></li>
+            <li><a href="legal/contact.html">Contact</a></li>
+            <li><a href="legal/privacy.html">Privacy Policy</a></li>
+            <li><a href="legal/terms.html">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 GlobalSizeChart.com. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

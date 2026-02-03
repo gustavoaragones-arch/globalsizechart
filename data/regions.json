@@ -1,1 +1,34 @@
-{}
+{
+  "regions": [
+    {
+      "region_code": "US",
+      "region_name": "United States",
+      "sizing_notes": "US sizing uses numeric sizes for shoes and letter sizes (XS-XXXL) or numeric waist sizes for clothing. Men's and women's sizing are separate."
+    },
+    {
+      "region_code": "UK",
+      "region_name": "United Kingdom",
+      "sizing_notes": "UK shoe sizes are typically 1 size smaller than US. Clothing uses UK-specific numeric sizes that differ from US."
+    },
+    {
+      "region_code": "EU",
+      "region_name": "European Union",
+      "sizing_notes": "EU uses metric-based sizing. Shoe sizes are typically 1-1.5 sizes larger than US. Clothing uses numeric sizes (32-52 for women, 42-56+ for men)."
+    },
+    {
+      "region_code": "JP",
+      "region_name": "Japan",
+      "sizing_notes": "Japanese sizing runs smaller than US/EU. Shoe sizes use centimeter-based measurements. Clothing uses S/M/L/XL system but smaller than Western equivalents."
+    },
+    {
+      "region_code": "CN",
+      "region_name": "China",
+      "sizing_notes": "Chinese sizing is similar to Japanese but may vary by brand. Generally runs smaller than US/EU sizes. Uses metric measurements."
+    },
+    {
+      "region_code": "CM",
+      "region_name": "Centimeters",
+      "sizing_notes": "Direct foot length measurement in centimeters. Most accurate method for shoe sizing. Measure from heel to longest toe."
+    }
+  ]
+}
