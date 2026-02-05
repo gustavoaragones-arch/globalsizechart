@@ -7,10 +7,10 @@ Static page generator for high-intent conversion landing pages (e.g. `eu-42-to-u
 From project root:
 
 ```bash
-node scripts/generate-pages.js
+node scripts/generate-programmatic-pages.js
 ```
 
-- Reads `data/programmatic_routes.json`
+- Reads size data: `data/shoe_sizes.json`, `data/programmatic_routes.json`
 - Uses `programmatic/templates/conversion-template.html`
 - Writes HTML to `programmatic-pages/`
 - Updates `sitemap.xml` with generated URLs
@@ -30,11 +30,11 @@ Edit `data/programmatic_routes.json` and add objects:
 }
 ```
 
-Then run `node scripts/generate-pages.js` again.
+Then run `node scripts/generate-programmatic-pages.js` again.
 
 ## Templates
 
-- **conversion-template.html** – Full conversion page (converter + content + FAQ + internal links). Used by the generator.
+- **conversion-template.html** – Full conversion page: prefilled converter, contextual explanation, fit guide snippet, measurement guide snippet, dynamic FAQ, JSON-LD schema, related links, canonical. Used by the generator.
 - **region-template.html** – Stub for region-focused landing pages (future).
 - **category-template.html** – Stub for category pages e.g. kids converter (future).
 
