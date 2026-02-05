@@ -513,6 +513,41 @@ footer {
 }
 
 /* ============================================
+   Ad Placement Styling
+   ============================================ */
+
+.ad-container {
+  margin: 30px auto;
+  text-align: center;
+  max-width: 100%;
+  min-height: 90px;
+}
+
+.ad-top { margin-top: 25px; }
+.ad-after-tool { margin-top: 35px; }
+.ad-mid-content { margin: 40px 0; }
+.ad-before-faq { margin: 35px 0; }
+.ad-bottom { margin: 45px 0; }
+
+.ad-sticky-mobile {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 999;
+  background-color: var(--bg-primary); /* Ensure visibility */
+  padding: var(--spacing-xs); /* Small padding for better look */
+  box-shadow: var(--shadow-md); /* Subtle shadow */
+  display: none; /* Hidden by default */
+}
+
+@media (max-width: 768px) {
+  .ad-sticky-mobile {
+    display: block; /* Show on mobile */
+  }
+}
+
+/* ============================================
    Utility Classes
    ============================================ */
 
