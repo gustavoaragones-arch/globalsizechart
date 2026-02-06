@@ -20,6 +20,11 @@ const SITEMAPS_DIR = path.join(ROOT, 'sitemaps');
 const BASE_URL = 'https://globalsizechart.com';
 const MAX_URLS_PER_SITEMAP = 500;
 
+// Phase 8: current page types. Phase 8.5: future types (architecture only, no pages generated yet).
+// programmatic_routes.json may include: type (region|category|size_pair|brand_converter|cm_measurement|printable_guide|interactive_tool), category (shoes|clothing), brand, measurement_type, printable, interactive.
+const PHASE8_TYPES = new Set(['region', 'category', 'size_pair']);
+const PHASE85_TYPES = new Set(['brand_converter', 'cm_measurement', 'printable_guide', 'interactive_tool']);
+
 const REGION_LABELS = {
   US: 'United States (US)',
   UK: 'United Kingdom (UK)',
@@ -94,11 +99,11 @@ function getRegionSlugSegment(region) {
   return map[region] || region.toLowerCase();
 }
 
-/** Build breadcrumb items and return { html, jsonLd } for template. */
+/** Build breadcrumb items and return { html, jsonLd } for template. Type A: Home > Shoe Converter > Region > Size Pair. Type B: Home > Shoe Converter > Region. Type C: Home > Shoe Converter > Category. */
 function buildBreadcrumb(route, fileName) {
   const items = [
     { name: 'Home', url: `${BASE_URL}/` },
-    { name: 'Shoe Size Converter', url: `${BASE_URL}/shoe-size-converter.html` }
+    { name: 'Shoe Converter', url: `${BASE_URL}/shoe-size-converter.html` }
   ];
 
   if (route.type === 'region') {
@@ -109,7 +114,7 @@ function buildBreadcrumb(route, fileName) {
     const genderCap = route.gender === 'men' ? "Men's" : route.gender === 'women' ? "Women's" : "Kids'";
     items.push({ name: `${genderCap} Shoe Size Converter`, url: `${BASE_URL}/programmatic-pages/${fileName}` });
   } else {
-    // Type A — size_pair: Home > Shoe Size Converter > EU to US > EU 42 to US
+    // Type A — size_pair: Home > Shoe Converter > Region Page > Size Pair Page
     const fromLabel = getFromRegionLabel(route.from_region);
     const toLabel = getFromRegionLabel(route.to_region);
     const regionSlug = `${getRegionSlugSegment(route.from_region)}-to-${getRegionSlugSegment(route.to_region)}-shoe-size`;
@@ -119,16 +124,17 @@ function buildBreadcrumb(route, fileName) {
     items.push({ name: lastLabel, url: `${BASE_URL}/programmatic-pages/${fileName}` });
   }
 
+  // Root-relative hrefs for visible HTML (works from /programmatic-pages/*.html)
   const link = (item, i) => {
-    if (i === items.length - 1) return `<span class="breadcrumb-current" aria-current="page">${escapeHtml(item.name)}</span>`;
+    if (i === items.length - 1) return `<span>${escapeHtml(item.name)}</span>`;
     let href;
-    if (item.url === `${BASE_URL}/`) href = '../index.html';
-    else if (item.url === `${BASE_URL}/shoe-size-converter.html`) href = '../shoe-size-converter.html';
-    else if (item.url.startsWith(`${BASE_URL}/programmatic-pages/`)) href = item.url.replace(`${BASE_URL}/programmatic-pages/`, '');
-    else href = item.url;
-    return `<a href="${href}">${escapeHtml(item.name)}</a>`;
+    if (item.url === `${BASE_URL}/`) href = '/';
+    else if (item.url === `${BASE_URL}/shoe-size-converter.html`) href = '/shoe-size-converter.html';
+    else if (item.url.startsWith(`${BASE_URL}/programmatic-pages/`)) href = '/programmatic-pages/' + item.url.replace(`${BASE_URL}/programmatic-pages/`, '');
+    else href = item.url.replace(BASE_URL, '') || '/';
+    return `<a href="${escapeHtml(href)}">${escapeHtml(item.name)}</a>`;
   };
-  const breadcrumbHtml = '<nav class="breadcrumb" aria-label="Breadcrumb">' + items.map((item, i) => link(item, i)).join(' <span class="breadcrumb-sep" aria-hidden="true">&gt;</span> ') + '</nav>';
+  const breadcrumbHtml = '<nav class="breadcrumbs" aria-label="Breadcrumb">' + items.map((item, i) => link(item, i)).join(' &gt; ') + '</nav>';
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -335,6 +341,246 @@ const MAIN_CONVERTER_LINKS = [
   { href: '../programmatic-index.html', text: 'Programmatic Index' },
   { href: '../index.html', text: 'Global Size Chart Home' }
 ];
+
+/** Region converter slugs (programmatic) — spec list; only include if not current page. */
+const REGION_CONVERTER_SLUGS = [
+  'eu-to-us-shoe-size',
+  'us-to-eu-shoe-size',
+  'us-to-uk-shoe-size',
+  'uk-to-us-shoe-size',
+  'japan-to-us-shoe-size',
+  'cm-to-us-shoe-size'
+];
+
+const MIN_INTERNAL_LINK_GRAPH = 12;
+const MAX_INTERNAL_LINK_GRAPH = 20;
+
+/**
+ * Internal Link Graph Engine: 12–20 contextual internal links per page.
+ * Types: F homepage, E main converters, D region converters, A ±1 (size_pair), B same region, C same gender.
+ */
+function buildInternalLinkGraph(route, allRoutes) {
+  const added = new Set();
+  const links = [];
+
+  function add(href, text) {
+    if (added.has(href)) return;
+    added.add(href);
+    links.push({ href, text });
+  }
+
+  // F. Homepage — always
+  add('../index.html', 'Global Size Chart Home');
+
+  // E. Main converter links — always
+  add('../shoe-size-converter.html', 'Shoe Size Converter');
+  add('../clothing-size-converter.html', 'Clothing Size Converter');
+
+  // D. Region converter links (programmatic pages); exclude current if Type B
+  const regionLabels = {
+    'eu-to-us-shoe-size': 'EU to US Shoe Size',
+    'us-to-eu-shoe-size': 'US to EU Shoe Size',
+    'us-to-uk-shoe-size': 'US to UK Shoe Size',
+    'uk-to-us-shoe-size': 'UK to US Shoe Size',
+    'japan-to-us-shoe-size': 'Japan to US Shoe Size',
+    'cm-to-us-shoe-size': 'CM to US Shoe Size'
+  };
+  for (const slug of REGION_CONVERTER_SLUGS) {
+    if (route.type === 'region' && route.slug === slug) continue;
+    add(slug + '.html', regionLabels[slug] || slug.replace(/-/g, ' '));
+  }
+
+  // A. ±1 size links (Type A / size_pair only); only if exist in routes
+  if (route.type === 'size_pair' || (route.type !== 'region' && route.type !== 'category' && route.size != null)) {
+    const from = route.from_region;
+    const to = route.to_region;
+    const size = route.size;
+    const gender = route.gender || 'men';
+    const samePair = allRoutes.filter(r =>
+      r.type === 'size_pair' && r.from_region === from && r.to_region === to && r.gender === gender
+    );
+    samePair.sort((a, b) => parseFloat(a.size) - parseFloat(b.size));
+    const idx = samePair.findIndex(r => String(r.size) === String(size));
+    if (idx >= 0) {
+      if (idx > 0) add(samePair[idx - 1].slug + '.html', `${getFromRegionLabel(from)} ${samePair[idx - 1].size} to ${getFromRegionLabel(to)}`);
+      if (idx < samePair.length - 1) add(samePair[idx + 1].slug + '.html', `${getFromRegionLabel(from)} ${samePair[idx + 1].size} to ${getFromRegionLabel(to)}`);
+    }
+  }
+
+  const from = route.from_region;
+  const to = route.to_region;
+  const gender = route.gender || 'men';
+
+  // B. Same region links: same from_region, to_region, gender, 3–5 nearby sizes (size_pair or region only)
+  if (from && to) {
+    const sameRegion = allRoutes.filter(r =>
+      r.type === 'size_pair' && r.from_region === from && r.to_region === to && r.gender === gender && r.slug !== route.slug
+    );
+    sameRegion.sort((a, b) => parseFloat(a.size) - parseFloat(b.size));
+    let nearbyCount = 0;
+    for (const r of sameRegion) {
+      if (nearbyCount >= 5) break;
+      if (added.has(r.slug + '.html')) continue;
+      nearbyCount++;
+      add(r.slug + '.html', `${getFromRegionLabel(from)} ${r.size} to ${getFromRegionLabel(to)}`);
+    }
+  }
+
+  // C. Same gender links: same gender, different regions, popular size equivalents
+  const sameGenderOther = allRoutes.filter(r =>
+    r.type === 'size_pair' && r.gender === gender && (r.from_region !== from || r.to_region !== to)
+  );
+  sameGenderOther.sort((a, b) => `${a.from_region}-${a.to_region}`.localeCompare(`${b.from_region}-${b.to_region}`) || parseFloat(a.size) - parseFloat(b.size));
+  for (const r of sameGenderOther) {
+    if (links.length >= MAX_INTERNAL_LINK_GRAPH) break;
+    add(r.slug + '.html', `${getFromRegionLabel(r.from_region)} ${r.size} to ${getFromRegionLabel(r.to_region)}`);
+  }
+
+  // Type B (region): add size_pair pages for this from/to to reach 12–20
+  if (route.type === 'region') {
+    const sizePairs = allRoutes.filter(r => r.type === 'size_pair' && r.from_region === from && r.to_region === to);
+    sizePairs.sort((a, b) => parseFloat(a.size) - parseFloat(b.size));
+    for (const r of sizePairs) {
+      if (links.length >= MAX_INTERNAL_LINK_GRAPH) break;
+      const genderTag = r.gender === 'women' ? "Women's " : r.gender === 'kids' ? "Kids' " : '';
+      add(r.slug + '.html', `${genderTag}${getFromRegionLabel(from)} ${r.size} to ${getFromRegionLabel(to)}`);
+    }
+  }
+
+  // Type C (category): add same-gender size pairs to reach 12–20
+  if (route.type === 'category') {
+    const sameGender = allRoutes.filter(r => r.type === 'size_pair' && r.gender === gender);
+    sameGender.sort((a, b) => `${a.from_region}-${a.to_region}`.localeCompare(`${b.from_region}-${b.to_region}`) || parseFloat(a.size) - parseFloat(b.size));
+    for (const r of sameGender) {
+      if (links.length >= MAX_INTERNAL_LINK_GRAPH) break;
+      add(r.slug + '.html', `${getFromRegionLabel(r.from_region)} ${r.size} to ${getFromRegionLabel(r.to_region)}`);
+    }
+  }
+
+  // Cap at MAX; ensure at least MIN
+  const out = links.slice(0, MAX_INTERNAL_LINK_GRAPH);
+  return out.map(l => `<li><a href="${l.href}">${escapeHtml(l.text)}</a></li>`).join('\n        ');
+}
+
+// --- Related Size Grid (Type A only) helpers ---
+
+/** Adjacent sizes: [size-1 route, size+1 route] (either may be null). Uses programmatic_routes only. */
+function findAdjacentSizes(route, allRoutes) {
+  if (route.type !== 'size_pair' || route.size == null) return [null, null];
+  const same = allRoutes.filter(r =>
+    r.type === 'size_pair' && r.from_region === route.from_region && r.to_region === route.to_region && r.gender === route.gender
+  );
+  same.sort((a, b) => parseFloat(a.size) - parseFloat(b.size));
+  const idx = same.findIndex(r => String(r.size) === String(route.size));
+  if (idx < 0) return [null, null];
+  return [same[idx - 1] || null, same[idx + 1] || null];
+}
+
+/** Same from_region, to_region, gender; different sizes (exclude current). Sorted by size. */
+function findSameRegionRoutes(route, allRoutes) {
+  if (!route.from_region || !route.to_region) return [];
+  return allRoutes.filter(r =>
+    r.type === 'size_pair' && r.from_region === route.from_region && r.to_region === route.to_region && r.gender === route.gender && r.slug !== route.slug
+  ).sort((a, b) => parseFloat(a.size) - parseFloat(b.size));
+}
+
+/** Same gender, different from_region or to_region. */
+function findSameGenderRoutes(route, allRoutes) {
+  const gender = route.gender || 'men';
+  return allRoutes.filter(r =>
+    r.type === 'size_pair' && r.gender === gender && (r.from_region !== route.from_region || r.to_region !== route.to_region)
+  ).sort((a, b) => `${a.from_region}-${a.to_region}`.localeCompare(`${b.from_region}-${b.to_region}`) || parseFloat(a.size) - parseFloat(b.size));
+}
+
+/** Direct equivalents: same from_region, same size, different to_region (exclude self). */
+function findDirectEquivalents(route, allRoutes) {
+  if (route.type !== 'size_pair' || route.size == null) return [];
+  return allRoutes.filter(r =>
+    r.type === 'size_pair' && r.from_region === route.from_region && String(r.size) === String(route.size) && r.to_region !== route.to_region && r.slug !== route.slug
+  );
+}
+
+/** Region converter routes (type === 'region') from allRoutes. */
+function findRegionConverters(allRoutes) {
+  return allRoutes.filter(r => r.type === 'region');
+}
+
+const MIN_RELATED_GRID_LINKS = 12;
+const MAX_RELATED_GRID_LINKS = 20;
+
+/**
+ * Related Size Grid HTML for Type A pages only. Content: adjacent sizes, direct equivalents,
+ * same-gender converters (category pages), region converters. 12–20 links, no self, no dupes.
+ * Returns empty string for Type B/C.
+ */
+function generateRelatedSizeGrid(route, allRoutes) {
+  if (route.type !== 'size_pair' && !(route.type != null && route.size != null)) return '';
+
+  const added = new Set();
+  const items = [];
+
+  function add(href, text) {
+    if (added.has(href) || href === route.slug + '.html') return;
+    added.add(href);
+    items.push({ href, text });
+  }
+
+  const from = route.from_region;
+  const to = route.to_region;
+  const gender = route.gender || 'men';
+
+  // 1. Adjacent sizes
+  const [prevRoute, nextRoute] = findAdjacentSizes(route, allRoutes);
+  if (prevRoute) add(prevRoute.slug + '.html', `${getFromRegionLabel(from)} ${prevRoute.size} to ${getFromRegionLabel(to)}`);
+  if (nextRoute) add(nextRoute.slug + '.html', `${getFromRegionLabel(from)} ${nextRoute.size} to ${getFromRegionLabel(to)}`);
+
+  // 2. Direct equivalents (same from + size, different to_region)
+  const equivalents = findDirectEquivalents(route, allRoutes);
+  for (const r of equivalents) {
+    if (items.length >= MAX_RELATED_GRID_LINKS) break;
+    add(r.slug + '.html', `${getFromRegionLabel(r.from_region)} ${r.size} to ${getFromRegionLabel(r.to_region)}`);
+  }
+
+  // 3. Same gender converters (category pages: Men's, Women's, Kids' Shoe Size Converter)
+  const categories = allRoutes.filter(r => r.type === 'category');
+  const categoryLabels = { men: "Men's", women: "Women's", kids: "Kids'" };
+  for (const r of categories) {
+    if (items.length >= MAX_RELATED_GRID_LINKS) break;
+    add(r.slug + '.html', `${categoryLabels[r.gender] || r.gender} Shoe Size Converter`);
+  }
+
+  // Region converters (from routes only)
+  const regionConverters = findRegionConverters(allRoutes);
+  for (const r of regionConverters) {
+    if (items.length >= MAX_RELATED_GRID_LINKS) break;
+    add(r.slug + '.html', `${getFromRegionLabel(r.from_region)} to ${getFromRegionLabel(r.to_region)} Shoe Size`);
+  }
+
+  // Same region nearby (fill toward 12–20)
+  const sameRegion = findSameRegionRoutes(route, allRoutes);
+  for (const r of sameRegion) {
+    if (items.length >= MAX_RELATED_GRID_LINKS) break;
+    add(r.slug + '.html', `${getFromRegionLabel(from)} ${r.size} to ${getFromRegionLabel(to)}`);
+  }
+
+  // Same gender other regions (fill)
+  const sameGender = findSameGenderRoutes(route, allRoutes);
+  for (const r of sameGender) {
+    if (items.length >= MAX_RELATED_GRID_LINKS) break;
+    add(r.slug + '.html', `${getFromRegionLabel(r.from_region)} ${r.size} to ${getFromRegionLabel(r.to_region)}`);
+  }
+
+  const out = items.slice(0, MAX_RELATED_GRID_LINKS);
+  if (out.length === 0) return '';
+
+  const gridLinks = out.map(it => `<a href="${it.href}">${escapeHtml(it.text)}</a>`).join('\n        ');
+  return `<section class="related-size-grid">
+  <h2>Explore Nearby Size Conversions</h2>
+  <div class="grid">
+        ${gridLinks}
+  </div>
+</section>`;
+}
 
 function buildCrawlDiscoveryLinks(route, allRoutes) {
   const added = new Set();
@@ -658,6 +904,8 @@ function generatePage(route, template, shoeData, allRoutes) {
       '{{MEASUREMENT_GUIDE_SNIPPET}}': MEASUREMENT_GUIDE_SNIPPET,
       '{{FAQ_CONTENT}}': buildRegionFaqContent(fromLabel, toLabel),
       '{{FAQ_JSON_LD}}': buildRegionFaqJsonLd(fromLabel, toLabel),
+      '{{RELATED_SIZE_GRID}}': '',
+      '{{INTERNAL_LINK_GRAPH}}': buildInternalLinkGraph(route, allRoutes),
       '{{CRAWL_DISCOVERY_LINKS}}': buildCrawlDiscoveryLinks(route, allRoutes),
       '{{DISCOVERY_GRID_LINKS}}': buildDiscoveryGridLinks(route, allRoutes),
       '{{INTERNAL_LINKS}}': buildInternalLinks(route, allRoutes)
@@ -692,6 +940,8 @@ function generatePage(route, template, shoeData, allRoutes) {
       '{{MEASUREMENT_GUIDE_SNIPPET}}': MEASUREMENT_GUIDE_SNIPPET,
       '{{FAQ_CONTENT}}': buildCategoryFaqContent(genderLabel),
       '{{FAQ_JSON_LD}}': buildCategoryFaqJsonLd(genderLabel),
+      '{{RELATED_SIZE_GRID}}': '',
+      '{{INTERNAL_LINK_GRAPH}}': buildInternalLinkGraph(route, allRoutes),
       '{{CRAWL_DISCOVERY_LINKS}}': buildCrawlDiscoveryLinks(route, allRoutes),
       '{{DISCOVERY_GRID_LINKS}}': buildDiscoveryGridLinks(route, allRoutes),
       '{{INTERNAL_LINKS}}': buildInternalLinks(route, allRoutes)
@@ -729,6 +979,8 @@ function generatePage(route, template, shoeData, allRoutes) {
       '{{MEASUREMENT_GUIDE_SNIPPET}}': MEASUREMENT_GUIDE_SNIPPET,
       '{{FAQ_CONTENT}}': buildFaqContent(route, toSize, fromLabel, toLabel),
       '{{FAQ_JSON_LD}}': buildFaqJsonLd(route, toSize, fromLabel, toLabel),
+      '{{RELATED_SIZE_GRID}}': generateRelatedSizeGrid(route, allRoutes),
+      '{{INTERNAL_LINK_GRAPH}}': buildInternalLinkGraph(route, allRoutes),
       '{{CRAWL_DISCOVERY_LINKS}}': buildCrawlDiscoveryLinks(route, allRoutes),
       '{{DISCOVERY_GRID_LINKS}}': buildDiscoveryGridLinks(route, allRoutes),
       '{{INTERNAL_LINKS}}': buildInternalLinks(route, allRoutes)
@@ -740,6 +992,127 @@ function generatePage(route, template, shoeData, allRoutes) {
     html = html.split(placeholder).join(value);
   }
   return { html, fileName };
+}
+
+/** Return { title, canonical, metaRobots } for a route (for indexability report). */
+function getPageMeta(route) {
+  const fileName = route.slug + '.html';
+  const canonical = `${BASE_URL}/programmatic-pages/${fileName}`;
+  const metaRobots = 'index, follow';
+
+  if (route.type === 'region') {
+    const fromLabel = getFromRegionLabel(route.from_region);
+    const toLabel = getFromRegionLabel(route.to_region);
+    const title = `${fromLabel} to ${toLabel} Shoe Size Conversion Chart & Converter | GlobalSizeChart.com`;
+    return { title, canonical, metaRobots };
+  }
+  if (route.type === 'category') {
+    const genderCap = route.gender === 'men' ? "Men's" : route.gender === 'women' ? "Women's" : "Kids'";
+    const title = `${genderCap} Shoe Size Converter - US, UK, EU, JP, CM | GlobalSizeChart.com`;
+    return { title, canonical, metaRobots };
+  }
+  const fromLabel = getFromRegionLabel(route.from_region);
+  const toLabel = getFromRegionLabel(route.to_region);
+  const title = `${fromLabel} ${route.size} to ${toLabel} Shoe Size Conversion Chart & Converter | GlobalSizeChart.com`;
+  return { title, canonical, metaRobots };
+}
+
+const BUILD_DIR = path.join(ROOT, 'build');
+const INDEXABILITY_REPORT_PATH = path.join(BUILD_DIR, 'indexability-report.json');
+
+/**
+ * Build-time indexability validation. Checks: meta robots index,follow; canonical to self;
+ * robots.txt not blocking /eu-*, /us-*, /uk-*, /jp-*; no duplicate meta titles.
+ * Writes build/indexability-report.json.
+ */
+function runIndexabilityChecks(routes) {
+  const report = {
+    missingCanonicals: [],
+    duplicateTitles: [],
+    blockedPages: [],
+    missingMetaRobots: [],
+    generatedAt: new Date().toISOString()
+  };
+
+  const titleToSlugs = {};
+  const expectedCanonicalBase = `${BASE_URL}/programmatic-pages/`;
+
+  for (const route of routes) {
+    const meta = getPageMeta(route);
+    const slug = route.slug;
+    const pagePathForCheck = `/programmatic-pages/${slug}.html`;
+
+    if (!meta.canonical || meta.canonical === BASE_URL + '/' || !meta.canonical.startsWith(expectedCanonicalBase) || meta.canonical !== `${BASE_URL}/programmatic-pages/${slug}.html`) {
+      if (meta.canonical !== `${BASE_URL}/programmatic-pages/${slug}.html`) report.missingCanonicals.push({ slug, canonical: meta.canonical || '(missing)' });
+    }
+    if (!meta.metaRobots || meta.metaRobots.includes('noindex') || meta.metaRobots.includes('nofollow')) {
+      report.missingMetaRobots.push({ slug, metaRobots: meta.metaRobots || '(missing)' });
+    }
+    titleToSlugs[meta.title] = titleToSlugs[meta.title] || [];
+    titleToSlugs[meta.title].push(slug);
+  }
+
+  for (const [title, slugs] of Object.entries(titleToSlugs)) {
+    if (slugs.length > 1) report.duplicateTitles.push({ title, slugs });
+  }
+
+  const robotsPath = path.join(ROOT, 'robots.txt');
+  if (fs.existsSync(robotsPath)) {
+    const robotsTxt = fs.readFileSync(robotsPath, 'utf8');
+    const disallows = [];
+    for (const line of robotsTxt.split(/\r?\n/)) {
+      const m = line.match(/^\s*Disallow:\s*(\S+)/i);
+      if (m) disallows.push(m[1].trim());
+    }
+    for (const route of routes) {
+      const pagePath = `/programmatic-pages/${route.slug}.html`;
+      for (const disallow of disallows) {
+        const rule = disallow.startsWith('/') ? disallow : '/' + disallow;
+        if (pagePath.startsWith(rule)) {
+          report.blockedPages.push({ slug: route.slug, path: pagePath, disallowRule: rule });
+          break;
+        }
+      }
+    }
+  }
+
+  ensureDir(BUILD_DIR);
+  fs.writeFileSync(INDEXABILITY_REPORT_PATH, JSON.stringify(report, null, 2), 'utf8');
+
+  if (report.missingCanonicals.length) console.warn('[indexability] missing or wrong canonicals:', report.missingCanonicals.length);
+  if (report.duplicateTitles.length) console.warn('[indexability] duplicate meta titles:', report.duplicateTitles.length);
+  if (report.blockedPages.length) console.warn('[indexability] pages possibly blocked by robots.txt:', report.blockedPages.length);
+  if (report.missingMetaRobots.length) console.warn('[indexability] missing or noindex/nofollow meta robots:', report.missingMetaRobots.length);
+
+  return report;
+}
+
+// --- Phase 8.5 authority structure (architecture only; no pages generated) ---
+// Routes may include: brand, measurement_type, printable, interactive. No UI yet.
+
+function generateClothingProgrammaticPages(_routes) {
+  // Future: category === 'clothing'. Do NOT output pages yet.
+  console.log('Phase 8.5 module ready: generateClothingProgrammaticPages');
+}
+
+function generateBrandConverters(_routes) {
+  // Future: type === 'brand_converter'. Do NOT output pages yet.
+  console.log('Phase 8.5 module ready: generateBrandConverters');
+}
+
+function generateCMConverters(_routes) {
+  // Future: type === 'cm_measurement'. Do NOT output pages yet.
+  console.log('Phase 8.5 module ready: generateCMConverters');
+}
+
+function generatePrintableGuides(_routes) {
+  // Future: type === 'printable_guide'. Do NOT output pages yet.
+  console.log('Phase 8.5 module ready: generatePrintableGuides');
+}
+
+function generateMeasurementTools(_routes) {
+  // Future: type === 'interactive_tool'. Do NOT output pages yet.
+  console.log('Phase 8.5 module ready: generateMeasurementTools');
 }
 
 function ensureDir(dir) {
@@ -879,6 +1252,153 @@ function buildProgrammaticIndexPage(routes) {
   return html;
 }
 
+/**
+ * Programmatic Hub: shoe-size-pages.html at project root.
+ * Sections: Men Sizes, Women Sizes, Kids Sizes (size_pair grouped by region pair), Region Converters, Category Converters.
+ * Unique meta title/description, H1 "Complete Shoe Size Conversion Index", internal links to /, shoe-size-converter, clothing-size-converter.
+ */
+function generateProgrammaticHub(allRoutes) {
+  const link = (slug, text) => `<a href="programmatic-pages/${slug}.html">${escapeHtml(text)}</a>`;
+
+  const sizePairs = allRoutes.filter(r => r.type === 'size_pair' || (r.type == null && r.size != null));
+  const regions = allRoutes.filter(r => r.type === 'region');
+  const categories = allRoutes.filter(r => r.type === 'category');
+
+  const byGender = { men: [], women: [], kids: [] };
+  for (const r of sizePairs) {
+    const g = r.gender || 'men';
+    if (byGender[g]) byGender[g].push(r);
+  }
+
+  function sectionForGender(genderKey, title) {
+    const list = byGender[genderKey] || [];
+    if (list.length === 0) return '';
+
+    const byPair = {};
+    for (const r of list) {
+      const key = `${r.from_region}-${r.to_region}`;
+      if (!byPair[key]) byPair[key] = [];
+      byPair[key].push(r);
+    }
+    const pairOrder = ['EU-US', 'US-EU', 'US-UK', 'UK-US', 'JP-US', 'CM-US', 'EU-UK', 'CN-US'];
+    const pairLabels = {};
+    for (const r of list) {
+      const key = `${r.from_region}-${r.to_region}`;
+      if (!pairLabels[key]) pairLabels[key] = `${getFromRegionLabel(r.from_region)} → ${getFromRegionLabel(r.to_region)}`;
+    }
+
+    let html = `<section class="content-section"><h2>${title}</h2>`;
+    const keys = [...Object.keys(byPair)].sort((a, b) => {
+      const ia = pairOrder.indexOf(a);
+      const ib = pairOrder.indexOf(b);
+      if (ia !== -1 && ib !== -1) return ia - ib;
+      if (ia !== -1) return -1;
+      if (ib !== -1) return 1;
+      return a.localeCompare(b);
+    });
+    for (const key of keys) {
+      const items = (byPair[key] || []).sort((a, b) => parseFloat(a.size) - parseFloat(b.size));
+      const label = pairLabels[key] || `${key.replace('-', ' → ')}`;
+      html += `<h3 id="hub-${genderKey}-${key}">${label}</h3><ul>`;
+      for (const r of items) {
+        html += `<li>${link(r.slug, `${getFromRegionLabel(r.from_region)} ${r.size} → ${getFromRegionLabel(r.to_region)}`)}</li>`;
+      }
+      html += '</ul>';
+    }
+    html += '</section>';
+    return html;
+  }
+
+  let body = '';
+
+  body += '<section class="content-section"><h1>Complete Shoe Size Conversion Index</h1>';
+  body += '<p>Browse all shoe size conversion pages. Start with the main <a href="index.html">home page</a>, <a href="shoe-size-converter.html">Shoe Size Converter</a>, or <a href="clothing-size-converter.html">Clothing Size Converter</a> for general tools.</p></section>';
+
+  body += sectionForGender('men', 'Section 1 — Men Sizes');
+  body += sectionForGender('women', 'Section 2 — Women Sizes');
+  body += sectionForGender('kids', 'Section 3 — Kids Sizes');
+
+  body += '<section class="content-section"><h2>Section 4 — Region Converters</h2><p>Convert any size between two regions.</p><ul>';
+  for (const r of regions) {
+    body += `<li>${link(r.slug, `${getFromRegionLabel(r.from_region)} → ${getFromRegionLabel(r.to_region)}`)}</li>`;
+  }
+  body += '</ul></section>';
+
+  const genderLabel = (g) => (g === 'men' ? "Men's" : g === 'women' ? "Women's" : "Kids'");
+  body += '<section class="content-section"><h2>Section 5 — Category Converters</h2><p>Gender-specific shoe size converters.</p><ul>';
+  for (const r of categories) {
+    body += `<li>${link(r.slug, `${genderLabel(r.gender)} Shoe Size Converter`)}</li>`;
+  }
+  body += '</ul></section>';
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+  <meta name="description" content="Complete shoe size conversion index: men's, women's, and kids' size charts by region (EU, US, UK, JP, CM). All conversion pages in one place.">
+  <link rel="canonical" href="${BASE_URL}/shoe-size-pages.html">
+  <title>Complete Shoe Size Conversion Index | GlobalSizeChart.com</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <a href="index.html" class="logo">GlobalSizeChart.com</a>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="shoe-size-converter.html">Shoe Sizes</a></li>
+          <li><a href="clothing-size-converter.html">Clothing Sizes</a></li>
+          <li><a href="legal/about.html">About</a></li>
+          <li><a href="legal/contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <div class="container">
+      ${body}
+    </div>
+  </main>
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Converters</h3>
+          <ul>
+            <li><a href="shoe-size-converter.html">Shoe Size Converter</a></li>
+            <li><a href="clothing-size-converter.html">Clothing Size Converter</a></li>
+            <li><a href="us-to-eu-size.html">US to EU Size</a></li>
+            <li><a href="uk-to-us-size.html">UK to US Size</a></li>
+            <li><a href="cm-to-us-shoe-size.html">CM to US Shoe Size</a></li>
+            <li><a href="programmatic-index.html">Programmatic Index</a></li>
+            <li><a href="shoe-size-pages.html">Shoe Size Pages Index</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Information</h3>
+          <ul>
+            <li><a href="legal/about.html">About Us</a></li>
+            <li><a href="legal/contact.html">Contact</a></li>
+            <li><a href="legal/privacy.html">Privacy Policy</a></li>
+            <li><a href="legal/terms.html">Terms of Service</a></li>
+            <li><a href="legal/disclaimer.html">Disclaimer</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 GlobalSizeChart.com. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+  <script src="app.js"></script>
+</body>
+</html>`;
+  return html;
+}
+
 // Static URLs included in every sitemap rebuild (no programmatic-pages here). Core → 1.0.
 const SITEMAP_STATIC_URLS = [
   { loc: `${BASE_URL}/`, lastmod: '2024-01-01', changefreq: 'weekly', priority: '1.0' },
@@ -932,10 +1452,11 @@ function buildTieredSitemaps(routes) {
 
   const sitemapBase = `${BASE_URL}/sitemaps`;
 
-  // 1. Core (priority 1.0) — include programmatic index for crawl discovery
+  // 1. Core (priority 1.0) — include programmatic index and hub for crawl discovery
   const coreUrls = [
     ...SITEMAP_STATIC_URLS,
-    { loc: `${BASE_URL}/programmatic-index.html`, lastmod: today, changefreq: 'weekly', priority: '1.0' }
+    { loc: `${BASE_URL}/programmatic-index.html`, lastmod: today, changefreq: 'weekly', priority: '1.0' },
+    { loc: `${BASE_URL}/shoe-size-pages.html`, lastmod: today, changefreq: 'weekly', priority: '1.0' }
   ];
   writeUrlsetSitemap(path.join(SITEMAPS_DIR, 'sitemap-core.xml'), coreUrls);
 
@@ -1001,10 +1522,13 @@ function main() {
   const routes = loadJson(path.join(DATA_DIR, 'programmatic_routes.json'));
   const template = fs.readFileSync(path.join(TEMPLATES_DIR, 'conversion-template.html'), 'utf8');
 
+  // Only generate pages for Phase 8 types; Phase 8.5 types are accepted in JSON but skipped (architecture only).
+  const phase8Routes = routes.filter(r => r.type == null || PHASE8_TYPES.has(r.type));
+
   ensureDir(OUTPUT_DIR);
 
   const generated = [];
-  for (const route of routes) {
+  for (const route of phase8Routes) {
     const { html, fileName } = generatePage(route, template, shoeData, routes);
     const outPath = path.join(OUTPUT_DIR, fileName);
     fs.writeFileSync(outPath, html, 'utf8');
@@ -1016,8 +1540,22 @@ function main() {
   fs.writeFileSync(path.join(ROOT, 'programmatic-index.html'), indexHtml, 'utf8');
   console.log('  wrote programmatic-index.html');
 
+  const hubHtml = generateProgrammaticHub(routes);
+  fs.writeFileSync(path.join(ROOT, 'shoe-size-pages.html'), hubHtml, 'utf8');
+  console.log('  wrote shoe-size-pages.html');
+
   buildTieredSitemaps(routes);
   console.log('Built tiered sitemaps: sitemaps/sitemap-core.xml, sitemap-programmatic*.xml, sitemap.xml (index).');
+
+  runIndexabilityChecks(phase8Routes);
+  console.log('Indexability report: build/indexability-report.json');
+
+  generateClothingProgrammaticPages(routes);
+  generateBrandConverters(routes);
+  generateCMConverters(routes);
+  generatePrintableGuides(routes);
+  generateMeasurementTools(routes);
+
   console.log('Done. Generated', generated.length, 'pages in programmatic-pages/');
 }
 

@@ -30,9 +30,10 @@
 
   <main>
     <div class="container">
-      {{BREADCRUMB_HTML}}
       <section class="converter-card">
         <h1>{{H1_TITLE}}</h1>
+        {{BREADCRUMB_HTML}}
+        {{RELATED_SIZE_GRID}}
         <p class="mb-lg">{{INTRO_TEXT}}</p>
 
         <div class="ad-slot ad-top"></div>
@@ -79,6 +80,13 @@
       <section class="content-section" id="measurement-guide">
         <h2>How to Measure Your Foot</h2>
         {{MEASUREMENT_GUIDE_SNIPPET}}
+      </section>
+
+      <section class="internal-links">
+        <h2>Related Size Conversions</h2>
+        <ul>
+          {{INTERNAL_LINK_GRAPH}}
+        </ul>
       </section>
 
       <section class="content-section" id="faq">
