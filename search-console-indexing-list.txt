@@ -1,0 +1,19 @@
+# Google Search Console — representative URLs for URL Inspection / Indexing (15 pages)
+# Mixed: core, region, category, size-pair | regions: EU, US, UK, JP, CM | genders: men, women, kids
+# One URL per line; use these in GSC "URL Inspection" or "Request indexing" workflows.
+
+https://globalsizechart.com/
+https://globalsizechart.com/shoe-size-converter.html
+https://globalsizechart.com/programmatic-index.html
+https://globalsizechart.com/programmatic-pages/eu-to-us-shoe-size.html
+https://globalsizechart.com/programmatic-pages/uk-to-us-shoe-size.html
+https://globalsizechart.com/programmatic-pages/mens-shoe-size-converter.html
+https://globalsizechart.com/programmatic-pages/womens-shoe-size-converter.html
+https://globalsizechart.com/programmatic-pages/kids-shoe-size-converter.html
+https://globalsizechart.com/programmatic-pages/eu-42-to-us-shoe-size.html
+https://globalsizechart.com/programmatic-pages/eu-42-to-us-shoe-size-women.html
+https://globalsizechart.com/programmatic-pages/kids-eu-32-to-us-shoe-size.html
+https://globalsizechart.com/programmatic-pages/us-9-to-eu-shoe-size.html
+https://globalsizechart.com/programmatic-pages/uk-9-to-us-shoe-size.html
+https://globalsizechart.com/programmatic-pages/japan-28-to-us-shoe-size.html
+https://globalsizechart.com/programmatic-pages/cm-26-to-us-shoe-size.html

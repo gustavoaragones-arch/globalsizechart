@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
   <meta name="description" content="{{META_DESCRIPTION}}">
   <meta name="keywords" content="{{KEYWORDS}}">
   <link rel="canonical" href="{{CANONICAL_URL}}">
   <title>{{PAGE_TITLE}}</title>
   <link rel="stylesheet" href="../styles.css">
   <script type="application/ld+json">{{FAQ_JSON_LD}}</script>
+  <script type="application/ld+json">{{BREADCRUMB_JSON_LD}}</script>
 </head>
 <body>
   <header>
@@ -28,6 +30,7 @@
 
   <main>
     <div class="container">
+      {{BREADCRUMB_HTML}}
       <section class="converter-card">
         <h1>{{H1_TITLE}}</h1>
         <p class="mb-lg">{{INTRO_TEXT}}</p>
@@ -83,6 +86,13 @@
         {{FAQ_CONTENT}}
       </section>
 
+      <section class="crawl-discovery">
+        <h2>Related Size Conversions</h2>
+        <ul class="crawl-discovery-links">
+          {{CRAWL_DISCOVERY_LINKS}}
+        </ul>
+      </section>
+
       <section class="content-section">
         <h2>Related Converters</h2>
         <ul class="related-links">
@@ -91,6 +101,10 @@
       </section>
 
       <div class="ad-slot ad-bottom"></div>
+
+      <div class="discovery-grid">
+        {{DISCOVERY_GRID_LINKS}}
+      </div>
     </div>
   </main>
 
@@ -105,6 +119,7 @@
             <li><a href="../us-to-eu-size.html">US to EU Size</a></li>
             <li><a href="../uk-to-us-size.html">UK to US Size</a></li>
             <li><a href="../cm-to-us-shoe-size.html">CM to US Shoe Size</a></li>
+            <li><a href="../programmatic-index.html">Programmatic Index</a></li>
           </ul>
         </div>
         <div class="footer-section">

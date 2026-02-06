@@ -13,7 +13,7 @@ node scripts/generate-programmatic-pages.js
 - Reads size data: `data/shoe_sizes.json`, `data/programmatic_routes.json`
 - Uses `programmatic/templates/conversion-template.html`
 - Writes HTML to `programmatic-pages/`
-- Updates `sitemap.xml` with generated URLs
+- Builds **tiered sitemaps**: `sitemap.xml` (master index) → `sitemaps/sitemap-core.xml`, `sitemaps/sitemap-programmatic.xml` (index) → `sitemap-programmatic-sizepairs.xml`, `sitemap-programmatic-regions.xml`, `sitemap-programmatic-categories.xml`. Max 500 URLs per sitemap; core = highest priority.
 
 ## Adding routes
 
