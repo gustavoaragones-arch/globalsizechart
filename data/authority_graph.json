@@ -1,0 +1,171 @@
+{
+  "_comment": "Topical authority graph for auto-linking semantic ↔ programmatic, reinforcing clusters, and internal authority loops. Paths are site-relative.",
+  "eu_us_conversion": {
+    "topic": "EU to US shoe size conversion",
+    "subtopics": ["regional_differences", "sizing_standards"],
+    "linked_pages": ["/semantic/why-eu-and-us-sizes-differ.html", "/programmatic-pages/eu-to-us-shoe-size.html"],
+    "semantic_support_pages": ["/semantic/why-eu-and-us-sizes-differ.html"],
+    "programmatic_pages": [
+      "/programmatic-pages/eu-to-us-shoe-size.html",
+      "/programmatic-pages/eu-42-to-us-shoe-size.html",
+      "/programmatic-pages/eu-40-to-us-shoe-size.html",
+      "/programmatic-pages/eu-44-to-us-shoe-size.html",
+      "/programmatic-pages/eu-39-to-us-shoe-size-women.html",
+      "/programmatic-pages/kids-eu-32-to-us-shoe-size.html"
+    ],
+    "priority_weight": 1.0
+  },
+  "us_eu_conversion": {
+    "topic": "US to EU shoe size conversion",
+    "subtopics": ["eu_us_conversion", "regional_differences"],
+    "linked_pages": ["/semantic/why-eu-and-us-sizes-differ.html", "/programmatic-pages/us-to-eu-shoe-size.html"],
+    "semantic_support_pages": ["/semantic/why-eu-and-us-sizes-differ.html"],
+    "programmatic_pages": [
+      "/programmatic-pages/us-to-eu-shoe-size.html",
+      "/programmatic-pages/us-9-to-eu-shoe-size.html",
+      "/programmatic-pages/us-8-to-eu-shoe-size.html",
+      "/programmatic-pages/us-10-to-eu-shoe-size-women.html",
+      "/programmatic-pages/kids-us-4-to-eu-shoe-size.html"
+    ],
+    "priority_weight": 0.95
+  },
+  "uk_us_conversion": {
+    "topic": "UK to US shoe size conversion",
+    "subtopics": ["regional_differences", "uk_sizing"],
+    "linked_pages": ["/semantic/how-uk-shoe-sizes-differ.html", "/programmatic-pages/uk-to-us-shoe-size.html"],
+    "semantic_support_pages": ["/semantic/how-uk-shoe-sizes-differ.html"],
+    "programmatic_pages": [
+      "/programmatic-pages/uk-to-us-shoe-size.html",
+      "/programmatic-pages/uk-7-to-us-shoe-size.html",
+      "/programmatic-pages/uk-8-to-us-shoe-size.html",
+      "/programmatic-pages/uk-7-to-us-shoe-size-women.html"
+    ],
+    "priority_weight": 0.9
+  },
+  "us_uk_conversion": {
+    "topic": "US to UK shoe size conversion",
+    "subtopics": ["uk_sizing", "regional_differences"],
+    "linked_pages": ["/semantic/how-uk-shoe-sizes-differ.html", "/programmatic-pages/us-to-uk-shoe-size.html"],
+    "semantic_support_pages": ["/semantic/how-uk-shoe-sizes-differ.html"],
+    "programmatic_pages": [
+      "/programmatic-pages/us-to-uk-shoe-size.html",
+      "/programmatic-pages/us-10-to-uk-shoe-size.html",
+      "/programmatic-pages/us-9-to-uk-shoe-size.html"
+    ],
+    "priority_weight": 0.9
+  },
+  "japan_conversion": {
+    "topic": "Japanese shoe size conversion",
+    "subtopics": ["regional_differences"],
+    "linked_pages": ["/semantic/how-japanese-shoe-sizes-work.html", "/programmatic-pages/japan-to-us-shoe-size.html"],
+    "semantic_support_pages": ["/semantic/how-japanese-shoe-sizes-work.html"],
+    "programmatic_pages": [
+      "/programmatic-pages/japan-to-us-shoe-size.html",
+      "/programmatic-pages/japan-27-to-us-shoe-size.html",
+      "/programmatic-pages/japan-26-to-us-shoe-size-women.html"
+    ],
+    "priority_weight": 0.85
+  },
+  "cm_measurement": {
+    "topic": "CM foot measurement and conversion",
+    "subtopics": ["measurement_guides", "sizing_standards"],
+    "linked_pages": ["/semantic/how-to-measure-feet-cm.html", "/programmatic-pages/cm-to-us-shoe-size.html"],
+    "semantic_support_pages": ["/semantic/how-to-measure-feet-cm.html"],
+    "programmatic_pages": [
+      "/programmatic-pages/cm-to-us-shoe-size.html",
+      "/programmatic-pages/cm-26-to-us-shoe-size.html",
+      "/programmatic-pages/cm-25-to-us-shoe-size-women.html"
+    ],
+    "priority_weight": 0.95
+  },
+  "eu_uk_conversion": {
+    "topic": "EU to UK shoe size conversion",
+    "subtopics": ["uk_sizing", "regional_differences"],
+    "linked_pages": ["/semantic/how-uk-shoe-sizes-differ.html", "/programmatic-pages/eu-to-uk-shoe-size.html"],
+    "semantic_support_pages": ["/semantic/how-uk-shoe-sizes-differ.html"],
+    "programmatic_pages": [
+      "/programmatic-pages/eu-to-uk-shoe-size.html",
+      "/programmatic-pages/eu-40-to-uk-shoe-size.html",
+      "/programmatic-pages/eu-44-to-uk-shoe-size.html"
+    ],
+    "priority_weight": 0.85
+  },
+  "sizing_standards": {
+    "topic": "How shoe sizing works (standards)",
+    "subtopics": ["measurement_guides", "regional_differences"],
+    "linked_pages": ["/semantic/how-shoe-sizing-works.html"],
+    "semantic_support_pages": ["/semantic/how-shoe-sizing-works.html"],
+    "programmatic_pages": [
+      "/programmatic-pages/eu-to-us-shoe-size.html",
+      "/programmatic-pages/mens-shoe-size-converter.html",
+      "/programmatic-pages/womens-shoe-size-converter.html",
+      "/programmatic-pages/kids-shoe-size-converter.html"
+    ],
+    "priority_weight": 0.9
+  },
+  "measurement_guides": {
+    "topic": "Foot measurement guides",
+    "subtopics": ["cm_measurement"],
+    "linked_pages": ["/semantic/how-to-measure-feet-cm.html", "/programmatic-pages/cm-to-us-shoe-size.html"],
+    "semantic_support_pages": ["/semantic/how-to-measure-feet-cm.html"],
+    "programmatic_pages": [
+      "/programmatic-pages/cm-to-us-shoe-size.html"
+    ],
+    "priority_weight": 0.9
+  },
+  "regional_differences": {
+    "topic": "Regional sizing differences",
+    "subtopics": ["eu_us_conversion", "uk_us_conversion", "japan_conversion"],
+    "linked_pages": [
+      "/semantic/why-eu-and-us-sizes-differ.html",
+      "/semantic/how-uk-shoe-sizes-differ.html",
+      "/semantic/how-japanese-shoe-sizes-work.html"
+    ],
+    "semantic_support_pages": [
+      "/semantic/why-eu-and-us-sizes-differ.html",
+      "/semantic/how-uk-shoe-sizes-differ.html",
+      "/semantic/how-japanese-shoe-sizes-work.html"
+    ],
+    "programmatic_pages": [
+      "/programmatic-pages/eu-to-us-shoe-size.html",
+      "/programmatic-pages/uk-to-us-shoe-size.html",
+      "/programmatic-pages/japan-to-us-shoe-size.html"
+    ],
+    "priority_weight": 0.85
+  },
+  "uk_sizing": {
+    "topic": "UK shoe sizing",
+    "subtopics": ["us_uk_conversion", "eu_uk_conversion"],
+    "linked_pages": ["/semantic/how-uk-shoe-sizes-differ.html"],
+    "semantic_support_pages": ["/semantic/how-uk-shoe-sizes-differ.html"],
+    "programmatic_pages": [
+      "/programmatic-pages/uk-to-us-shoe-size.html",
+      "/programmatic-pages/us-to-uk-shoe-size.html",
+      "/programmatic-pages/eu-to-uk-shoe-size.html"
+    ],
+    "priority_weight": 0.8
+  },
+  "sizing_myths": {
+    "topic": "Common shoe sizing mistakes",
+    "subtopics": ["sizing_standards"],
+    "linked_pages": ["/semantic/common-shoe-sizing-mistakes.html"],
+    "semantic_support_pages": ["/semantic/common-shoe-sizing-mistakes.html"],
+    "programmatic_pages": [
+      "/programmatic-pages/eu-to-us-shoe-size.html",
+      "/programmatic-pages/mens-shoe-size-converter.html"
+    ],
+    "priority_weight": 0.8
+  },
+  "category_converters": {
+    "topic": "Gender-specific shoe converters",
+    "subtopics": ["sizing_standards"],
+    "linked_pages": ["/semantic/how-shoe-sizing-works.html"],
+    "semantic_support_pages": ["/semantic/how-shoe-sizing-works.html"],
+    "programmatic_pages": [
+      "/programmatic-pages/mens-shoe-size-converter.html",
+      "/programmatic-pages/womens-shoe-size-converter.html",
+      "/programmatic-pages/kids-shoe-size-converter.html"
+    ],
+    "priority_weight": 0.85
+  }
+}

@@ -1,0 +1,12 @@
+[
+  { "type": "brand_converter", "brand": "Nike", "category": "shoes", "gender": "all", "region": "US", "slug": "nike-shoe-size-chart" },
+  { "type": "brand_converter", "brand": "Adidas", "category": "shoes", "gender": "all", "region": "EU", "slug": "adidas-eu-to-us-shoe-sizing" },
+  { "type": "brand_converter", "brand": "Puma", "category": "shoes", "gender": "all", "region": "EU", "slug": "puma-shoe-size-chart" },
+  { "type": "brand_converter", "brand": "Zara", "category": "clothing", "gender": "all", "region": "EU", "slug": "zara-clothing-size-guide" },
+  { "type": "brand_converter", "brand": "H&M", "category": "clothing", "gender": "all", "region": "EU", "slug": "hm-size-converter" },
+  { "type": "brand_converter", "brand": "Shein", "category": "clothing", "gender": "all", "region": "EU", "slug": "shein-size-converter" },
+  { "type": "brand_converter", "brand": "Uniqlo", "category": "clothing", "gender": "all", "region": "JP", "slug": "uniqlo-size-guide" },
+  { "type": "brand_converter", "brand": "New Balance", "category": "shoes", "gender": "all", "region": "US", "slug": "new-balance-shoe-size-chart" },
+  { "type": "brand_converter", "brand": "ASOS", "category": "clothing", "gender": "all", "region": "UK", "slug": "asos-size-guide" },
+  { "type": "brand_converter", "brand": "Levi's", "category": "clothing", "gender": "all", "region": "US", "slug": "levis-jeans-size-guide" }
+]

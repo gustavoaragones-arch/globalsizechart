@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+  <meta name="description" content="Interactive foot and clothing measurement calculator with inch/cm converter, size recommendations, and visual guides.">
+  <link rel="canonical" href="https://globalsizechart.com/tools/measurement-assistant.html">
+  <title>Measurement Assistant | GlobalSizeChart.com</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .tool-section { margin: 1.5rem 0; padding: 1rem; border: 1px solid #e0e0e0; border-radius: 8px; background: #fafafa; }
+    .tool-section h2 { margin-top: 0; }
+    .tool-row { margin: 0.5rem 0; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .tool-row label { min-width: 100px; }
+    .tool-row input, .tool-row select { padding: 0.35rem 0.5rem; }
+    .recommendation-box { background: #e8f4f8; border: 1px solid #0a7ea4; border-radius: 8px; padding: 1rem; margin: 1rem 0; }
+    .recommendation-box h3 { margin-top: 0; }
+    .visual-guide { max-width: 280px; margin: 1rem 0; }
+    .visual-guide svg { width: 100%; height: auto; }
+    .explanation-module { margin: 1rem 0; padding: 1rem; background: #fff; border-left: 4px solid #0a7ea4; }
+    .faq-item { margin: 0.75rem 0; }
+    .faq-item summary { cursor: pointer; font-weight: bold; }
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Measurement Assistant","description":"Interactive foot and clothing measurement calculator with inch/cm converter, size recommendations, and visual guides.","url":"https://globalsizechart.com/tools/measurement-assistant.html","publisher":{"@type":"Organization","name":"GlobalSizeChart.com","url":"https://globalsizechart.com"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://globalsizechart.com/"},{"@type":"ListItem","position":2,"name":"Sizing Guides","item":"https://globalsizechart.com/shoe-sizing-guides.html"},{"@type":"ListItem","position":3,"name":"Measurement Assistant","item":"https://globalsizechart.com/tools/measurement-assistant.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Measurement Assistant","description":"Interactive foot and clothing measurement calculator with inch/cm converter, size recommendations, and visual guides.","url":"https://globalsizechart.com/tools/measurement-assistant.html","datePublished":"2024-01-01","publisher":{"@type":"Organization","name":"GlobalSizeChart.com","url":"https://globalsizechart.com"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Measurement Assistant","applicationCategory":"WebApplication","description":"Interactive foot and clothing measurement calculator with inch/cm converter, size recommendations, and visual guides.","url":"https://globalsizechart.com/tools/measurement-assistant.html","featureList":"Foot measurement calculator, clothing measurement assistant, unit converter (inch/cm), dynamic size recommendation, interactive visual guides","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"How to use the Measurement Assistant","description":"Enter your measurements in cm or inches to get shoe and clothing size recommendations.","step":[{"@type":"HowToStep","position":1,"name":"Use unit converter","text":"Convert between inches and centimeters if needed (1 inch = 2.54 cm)."},{"@type":"HowToStep","position":2,"name":"Foot measurement","text":"Enter your foot length in cm or inches and select gender to see US, UK, EU shoe size."},{"@type":"HowToStep","position":3,"name":"Clothing measurements","text":"Enter chest, waist, and hips in cm or inches; select gender and category for size recommendation."},{"@type":"HowToStep","position":4,"name":"Review recommendation","text":"Check the dynamic size recommendation summary. Always verify with the brand size chart."}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I measure my foot for shoe size?","acceptedAnswer":{"@type":"Answer","text":"Measure from the back of your heel to the tip of your longest toe on a flat surface, with your weight on that foot. Use the larger foot if they differ."}},{"@type":"Question","name":"How do I measure chest for clothing?","acceptedAnswer":{"@type":"Answer","text":"Measure around the fullest part of your chest, under your arms and across the shoulder blades. Keep the tape horizontal and snug but not tight."}},{"@type":"Question","name":"Are these size recommendations accurate?","acceptedAnswer":{"@type":"Answer","text":"Recommendations are based on standard size charts. Brands vary; always check the retailer's size guide for the specific item."}}]}</script>
+</head>
+<body data-intent="measurement_confusion">
+  <header>
+    <div class="header-content">
+      <a href="../index.html" class="logo">GlobalSizeChart.com</a>
+      <nav>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../shoe-size-converter.html">Shoe Sizes</a></li>
+          <li><a href="../clothing-size-converter.html">Clothing Sizes</a></li>
+          <li><a href="../shoe-sizing-guides.html">Sizing Guides</a></li>
+          <li><a href="../legal/about.html">About</a></li>
+          <li><a href="../legal/contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main class="main-content" style="max-width: 900px; margin: 0 auto; padding: 1rem;">
+    <h1>Measurement Assistant</h1>
+    <p>Use the tools below to convert units, calculate shoe size from foot length, get clothing size recommendations, and see a combined size summary. All recommendations are approximate; always check the brand size chart.</p>
+
+    <div class="recommendation-box" id="recommendation-box" aria-live="polite">
+      <h3>Dynamic size recommendation</h3>
+      <p id="recommendation-text">Enter measurements above to see your recommended sizes here.</p>
+    </div>
+
+    <section class="tool-section" id="unit-converter">
+      <h2>Unit converter (inch / cm)</h2>
+      <p class="explanation-module">Convert between inches and centimeters. 1 inch = 2.54 cm. Use this to enter your measurements in either unit.</p>
+      <div class="tool-row">
+        <label for="input-cm">Centimeters</label>
+        <input type="number" id="input-cm" step="0.1" min="0" placeholder="cm" aria-label="Centimeters">
+        <span>cm</span>
+      </div>
+      <div class="tool-row">
+        <label for="input-in">Inches</label>
+        <input type="number" id="input-in" step="0.01" min="0" placeholder="in" aria-label="Inches">
+        <span>in</span>
+      </div>
+    </section>
+
+    <section class="tool-section" id="foot-calculator">
+      <h2>Foot measurement calculator</h2>
+      <div class="visual-guide" aria-hidden="true">
+        <svg viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="60" cy="35" rx="45" ry="18" fill="none" stroke="#333" stroke-width="1.5"/>
+          <line x1="15" y1="35" x2="105" y2="35" stroke="#0a7ea4" stroke-width="2" stroke-dasharray="4 2"/>
+          <text x="60" y="52" text-anchor="middle" font-size="8" fill="#555">Measure heel to longest toe</text>
+        </svg>
+      </div>
+      <div class="explanation-module">Enter your foot length (heel to longest toe). Measure in the evening when feet are slightly larger. Use the larger foot if they differ.</div>
+      <div class="tool-row">
+        <label for="foot-cm">Foot length (cm)</label>
+        <input type="number" id="foot-cm" step="0.1" min="15" max="35" placeholder="e.g. 26" aria-label="Foot length in cm">
+        <span>cm</span>
+      </div>
+      <div class="tool-row">
+        <label for="foot-gender">Gender</label>
+        <select id="foot-gender" aria-label="Gender for shoe size">
+          <option value="men">Men</option>
+          <option value="women">Women</option>
+          <option value="kids">Kids</option>
+        </select>
+      </div>
+      <div class="tool-row">
+        <strong>Shoe size:</strong>
+        <span id="shoe-result" aria-live="polite">—</span>
+      </div>
+    </section>
+
+    <section class="tool-section" id="clothing-assistant">
+      <h2>Clothing measurement assistant</h2>
+      <div class="visual-guide" aria-hidden="true">
+        <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 10 L65 25 L65 45 Q65 55 50 58 Q35 55 35 45 L35 25 Z" fill="none" stroke="#333" stroke-width="1.5"/>
+          <line x1="50" y1="28" x2="50" y2="42" stroke="#0a7ea4" stroke-width="1.5" stroke-dasharray="3 2"/>
+          <text x="50" y="25" text-anchor="middle" font-size="7" fill="#555">chest</text>
+          <line x1="50" y1="48" x2="50" y2="58" stroke="#0a7ea4" stroke-width="1.5" stroke-dasharray="3 2"/>
+          <text x="50" y="65" text-anchor="middle" font-size="7" fill="#555">waist</text>
+          <ellipse cx="50" cy="85" rx="22" ry="12" fill="none" stroke="#333" stroke-width="1"/>
+          <text x="50" y="100" text-anchor="middle" font-size="7" fill="#555">hips</text>
+        </svg>
+      </div>
+      <div class="explanation-module">Chest: fullest part under arms. Waist: natural waist above navel. Hips: fullest part. Keep tape horizontal and snug but not tight.</div>
+      <div class="tool-row">
+        <label for="chest">Chest (cm)</label>
+        <input type="number" id="chest" step="1" min="0" placeholder="—" aria-label="Chest in cm">
+        <span>cm</span>
+      </div>
+      <div class="tool-row">
+        <label for="waist">Waist (cm)</label>
+        <input type="number" id="waist" step="1" min="0" placeholder="—" aria-label="Waist in cm">
+        <span>cm</span>
+      </div>
+      <div class="tool-row">
+        <label for="hips">Hips (cm)</label>
+        <input type="number" id="hips" step="1" min="0" placeholder="—" aria-label="Hips in cm">
+        <span>cm</span>
+      </div>
+      <div class="tool-row">
+        <label for="cloth-gender">Gender</label>
+        <select id="cloth-gender" aria-label="Gender for clothing">
+          <option value="men">Men</option>
+          <option value="women">Women</option>
+        </select>
+      </div>
+      <div class="tool-row">
+        <label for="cloth-category">Category</label>
+        <select id="cloth-category" aria-label="Tops or pants">
+          <option value="tops">Tops / Shirts</option>
+          <option value="pants">Pants</option>
+        </select>
+      </div>
+      <div class="tool-row">
+        <strong>Recommended size:</strong>
+        <span id="clothing-result" aria-live="polite">—</span>
+      </div>
+    </section>
+
+    <section class="tool-section">
+      <h2>Semantic explanation modules</h2>
+      <details class="faq-item">
+        <summary>How is foot length measured?</summary>
+        <p>Foot length is measured from the back of the heel to the tip of the longest toe. Stand on a flat surface with your weight on the foot being measured. Measure both feet and use the larger value. Chart conversions assume a standard toe allowance; brand lasts vary.</p>
+      </details>
+      <details class="faq-item">
+        <summary>What do chest, waist, and hips mean for clothing?</summary>
+        <p><strong>Chest:</strong> Around the fullest part of the chest, under the arms, tape horizontal. <strong>Waist:</strong> Your natural waist, usually above the navel and below the ribs. <strong>Hips:</strong> Around the fullest part of the hips/seat. Keep the tape snug but not compressing.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Why do size recommendations vary by brand?</summary>
+        <p>Size charts are not standardized globally. Different brands use different fit models, ease, and grading. Always use this tool as a starting point and check the retailer's size guide for the specific garment.</p>
+      </details>
+    </section>
+
+    <section class="tool-section">
+      <h2>Related tools</h2>
+      <ul>
+        <li><a href="../shoe-size-converter.html">Shoe Size Converter</a></li>
+        <li><a href="../clothing-size-converter.html">Clothing Size Converter</a></li>
+        <li><a href="../printable/foot-measuring-sheet.html">Printable Foot Measuring Sheet</a></li>
+        <li><a href="../printable/clothing-measurement-chart.html">Printable Clothing Measurement Chart</a></li>
+      </ul>
+    </section>
+  </main>
+  <footer>
+    <div class="footer-content">
+      <p>&copy; 2026 GlobalSizeChart.com. Recommendations are approximate; check brand size charts.</p>
+    </div>
+  </footer>
+  <script>
+(function() {
+  var shoeData = {"men":[{"us":6,"uk":5,"eu":39,"jp":25,"cn":39,"cm":24},{"us":6.5,"uk":5.5,"eu":39.5,"jp":25.5,"cn":39.5,"cm":24.5},{"us":7,"uk":6,"eu":40,"jp":26,"cn":40,"cm":25},{"us":7.5,"uk":6.5,"eu":40.5,"jp":26.5,"cn":40.5,"cm":25.5},{"us":8,"uk":7,"eu":41,"jp":27,"cn":41,"cm":26},{"us":8.5,"uk":7.5,"eu":41.5,"jp":27.5,"cn":41.5,"cm":26.5},{"us":9,"uk":8,"eu":42,"jp":28,"cn":42,"cm":27},{"us":9.5,"uk":8.5,"eu":42.5,"jp":28.5,"cn":42.5,"cm":27.5},{"us":10,"uk":9,"eu":43,"jp":29,"cn":43,"cm":28},{"us":10.5,"uk":9.5,"eu":43.5,"jp":29.5,"cn":43.5,"cm":28.5},{"us":11,"uk":10,"eu":44,"jp":30,"cn":44,"cm":29},{"us":11.5,"uk":10.5,"eu":44.5,"jp":30.5,"cn":44.5,"cm":29.5},{"us":12,"uk":11,"eu":45,"jp":31,"cn":45,"cm":30},{"us":12.5,"uk":11.5,"eu":45.5,"jp":31.5,"cn":45.5,"cm":30.5},{"us":13,"uk":12,"eu":46,"jp":32,"cn":46,"cm":31},{"us":13.5,"uk":12.5,"eu":46.5,"jp":32.5,"cn":46.5,"cm":31.5},{"us":14,"uk":13,"eu":47,"jp":33,"cn":47,"cm":32}],"women":[{"us":4,"uk":2,"eu":35,"jp":22,"cn":35,"cm":21},{"us":4.5,"uk":2.5,"eu":35.5,"jp":22.5,"cn":35.5,"cm":21.5},{"us":5,"uk":3,"eu":36,"jp":23,"cn":36,"cm":22},{"us":5.5,"uk":3.5,"eu":36.5,"jp":23.5,"cn":36.5,"cm":22.5},{"us":6,"uk":4,"eu":37,"jp":24,"cn":37,"cm":23},{"us":6.5,"uk":4.5,"eu":37.5,"jp":24.5,"cn":37.5,"cm":23.5},{"us":7,"uk":5,"eu":38,"jp":25,"cn":38,"cm":24},{"us":7.5,"uk":5.5,"eu":38.5,"jp":25.5,"cn":38.5,"cm":24.5},{"us":8,"uk":6,"eu":39,"jp":26,"cn":39,"cm":25},{"us":8.5,"uk":6.5,"eu":39.5,"jp":26.5,"cn":39.5,"cm":25.5},{"us":9,"uk":7,"eu":40,"jp":27,"cn":40,"cm":26},{"us":9.5,"uk":7.5,"eu":40.5,"jp":27.5,"cn":40.5,"cm":26.5},{"us":10,"uk":8,"eu":41,"jp":28,"cn":41,"cm":27},{"us":10.5,"uk":8.5,"eu":41.5,"jp":28.5,"cn":41.5,"cm":27.5},{"us":11,"uk":9,"eu":42,"jp":29,"cn":42,"cm":28},{"us":11.5,"uk":9.5,"eu":42.5,"jp":29.5,"cn":42.5,"cm":28.5},{"us":12,"uk":10,"eu":43,"jp":30,"cn":43,"cm":29}],"kids":[{"us":10,"uk":9,"eu":27,"jp":17,"cn":27,"cm":16.5},{"us":10.5,"uk":9.5,"eu":28,"jp":17.5,"cn":28,"cm":17},{"us":11,"uk":10,"eu":29,"jp":18,"cn":29,"cm":17.5},{"us":11.5,"uk":10.5,"eu":30,"jp":18.5,"cn":30,"cm":18},{"us":12,"uk":11,"eu":31,"jp":19,"cn":31,"cm":18.5},{"us":12.5,"uk":11.5,"eu":31.5,"jp":19.5,"cn":31.5,"cm":19},{"us":13,"uk":12,"eu":32,"jp":20,"cn":32,"cm":19.5},{"us":13.5,"uk":12.5,"eu":33,"jp":20.5,"cn":33,"cm":20},{"us":1,"uk":0.5,"eu":33.5,"jp":21,"cn":33.5,"cm":20.5},{"us":1.5,"uk":1,"eu":34,"jp":21.5,"cn":34,"cm":21},{"us":2,"uk":1.5,"eu":34.5,"jp":22,"cn":34.5,"cm":21.5},{"us":2.5,"uk":2,"eu":35,"jp":22.5,"cn":35,"cm":22},{"us":3,"uk":2.5,"eu":35.5,"jp":23,"cn":35.5,"cm":22.5},{"us":3.5,"uk":3,"eu":36,"jp":23.5,"cn":36,"cm":23},{"us":4,"uk":3.5,"eu":36.5,"jp":24,"cn":36.5,"cm":23.5},{"us":4.5,"uk":4,"eu":37,"jp":24.5,"cn":37,"cm":24},{"us":5,"uk":4.5,"eu":37.5,"jp":25,"cn":37.5,"cm":24.5}]};
+  var clothingData = {"men":{"tops":[{"us":"XS","uk":"XS","eu":"XS","jp":"S","cn":"S","chest_cm":86,"waist_cm":71,"hips_cm":91},{"us":"S","uk":"S","eu":"S","jp":"M","cn":"M","chest_cm":91,"waist_cm":76,"hips_cm":96},{"us":"M","uk":"M","eu":"M","jp":"L","cn":"L","chest_cm":96,"waist_cm":81,"hips_cm":101},{"us":"L","uk":"L","eu":"L","jp":"XL","cn":"XL","chest_cm":101,"waist_cm":86,"hips_cm":106},{"us":"XL","uk":"XL","eu":"XL","jp":"XXL","cn":"XXL","chest_cm":106,"waist_cm":91,"hips_cm":111},{"us":"XXL","uk":"XXL","eu":"XXL","jp":"XXXL","cn":"XXXL","chest_cm":111,"waist_cm":96,"hips_cm":116},{"us":"XXXL","uk":"XXXL","eu":"XXXL","jp":"XXXXL","cn":"XXXXL","chest_cm":116,"waist_cm":101,"hips_cm":121}],"pants":[{"us":"28","uk":"28","eu":"42","jp":"S","cn":"S","chest_cm":0,"waist_cm":71,"hips_cm":91},{"us":"30","uk":"30","eu":"44","jp":"M","cn":"M","chest_cm":0,"waist_cm":76,"hips_cm":96},{"us":"32","uk":"32","eu":"46","jp":"L","cn":"L","chest_cm":0,"waist_cm":81,"hips_cm":101},{"us":"34","uk":"34","eu":"48","jp":"XL","cn":"XL","chest_cm":0,"waist_cm":86,"hips_cm":106},{"us":"36","uk":"36","eu":"50","jp":"XXL","cn":"XXL","chest_cm":0,"waist_cm":91,"hips_cm":111},{"us":"38","uk":"38","eu":"52","jp":"XXXL","cn":"XXXL","chest_cm":0,"waist_cm":96,"hips_cm":116},{"us":"40","uk":"40","eu":"54","jp":"XXXXL","cn":"XXXXL","chest_cm":0,"waist_cm":101,"hips_cm":121},{"us":"42","uk":"42","eu":"56","jp":"XXXXXL","cn":"XXXXXL","chest_cm":0,"waist_cm":106,"hips_cm":126}]},"women":{"tops":[{"us":"XS","uk":"6","eu":"34","jp":"S","cn":"S","chest_cm":81,"waist_cm":61,"hips_cm":86},{"us":"S","uk":"8","eu":"36","jp":"M","cn":"M","chest_cm":86,"waist_cm":66,"hips_cm":91},{"us":"M","uk":"10","eu":"38","jp":"L","cn":"L","chest_cm":91,"waist_cm":71,"hips_cm":96},{"us":"L","uk":"12","eu":"40","jp":"XL","cn":"XL","chest_cm":96,"waist_cm":76,"hips_cm":101},{"us":"XL","uk":"14","eu":"42","jp":"XXL","cn":"XXL","chest_cm":101,"waist_cm":81,"hips_cm":106},{"us":"XXL","uk":"16","eu":"44","jp":"XXXL","cn":"XXXL","chest_cm":106,"waist_cm":86,"hips_cm":111},{"us":"XXXL","uk":"18","eu":"46","jp":"XXXXL","cn":"XXXXL","chest_cm":111,"waist_cm":91,"hips_cm":116}],"pants":[{"us":"0","uk":"4","eu":"32","jp":"S","cn":"S","chest_cm":0,"waist_cm":61,"hips_cm":86},{"us":"2","uk":"6","eu":"34","jp":"M","cn":"M","chest_cm":0,"waist_cm":66,"hips_cm":91},{"us":"4","uk":"8","eu":"36","jp":"L","cn":"L","chest_cm":0,"waist_cm":71,"hips_cm":96},{"us":"6","uk":"10","eu":"38","jp":"XL","cn":"XL","chest_cm":0,"waist_cm":76,"hips_cm":101},{"us":"8","uk":"12","eu":"40","jp":"XXL","cn":"XXL","chest_cm":0,"waist_cm":81,"hips_cm":106},{"us":"10","uk":"14","eu":"42","jp":"XXXL","cn":"XXXL","chest_cm":0,"waist_cm":86,"hips_cm":111},{"us":"12","uk":"16","eu":"44","jp":"XXXXL","cn":"XXXXL","chest_cm":0,"waist_cm":91,"hips_cm":116},{"us":"14","uk":"18","eu":"46","jp":"XXXXXL","cn":"XXXXXL","chest_cm":0,"waist_cm":96,"hips_cm":121}],"dresses":[{"us":"XS","uk":"6","eu":"34","jp":"S","cn":"S","chest_cm":81,"waist_cm":61,"hips_cm":86},{"us":"S","uk":"8","eu":"36","jp":"M","cn":"M","chest_cm":86,"waist_cm":66,"hips_cm":91},{"us":"M","uk":"10","eu":"38","jp":"L","cn":"L","chest_cm":91,"waist_cm":71,"hips_cm":96},{"us":"L","uk":"12","eu":"40","jp":"XL","cn":"XL","chest_cm":96,"waist_cm":76,"hips_cm":101},{"us":"XL","uk":"14","eu":"42","jp":"XXL","cn":"XXL","chest_cm":101,"waist_cm":81,"hips_cm":106},{"us":"XXL","uk":"16","eu":"44","jp":"XXXL","cn":"XXXL","chest_cm":106,"waist_cm":86,"hips_cm":111}]},"kids":{"tops":[{"us":"4","uk":"4","eu":"110","jp":"110","cn":"110","chest_cm":56,"waist_cm":51,"hips_cm":61},{"us":"5","uk":"5","eu":"120","jp":"120","cn":"120","chest_cm":61,"waist_cm":56,"hips_cm":66},{"us":"6","uk":"6","eu":"130","jp":"130","cn":"130","chest_cm":66,"waist_cm":61,"hips_cm":71},{"us":"7","uk":"7","eu":"140","jp":"140","cn":"140","chest_cm":71,"waist_cm":66,"hips_cm":76},{"us":"8","uk":"8","eu":"150","jp":"150","cn":"150","chest_cm":76,"waist_cm":71,"hips_cm":81},{"us":"10","uk":"10","eu":"160","jp":"160","cn":"160","chest_cm":81,"waist_cm":76,"hips_cm":86},{"us":"12","uk":"12","eu":"170","jp":"170","cn":"170","chest_cm":86,"waist_cm":81,"hips_cm":91},{"us":"14","uk":"14","eu":"180","jp":"180","cn":"180","chest_cm":91,"waist_cm":86,"hips_cm":96}],"pants":[{"us":"4","uk":"4","eu":"110","jp":"110","cn":"110","chest_cm":0,"waist_cm":51,"hips_cm":61},{"us":"5","uk":"5","eu":"120","jp":"120","cn":"120","chest_cm":0,"waist_cm":56,"hips_cm":66},{"us":"6","uk":"6","eu":"130","jp":"130","cn":"130","chest_cm":0,"waist_cm":61,"hips_cm":71},{"us":"7","uk":"7","eu":"140","jp":"140","cn":"140","chest_cm":0,"waist_cm":66,"hips_cm":76},{"us":"8","uk":"8","eu":"150","jp":"150","cn":"150","chest_cm":0,"waist_cm":71,"hips_cm":81},{"us":"10","uk":"10","eu":"160","jp":"160","cn":"160","chest_cm":0,"waist_cm":76,"hips_cm":86},{"us":"12","uk":"12","eu":"170","jp":"170","cn":"170","chest_cm":0,"waist_cm":81,"hips_cm":91},{"us":"14","uk":"14","eu":"180","jp":"180","cn":"180","chest_cm":0,"waist_cm":86,"hips_cm":96}]}};
+  var INCH_TO_CM = 2.54;
+
+  var inputCm = document.getElementById('input-cm');
+  var inputIn = document.getElementById('input-in');
+  var footCm = document.getElementById('foot-cm');
+  var footGender = document.getElementById('foot-gender');
+  var shoeResult = document.getElementById('shoe-result');
+  var chest = document.getElementById('chest');
+  var waist = document.getElementById('waist');
+  var hips = document.getElementById('hips');
+  var clothGender = document.getElementById('cloth-gender');
+  var clothCategory = document.getElementById('cloth-category');
+  var clothingResult = document.getElementById('clothing-result');
+  var recommendationText = document.getElementById('recommendation-text');
+
+  function cmToIn(cm) { return cm == null || cm === '' ? '' : (Number(cm) / INCH_TO_CM).toFixed(2); }
+  function inToCm(inVal) { return inVal == null || inVal === '' ? '' : (Number(inVal) * INCH_TO_CM).toFixed(1); }
+
+  function syncUnitConverter() {
+    var c = inputCm.value.trim();
+    var i = inputIn.value.trim();
+    if (this === inputCm && c !== '') { inputIn.value = cmToIn(c); footCm.value = c; }
+    else if (this === inputIn && i !== '') { var cm = inToCm(i); inputCm.value = cm; footCm.value = cm; }
+    updateFootResult(); updateRecommendation();
+  }
+  function syncFootToConverter() {
+    var c = footCm.value.trim();
+    if (c !== '') { inputCm.value = c; inputIn.value = cmToIn(c); }
+  }
+  inputCm.addEventListener('input', syncUnitConverter);
+  inputIn.addEventListener('input', syncUnitConverter);
+  footCm.addEventListener('input', syncFootToConverter);
+
+  function findShoeSize(cmVal, gender) {
+    var arr = shoeData[gender];
+    if (!arr || !arr.length || cmVal === '' || isNaN(cmVal)) return null;
+    var val = Number(cmVal);
+    var best = null, bestDiff = Infinity;
+    for (var i = 0; i < arr.length; i++) {
+      var d = Math.abs(arr[i].cm - val);
+      if (d < bestDiff) { bestDiff = d; best = arr[i]; }
+    }
+    return best;
+  }
+
+  function updateFootResult() {
+    var cm = footCm.value.trim();
+    var g = footGender.value;
+    var row = findShoeSize(cm, g);
+    if (!row) { shoeResult.textContent = '—'; return; }
+    shoeResult.textContent = 'US ' + row.us + ', UK ' + row.uk + ', EU ' + row.eu;
+  }
+  footCm.addEventListener('input', updateFootResult);
+  footGender.addEventListener('change', updateFootResult);
+
+  function findClothingSize(chestVal, waistVal, hipsVal, gender, category) {
+    var cat = clothingData[gender] && clothingData[gender][category];
+    if (!cat || !cat.length) return null;
+    var key = category === 'tops' ? 'chest_cm' : 'waist_cm';
+    var val = category === 'tops' ? (chestVal !== '' && !isNaN(chestVal) ? Number(chestVal) : null) : (waistVal !== '' && !isNaN(waistVal) ? Number(waistVal) : null);
+    if (val == null) return null;
+    var best = null, bestDiff = Infinity;
+    for (var i = 0; i < cat.length; i++) {
+      var v = cat[i][key];
+      if (v == null || v === 0) continue;
+      var d = Math.abs(v - val);
+      if (d < bestDiff) { bestDiff = d; best = cat[i]; }
+    }
+    return best;
+  }
+
+  function updateClothingResult() {
+    var c = chest.value.trim(), w = waist.value.trim(), h = hips.value.trim();
+    var g = clothGender.value, cat = clothCategory.value;
+    var row = findClothingSize(c, w, h, g, cat);
+    if (!row) { clothingResult.textContent = '—'; return; }
+    clothingResult.textContent = 'US ' + row.us + ', UK ' + row.uk + ', EU ' + row.eu;
+  }
+  chest.addEventListener('input', updateClothingResult);
+  waist.addEventListener('input', updateClothingResult);
+  hips.addEventListener('input', updateClothingResult);
+  clothGender.addEventListener('change', updateClothingResult);
+  clothCategory.addEventListener('change', updateClothingResult);
+
+  function updateRecommendation() {
+    var parts = [];
+    var cm = footCm.value.trim();
+    var g = footGender.value;
+    var shoeRow = findShoeSize(cm, g);
+    if (shoeRow) parts.push('Shoe: US ' + shoeRow.us + ' / UK ' + shoeRow.uk + ' / EU ' + shoeRow.eu);
+    var c = chest.value.trim(), w = waist.value.trim(), h = hips.value.trim();
+    var clothRow = findClothingSize(c, w, h, clothGender.value, clothCategory.value);
+    if (clothRow) parts.push('Clothing (' + clothCategory.value + '): US ' + clothRow.us + ' / UK ' + clothRow.uk + ' / EU ' + clothRow.eu);
+    recommendationText.textContent = parts.length ? parts.join('. ') : 'Enter measurements above to see your recommended sizes here.';
+  }
+  footCm.addEventListener('input', updateRecommendation);
+  footGender.addEventListener('change', updateRecommendation);
+  chest.addEventListener('input', updateRecommendation);
+  waist.addEventListener('input', updateRecommendation);
+  hips.addEventListener('input', updateRecommendation);
+  clothGender.addEventListener('change', updateRecommendation);
+  clothCategory.addEventListener('change', updateRecommendation);
+  updateFootResult();
+  updateClothingResult();
+  updateRecommendation();
+})();
+  </script>
+</body>
+</html>

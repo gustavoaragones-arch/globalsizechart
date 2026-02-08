@@ -1,0 +1,29 @@
+{
+  "intent_categories": [
+    "high_purchase",
+    "fit_problem",
+    "measurement_confusion",
+    "brand_specific",
+    "comparison",
+    "shopping_research"
+  ],
+  "descriptions": {
+    "high_purchase": "User likely ready to buy; garment or size specific",
+    "fit_problem": "User solving fit or sizing uncertainty",
+    "measurement_confusion": "User converting or measuring (cm, units)",
+    "brand_specific": "User researching a specific brand's sizing",
+    "comparison": "User comparing regions or sizes",
+    "shopping_research": "User researching before purchase"
+  },
+  "signals": {
+    "brand_routes": ["brand_specific", "high_purchase"],
+    "clothing_pages": ["high_purchase", "shopping_research"],
+    "measurement_pages": ["measurement_confusion", "fit_problem"],
+    "long_tail_conversion": ["comparison", "shopping_research"],
+    "garment_specific": ["high_purchase", "shopping_research"],
+    "region_category_converters": ["comparison", "shopping_research"],
+    "semantic_fit_guides": ["fit_problem"],
+    "semantic_measurement_guides": ["measurement_confusion"],
+    "printable_tools": ["measurement_confusion", "shopping_research"]
+  }
+}

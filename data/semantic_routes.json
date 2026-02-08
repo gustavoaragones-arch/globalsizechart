@@ -1,0 +1,8 @@
+[
+  {"type": "semantic", "slug": "how-shoe-sizing-works", "semantic_category": "sizing_standards", "title": "How Shoe Sizing Works", "description": "Understand how shoe sizing systems work across US, UK, EU, Japan, and CM. Educational guide with conversion references."},
+  {"type": "semantic", "slug": "why-eu-and-us-sizes-differ", "semantic_category": "regional_differences", "title": "Why EU and US Shoe Sizes Differ", "description": "Why European and US shoe sizes use different scales. Regional differences and conversion explained."},
+  {"type": "semantic", "slug": "how-to-measure-feet-cm", "semantic_category": "measurement_guides", "title": "How to Measure Your Feet in CM", "description": "Step-by-step guide to measuring foot length in centimeters for accurate shoe size conversion."},
+  {"type": "semantic", "slug": "common-shoe-sizing-mistakes", "semantic_category": "sizing_myths", "title": "Common Shoe Sizing Mistakes", "description": "Avoid common shoe sizing mistakes when converting between regions. Fit tips and conversion best practices."},
+  {"type": "semantic", "slug": "how-japanese-shoe-sizes-work", "semantic_category": "regional_differences", "title": "How Japanese Shoe Sizes Work", "description": "How Japanese shoe sizing works and how to convert to US, EU, and UK. Japan size chart explained."},
+  {"type": "semantic", "slug": "how-uk-shoe-sizes-differ", "semantic_category": "regional_differences", "title": "How UK Shoe Sizes Differ From US and EU", "description": "How UK shoe sizes differ from US and EU. Conversion and regional comparison guide."}
+]

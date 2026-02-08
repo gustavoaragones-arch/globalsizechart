@@ -341,6 +341,228 @@ main {
   border-bottom: 2px solid var(--border-color);
 }
 
+/* Phase 11: Monetization modules (trust + dwell time, no ad code) */
+.monetization-modules .monetization-module-wrap {
+  margin-bottom: var(--spacing-md);
+}
+.monetization-modules .monetization-module-wrap:last-child {
+  margin-bottom: 0;
+}
+.monetization-module {
+  background: var(--bg-tertiary);
+  border-left: 4px solid var(--primary-color);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-md);
+}
+.monetization-module__title {
+  font-size: 1.1rem;
+  margin-bottom: var(--spacing-xs);
+}
+.monetization-module__inner p {
+  margin-bottom: 0;
+  font-size: 0.95rem;
+}
+
+/* Phase 11 Objective 3: Session depth modules (+5 clicks) */
+.session-depth-modules {
+  margin-top: var(--spacing-lg);
+}
+.session-depth-modules__heading {
+  margin-bottom: var(--spacing-md);
+  font-size: 1.5rem;
+}
+.session-depth-modules__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+}
+@media (max-width: 600px) {
+  .session-depth-modules__grid {
+    grid-template-columns: 1fr;
+  }
+}
+.session-depth-block {
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-sm);
+}
+.session-depth-block__title {
+  font-size: 1rem;
+  margin-bottom: var(--spacing-xs);
+  padding-bottom: var(--spacing-xs);
+  border-bottom: 1px solid var(--border-color);
+}
+.session-depth-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.session-depth-links li {
+  margin-bottom: 0.35rem;
+}
+.session-depth-links a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+.session-depth-links a:hover {
+  text-decoration: underline;
+}
+
+/* Phase 11 Objective 4: Conversion loop modules */
+.conversion-loop {
+  margin-top: var(--spacing-lg);
+}
+.conversion-loop__inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+.conversion-loop__block {
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-md);
+  min-width: 200px;
+  flex: 1 1 280px;
+}
+.conversion-loop__title {
+  font-size: 1rem;
+  margin-bottom: var(--spacing-xs);
+  padding-bottom: var(--spacing-xs);
+  border-bottom: 1px solid var(--border-color);
+}
+.conversion-loop__links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.conversion-loop__links li {
+  margin-bottom: 0.35rem;
+}
+.conversion-loop__links a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+.conversion-loop__links a:hover {
+  text-decoration: underline;
+}
+
+/* Phase 11 Objective 6: Behavioral recommendation engine (next-step) */
+.next-step {
+  margin-top: var(--spacing-lg);
+}
+.next-step__heading {
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-md);
+}
+.next-step__inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+.next-step__block {
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-md);
+  min-width: 180px;
+  flex: 1 1 240px;
+}
+.next-step__title {
+  font-size: 1rem;
+  margin-bottom: var(--spacing-xs);
+  padding-bottom: var(--spacing-xs);
+  border-bottom: 1px solid var(--border-color);
+}
+.next-step__links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.next-step__links li {
+  margin-bottom: 0.35rem;
+}
+.next-step__links a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+.next-step__links a:hover {
+  text-decoration: underline;
+}
+
+/* Phase 11 Objective 7: High RPM content modules (time on page, scroll depth, ad viewability) */
+.high-rpm-modules {
+  margin-top: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+.high-rpm-modules__heading {
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-md);
+}
+.high-rpm-modules__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--spacing-md);
+}
+.high-rpm-module {
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-md);
+}
+.high-rpm-module__title {
+  font-size: 1.05rem;
+  margin-bottom: var(--spacing-xs);
+  padding-bottom: var(--spacing-xs);
+  border-bottom: 1px solid var(--border-color);
+}
+.high-rpm-module__snippet {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-secondary, inherit);
+}
+.high-rpm-module__read-more {
+  margin: 0;
+  font-size: 0.9rem;
+}
+.high-rpm-module__read-more a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+.high-rpm-module__read-more a:hover {
+  text-decoration: underline;
+}
+@media (max-width: 600px) {
+  .high-rpm-modules__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Phase 11 Objective 8: UX revenue optimization — natural scroll pauses for future ad placement */
+.content-break {
+  margin-top: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  min-height: 1px;
+  break-inside: avoid;
+}
+.engagement-box {
+  margin: var(--spacing-md) 0;
+  padding: var(--spacing-md);
+  min-height: 80px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-tertiary, transparent);
+  border: 1px solid var(--border-color, transparent);
+}
+.user-decision-point {
+  margin-top: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-sm) 0;
+  min-height: 60px;
+}
+.commercial-context {
+  margin: var(--spacing-md) 0;
+  min-height: 90px;
+  display: block;
+}
+
 .breadcrumb {
   font-size: 0.9rem;
   margin-bottom: var(--spacing-md);
@@ -714,7 +936,7 @@ footer {
   }
 }
 
-/* Ad slot placeholders (programmatic / AdSense-safe zones — no scripts) */
+/* Ad slot placeholders (structural only — no AdSense scripts) */
 .ad-slot {
   margin: 28px auto;
   text-align: center;
@@ -722,8 +944,13 @@ footer {
   min-height: 90px;
 }
 .ad-slot.ad-top { margin-top: 25px; }
+.ad-slot.ad-inline { margin: 32px 0; }
 .ad-slot.ad-mid { margin: 40px 0; }
 .ad-slot.ad-bottom { margin: 45px 0; }
+.ad-slot.ad-sticky-mobile { margin-top: 24px; }
+@media (max-width: 768px) {
+  .ad-slot.ad-sticky-mobile { min-height: 50px; }
+}
 
 /* ============================================
    Utility Classes

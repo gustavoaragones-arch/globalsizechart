@@ -1,0 +1,45 @@
+{
+  "generatedAt": "2026-02-08T03:29:19.448Z",
+  "phase": 11,
+  "monetization_modules_inserted": 25,
+  "session_depth_count": 208,
+  "conversion_loops_count": 104,
+  "ad_slot_placement_validation": {
+    "by_slot": {
+      "top": 104,
+      "inline": 104,
+      "mid": 104,
+      "bottom": 104,
+      "sticky_mobile": 104,
+      "total": 520
+    },
+    "pages_missing_slots": [],
+    "pages_missing_slots_count": 0,
+    "pages_with_all_slots": 104
+  },
+  "internal_link_increase": {
+    "average_per_page": 108.8,
+    "total": 13494
+  },
+  "schema_validation": {
+    "FAQPage": 88,
+    "WebPage": 119,
+    "Article": 120,
+    "HowTo": 93,
+    "ItemList": 85,
+    "BreadcrumbList": 120,
+    "SoftwareApplication": 80
+  },
+  "intent_tagging_coverage": {
+    "pages_with_intent": 121,
+    "total_pages": 124,
+    "coverage_pct": 98,
+    "intents_seen": {
+      "comparison": 79,
+      "shopping_research": 12,
+      "measurement_confusion": 14,
+      "high_purchase": 6,
+      "brand_specific": 10
+    }
+  }
+}

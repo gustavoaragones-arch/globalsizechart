@@ -1,0 +1,241 @@
+{
+  "generatedAt": "2026-02-08T03:29:19.385Z",
+  "total_page_count": 122,
+  "pages_per_route_type": {
+    "programmatic": 79,
+    "semantic": 6,
+    "clothing": 6,
+    "brand": 10,
+    "measurement": 9,
+    "printable": 3,
+    "tool": 1,
+    "hubs": 8
+  },
+  "average_internal_links": 114.9,
+  "orphan_detection": {
+    "orphans": [],
+    "count": 0
+  },
+  "schema_validation": {
+    "programmatic": {
+      "breadcrumb": 79,
+      "faq": 79,
+      "article_or_howto": 79,
+      "webpage": 79
+    },
+    "semantic": {
+      "breadcrumb": 6,
+      "article_or_howto": 6,
+      "webpage": 6
+    },
+    "clothing": {
+      "breadcrumb": 6,
+      "article": 6,
+      "webpage": 6
+    },
+    "brand": {
+      "breadcrumb": 10,
+      "article": 10,
+      "webpage": 10
+    },
+    "measurement": {
+      "breadcrumb": 9,
+      "article": 9,
+      "howto": 9,
+      "webpage": 9
+    },
+    "printable": {
+      "breadcrumb": 3,
+      "article": 3,
+      "howto": 3,
+      "webpage": 3
+    },
+    "tool": {
+      "breadcrumb": 1,
+      "faq": 1,
+      "howto": 1,
+      "software": 1,
+      "webpage": 1
+    },
+    "hubs": {
+      "breadcrumb": 6,
+      "article": 6,
+      "faq": 6,
+      "webpage": 5
+    }
+  },
+  "hub_coverage": [
+    {
+      "hub": "shoe-size-pages.html",
+      "links_to": [
+        "clothing",
+        "programmatic"
+      ]
+    },
+    {
+      "hub": "clothing-size-pages.html",
+      "links_to": [
+        "clothing",
+        "measurement",
+        "printable",
+        "tools"
+      ]
+    },
+    {
+      "hub": "brand-size-guides.html",
+      "links_to": [
+        "clothing",
+        "brands",
+        "measurement",
+        "printable",
+        "tools"
+      ]
+    },
+    {
+      "hub": "cm-measurement-converters.html",
+      "links_to": [
+        "clothing",
+        "measurement",
+        "printable",
+        "tools"
+      ]
+    },
+    {
+      "hub": "printable-size-guides.html",
+      "links_to": [
+        "clothing",
+        "printable",
+        "measurement",
+        "tools"
+      ]
+    },
+    {
+      "hub": "measurement-tools.html",
+      "links_to": [
+        "clothing",
+        "measurement",
+        "tools",
+        "printable"
+      ]
+    },
+    {
+      "hub": "programmatic-index.html",
+      "links_to": [
+        "clothing",
+        "programmatic"
+      ]
+    },
+    {
+      "hub": "shoe-sizing-guides.html",
+      "links_to": [
+        "clothing",
+        "semantic"
+      ]
+    }
+  ],
+  "crawl_depth_estimation": {
+    "depth_0": 1,
+    "depth_1": 10,
+    "depth_2": 114
+  },
+  "indexability": {
+    "duplicate_titles": [
+      {
+        "title": "EU 39 to US Shoe Size Conversion Chart & Converter | GlobalSizeChart.com",
+        "paths": [
+          "/programmatic-pages/eu-39-to-us-shoe-size.html",
+          "/programmatic-pages/eu-39-to-us-shoe-size-women.html"
+        ]
+      },
+      {
+        "title": "EU 40 to US Shoe Size Conversion Chart & Converter | GlobalSizeChart.com",
+        "paths": [
+          "/programmatic-pages/eu-40-to-us-shoe-size.html",
+          "/programmatic-pages/eu-40-to-us-shoe-size-women.html"
+        ]
+      },
+      {
+        "title": "EU 41 to US Shoe Size Conversion Chart & Converter | GlobalSizeChart.com",
+        "paths": [
+          "/programmatic-pages/eu-41-to-us-shoe-size.html",
+          "/programmatic-pages/eu-41-to-us-shoe-size-women.html"
+        ]
+      },
+      {
+        "title": "EU 42 to US Shoe Size Conversion Chart & Converter | GlobalSizeChart.com",
+        "paths": [
+          "/programmatic-pages/eu-42-to-us-shoe-size.html",
+          "/programmatic-pages/eu-42-to-us-shoe-size-women.html"
+        ]
+      },
+      {
+        "title": "EU 43 to US Shoe Size Conversion Chart & Converter | GlobalSizeChart.com",
+        "paths": [
+          "/programmatic-pages/eu-43-to-us-shoe-size.html",
+          "/programmatic-pages/eu-43-to-us-shoe-size-women.html"
+        ]
+      },
+      {
+        "title": "EU 36 to US Shoe Size Conversion Chart & Converter | GlobalSizeChart.com",
+        "paths": [
+          "/programmatic-pages/eu-36-to-us-shoe-size.html",
+          "/programmatic-pages/kids-eu-36-to-us-shoe-size.html"
+        ]
+      },
+      {
+        "title": "US 7 to EU Shoe Size Conversion Chart & Converter | GlobalSizeChart.com",
+        "paths": [
+          "/programmatic-pages/us-7-to-eu-shoe-size.html",
+          "/programmatic-pages/us-7-to-eu-shoe-size-women.html"
+        ]
+      },
+      {
+        "title": "US 8 to EU Shoe Size Conversion Chart & Converter | GlobalSizeChart.com",
+        "paths": [
+          "/programmatic-pages/us-8-to-eu-shoe-size.html",
+          "/programmatic-pages/us-8-to-eu-shoe-size-women.html"
+        ]
+      },
+      {
+        "title": "US 9 to EU Shoe Size Conversion Chart & Converter | GlobalSizeChart.com",
+        "paths": [
+          "/programmatic-pages/us-9-to-eu-shoe-size.html",
+          "/programmatic-pages/us-9-to-eu-shoe-size-women.html"
+        ]
+      },
+      {
+        "title": "US 10 to EU Shoe Size Conversion Chart & Converter | GlobalSizeChart.com",
+        "paths": [
+          "/programmatic-pages/us-10-to-eu-shoe-size.html",
+          "/programmatic-pages/us-10-to-eu-shoe-size-women.html"
+        ]
+      },
+      {
+        "title": "UK 7 to US Shoe Size Conversion Chart & Converter | GlobalSizeChart.com",
+        "paths": [
+          "/programmatic-pages/uk-7-to-us-shoe-size.html",
+          "/programmatic-pages/uk-7-to-us-shoe-size-women.html"
+        ]
+      },
+      {
+        "title": "Japan 26 to US Shoe Size Conversion Chart & Converter | GlobalSizeChart.com",
+        "paths": [
+          "/programmatic-pages/japan-26-to-us-shoe-size.html",
+          "/programmatic-pages/japan-26-to-us-shoe-size-women.html"
+        ]
+      },
+      {
+        "title": "CM 25 to US Shoe Size Conversion Chart & Converter | GlobalSizeChart.com",
+        "paths": [
+          "/programmatic-pages/cm-25-to-us-shoe-size.html",
+          "/programmatic-pages/cm-25-to-us-shoe-size-women.html"
+        ]
+      }
+    ],
+    "duplicate_canonicals": [],
+    "noindex_pages": [],
+    "missing_canonicals": []
+  },
+  "sitemap_rebuilt": true,
+  "robots_txt_updated": true
+}

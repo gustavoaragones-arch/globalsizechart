@@ -11,8 +11,9 @@
   <link rel="stylesheet" href="../styles.css">
   <script type="application/ld+json">{{FAQ_JSON_LD}}</script>
   <script type="application/ld+json">{{BREADCRUMB_JSON_LD}}</script>
+  {{ENHANCED_SERP_SCHEMAS}}
 </head>
-<body>
+<body {{DATA_INTENT}}>
   <header>
     <div class="header-content">
       <a href="../index.html" class="logo">GlobalSizeChart.com</a>
@@ -32,11 +33,10 @@
     <div class="container">
       <section class="converter-card">
         <h1>{{H1_TITLE}}</h1>
+        <div class="commercial-context"><div class="ad-slot ad-top" data-module="ad-slot" data-slot="top"></div></div>
         {{BREADCRUMB_HTML}}
         {{RELATED_SIZE_GRID}}
         <p class="mb-lg">{{INTRO_TEXT}}</p>
-
-        <div class="ad-slot ad-top"></div>
 
         <form class="converter-form" id="shoeConverter">
           <div class="form-group">
@@ -59,9 +59,12 @@
           <button type="submit" class="btn">Convert Shoe Size</button>
         </form>
 
-        <div class="results">
-          <h3>Converted Sizes</h3>
-          <div class="results-grid"></div>
+        <div class="user-decision-point">
+          <div class="results">
+            <h3>Converted Sizes</h3>
+            <div class="results-grid"></div>
+          </div>
+          <div class="commercial-context"><div class="ad-slot ad-inline" data-module="ad-slot" data-slot="inline"></div></div>
         </div>
       </section>
 
@@ -70,18 +73,25 @@
         <p>{{CONVERSION_EXPLANATION}}</p>
       </section>
 
+      <section class="sizing-knowledge">
+        <h2>Understanding This Conversion</h2>
+        {{SIZING_KNOWLEDGE_SECTION}}
+      </section>
+      <div class="content-break" role="presentation"></div>
+
       <section class="content-section" id="fit-guide">
         <h2>Fit Guide</h2>
         {{FIT_GUIDE_SNIPPET}}
       </section>
-
-      <div class="ad-slot ad-mid"></div>
 
       <section class="content-section" id="measurement-guide">
         <h2>How to Measure Your Foot</h2>
         {{MEASUREMENT_GUIDE_SNIPPET}}
       </section>
 
+      <div class="engagement-box">{{HIGH_RPM_CONTENT_MODULES}}</div>
+
+      <div class="content-break" role="presentation"></div>
       <section class="internal-links">
         <h2>Related Size Conversions</h2>
         <ul>
@@ -93,6 +103,7 @@
         <h2>Frequently Asked Questions</h2>
         {{FAQ_CONTENT}}
       </section>
+      <div class="commercial-context"><div class="ad-slot ad-inline" data-module="ad-slot" data-slot="mid"></div></div>
 
       <section class="crawl-discovery">
         <h2>Related Size Conversions</h2>
@@ -101,6 +112,8 @@
         </ul>
       </section>
 
+      <div class="commercial-context"><div class="ad-slot ad-bottom" data-module="ad-slot" data-slot="bottom"></div></div>
+
       <section class="content-section">
         <h2>Related Converters</h2>
         <ul class="related-links">
@@ -108,11 +121,14 @@
         </ul>
       </section>
 
-      <div class="ad-slot ad-bottom"></div>
+      {{CONVERSION_LOOP_MODULES}}
+      {{BEHAVIORAL_RECOMMENDATIONS}}
+      {{SESSION_DEPTH_MODULES}}
 
       <div class="discovery-grid">
         {{DISCOVERY_GRID_LINKS}}
       </div>
+      <div class="commercial-context"><div class="ad-slot ad-sticky-mobile" data-module="ad-slot" data-slot="sticky-mobile"></div></div>
     </div>
   </main>
 

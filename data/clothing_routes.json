@@ -1,0 +1,68 @@
+[
+  {
+    "type": "clothing_size_pair",
+    "slug": "mens-medium-us-to-eu",
+    "category": "tops",
+    "gender": "men",
+    "from_region": "US",
+    "to_region": "EU",
+    "size": "M",
+    "measurement_reference": "chest_cm",
+    "description": "Convert men's US Medium to EU clothing size for tops and shirts."
+  },
+  {
+    "type": "clothing_size_pair",
+    "slug": "womens-size-8-us-to-eu-dress",
+    "category": "dresses",
+    "gender": "women",
+    "from_region": "US",
+    "to_region": "EU",
+    "size": "8",
+    "measurement_reference": "uk_dress",
+    "description": "Convert women's US size 8 to EU dress size."
+  },
+  {
+    "type": "clothing_size_pair",
+    "slug": "kids-us-6-to-eu-clothing-size",
+    "category": "tops",
+    "gender": "kids",
+    "from_region": "US",
+    "to_region": "EU",
+    "size": "6",
+    "measurement_reference": "height_cm",
+    "description": "Convert kids US size 6 to EU clothing size."
+  },
+  {
+    "type": "clothing_size_pair",
+    "slug": "eu-50-jacket-to-us-size",
+    "category": "jackets",
+    "gender": "men",
+    "from_region": "EU",
+    "to_region": "US",
+    "size": "50",
+    "measurement_reference": "chest_cm",
+    "description": "Convert EU size 50 jacket to US men's size."
+  },
+  {
+    "type": "clothing_size_pair",
+    "slug": "mens-large-us-to-uk",
+    "category": "tops",
+    "gender": "men",
+    "from_region": "US",
+    "to_region": "UK",
+    "size": "L",
+    "measurement_reference": "chest_cm",
+    "description": "Convert men's US Large to UK clothing size."
+  },
+  {
+    "type": "clothing_size_pair",
+    "slug": "womens-pants-us-6-to-eu",
+    "category": "pants",
+    "gender": "women",
+    "from_region": "US",
+    "to_region": "EU",
+    "size": "6",
+    "measurement_reference": "waist_cm",
+    "description": "Convert women's US pants size 6 to EU."
+  }
+]

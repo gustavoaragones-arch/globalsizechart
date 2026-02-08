@@ -1,0 +1,11 @@
+[
+  { "type": "measurement_converter", "measurement_type": "foot_cm", "value_cm": 24, "to_region": "US", "category": "shoes", "gender": "women", "slug": "24-cm-to-us-shoe-size" },
+  { "type": "measurement_converter", "measurement_type": "foot_cm", "value_cm": 25, "to_region": "US", "category": "shoes", "gender": "men", "slug": "25-cm-to-us-shoe-size" },
+  { "type": "measurement_converter", "measurement_type": "foot_cm", "value_cm": 26, "to_region": "US", "category": "shoes", "gender": "men", "slug": "26-cm-to-us-shoe-size" },
+  { "type": "measurement_converter", "measurement_type": "foot_cm", "value_cm": 27, "to_region": "EU", "category": "shoes", "gender": "men", "slug": "27-cm-to-eu-shoe-size" },
+  { "type": "measurement_converter", "measurement_type": "chest_cm", "value_cm": 90, "to_region": "US", "category": "tops", "gender": "men", "slug": "90cm-chest-to-us-shirt-size" },
+  { "type": "measurement_converter", "measurement_type": "chest_cm", "value_cm": 96, "to_region": "EU", "category": "tops", "gender": "men", "slug": "96cm-chest-to-eu-shirt-size" },
+  { "type": "measurement_converter", "measurement_type": "waist_cm", "value_cm": 70, "to_region": "EU", "category": "pants", "gender": "men", "slug": "70cm-waist-to-eu-pants" },
+  { "type": "measurement_converter", "measurement_type": "waist_cm", "value_cm": 76, "to_region": "US", "category": "pants", "gender": "men", "slug": "76cm-waist-to-us-pants" },
+  { "type": "measurement_converter", "measurement_type": "waist_cm", "value_cm": 66, "to_region": "US", "category": "pants", "gender": "women", "slug": "66cm-waist-to-us-womens-pants" }
+]
