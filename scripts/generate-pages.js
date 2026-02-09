@@ -13,6 +13,9 @@ const DATA_DIR = path.join(ROOT, 'data');
 const TEMPLATES_DIR = path.join(ROOT, 'programmatic', 'templates');
 const OUTPUT_DIR = path.join(ROOT, 'programmatic-pages');
 const BASE_URL = 'https://globalsizechart.com';
+
+const structuralModules = require('./programmatic-structural-modules.js');
+const internalLinkBuilder = require('../utils/internalLinkBuilder.js');
 const ORGANIZATION_ID = `${BASE_URL}/#organization`;
 const WEBSITE_ID = `${BASE_URL}/#website`;
 
@@ -164,27 +167,29 @@ function buildFaqJsonLd(route, toSize, fromLabel, toLabel) {
   return JSON.stringify(faq);
 }
 
-function buildInternalLinks(route, allRoutes) {
+function buildInternalLinks(route, allRoutes, currentFile) {
   const from = route.from_region;
   const to = route.to_region;
   const size = route.size;
+  const cur = currentFile || 'programmatic-pages/' + route.slug + '.html';
+  const href = (targetPath) => internalLinkBuilder.href(cur, targetPath);
+
   const links = [];
 
-  // Neighboring sizes same from/to
+  // Neighboring sizes same from/to (same directory: programmatic-pages/)
   const samePair = allRoutes.filter(r => r.from_region === from && r.to_region === to && r.gender === route.gender);
-  const sizeNum = parseFloat(size);
   samePair.sort((a, b) => parseFloat(a.size) - parseFloat(b.size));
   const idx = samePair.findIndex(r => String(r.size) === String(size));
   if (idx >= 0) {
-    if (idx > 0) links.push({ href: samePair[idx - 1].slug + '.html', text: `${getFromRegionLabel(from)} ${samePair[idx - 1].size} to ${getFromRegionLabel(to)}` });
-    if (idx < samePair.length - 1) links.push({ href: samePair[idx + 1].slug + '.html', text: `${getFromRegionLabel(from)} ${samePair[idx + 1].size} to ${getFromRegionLabel(to)}` });
+    if (idx > 0) links.push({ href: href('programmatic-pages/' + samePair[idx - 1].slug + '.html'), text: `${getFromRegionLabel(from)} ${samePair[idx - 1].size} to ${getFromRegionLabel(to)}` });
+    if (idx < samePair.length - 1) links.push({ href: href('programmatic-pages/' + samePair[idx + 1].slug + '.html'), text: `${getFromRegionLabel(from)} ${samePair[idx + 1].size} to ${getFromRegionLabel(to)}` });
   }
 
-  // Main converters
-  links.push({ href: '../shoe-size-converter.html', text: 'Shoe Size Converter' });
-  links.push({ href: '../clothing-size-converter.html', text: 'Clothing Size Converter' });
-  links.push({ href: '../us-to-eu-size.html', text: 'US to EU Size' });
-  links.push({ href: '../index.html', text: 'Global Size Chart Home' });
+  // Main converters (root-relative targets)
+  links.push({ href: href('shoe-size-converter.html'), text: 'Shoe Size Converter' });
+  links.push({ href: href('clothing-size-converter.html'), text: 'Clothing Size Converter' });
+  links.push({ href: href('us-to-eu-size.html'), text: 'US to EU Size' });
+  links.push({ href: href('index.html'), text: 'Global Size Chart Home' });
 
   return links.map(l => `<li><a href="${l.href}">${l.text}</a></li>`).join('\n          ');
 }
@@ -217,11 +222,7 @@ function generatePage(route, template, shoeData, allRoutes) {
   const metaDescription = `Convert ${fromLabel} ${route.size} to ${toLabel} shoe size instantly. ${toSize != null ? `Approximate equivalent: ${toLabel} ${toSize}. ` : ''}Includes fit tips and measurement guide.`;
   const keywords = `${fromLabel} ${route.size} to ${toLabel}, ${fromLabel} to ${toLabel} shoe size, convert ${fromLabel} ${route.size}, shoe size conversion`;
 
-  const breadcrumbItems = [
-    { name: 'Home', url: `${BASE_URL}/` },
-    { name: 'Shoe Converter', url: `${BASE_URL}/shoe-size-converter.html` },
-    { name: `${fromLabel} ${route.size} to ${toLabel}`, url: canonicalUrl }
-  ];
+  const breadcrumb = structuralModules.buildProgrammaticBreadcrumb(route, route.slug + '.html', BASE_URL);
   const replacements = {
     '{{PAGE_TITLE}}': pageTitle,
     '{{META_DESCRIPTION}}': metaDescription.replace(/"/g, '&quot;'),
@@ -232,8 +233,8 @@ function generatePage(route, template, shoeData, allRoutes) {
     '{{ORGANIZATION_JSON_LD}}': JSON.stringify(getOrganizationSchema()),
     '{{WEBSITE_JSON_LD}}': JSON.stringify(getWebSiteSchema()),
     '{{WEBPAGE_JSON_LD}}': JSON.stringify(getWebPageSchema({ name: pageTitle, description: metaDescription, url: canonicalUrl })),
-    '{{BREADCRUMB_JSON_LD}}': JSON.stringify(getBreadcrumbJsonLd(breadcrumbItems)),
-    '{{BREADCRUMB_HTML}}': '',
+    '{{BREADCRUMB_JSON_LD}}': breadcrumb.jsonLd,
+    '{{BREADCRUMB_HTML}}': breadcrumb.html,
     '{{GENDER_OPTIONS}}': buildGenderOptions(route.gender),
     '{{FROM_REGION_OPTIONS}}': buildFromRegionOptions(route.from_region),
     '{{SIZE_VALUE}}': String(route.size),
@@ -243,11 +244,13 @@ function generatePage(route, template, shoeData, allRoutes) {
     '{{FAQ_JSON_LD}}': buildFaqJsonLd(route, toSize, fromLabel, toLabel),
     '{{ENHANCED_SERP_SCHEMAS}}': '',
     '{{SIZING_KNOWLEDGE_SECTION}}': '',
-    '{{RELATED_SIZE_GRID}}': '',
-    '{{INTERNAL_LINK_GRAPH}}': '',
+    '{{RELATED_SIZE_GRID}}': structuralModules.getRelatedSizeGridHtml(route, allRoutes, getFromRegionLabel, 20),
+    '{{INTERNAL_LINK_GRAPH}}': buildInternalLinks(route, allRoutes, 'programmatic-pages/' + fileName),
+    '{{REGION_CONVERTERS_SECTION}}': structuralModules.getRegionConvertersSectionHtml('programmatic-pages/' + fileName),
+    '{{AUTHORITY_LINKS_SECTION}}': structuralModules.getAuthorityLinksSectionHtml('programmatic-pages/' + fileName),
     '{{CRAWL_DISCOVERY_LINKS}}': '',
     '{{DISCOVERY_GRID_LINKS}}': '',
-    '{{INTERNAL_LINKS}}': buildInternalLinks(route, allRoutes),
+    '{{INTERNAL_LINKS}}': buildInternalLinks(route, allRoutes, 'programmatic-pages/' + fileName),
     '{{DATA_INTENT}}': '',
     '{{CONVERSION_LOOP_MODULES}}': '',
     '{{BEHAVIORAL_RECOMMENDATIONS}}': '',

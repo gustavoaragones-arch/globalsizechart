@@ -11,6 +11,8 @@
 
 const fs = require('fs');
 const path = require('path');
+const structuralModules = require('./programmatic-structural-modules.js');
+const internalLinkBuilder = require('../utils/internalLinkBuilder.js');
 
 const ROOT = path.resolve(__dirname, '..');
 const CONFIG_DIR = path.join(ROOT, 'config');
@@ -82,7 +84,9 @@ const REGION_LABELS = {
   EU: 'European Union (EU)',
   JP: 'Japan (JP)',
   CN: 'China (CN)',
-  CM: 'Centimeters (CM)'
+  CM: 'Centimeters (CM)',
+  KR: 'Korea (KR)',
+  INCH: 'Inch'
 };
 
 const REGION_NAMES = {
@@ -91,7 +95,9 @@ const REGION_NAMES = {
   EU: 'EU',
   JP: 'Japan',
   CN: 'China',
-  CM: 'CM'
+  CM: 'CM',
+  KR: 'Korea',
+  INCH: 'Inch'
 };
 
 function loadJson(filePath) {
@@ -150,55 +156,9 @@ function getRegionSlugSegment(region) {
   return map[region] || region.toLowerCase();
 }
 
-/** Build breadcrumb items and return { html, jsonLd } for template. Type A: Home > Shoe Converter > Region > Size Pair. Type B: Home > Shoe Converter > Region. Type C: Home > Shoe Converter > Category. */
+/** Build breadcrumb: Home > Shoe Converter > Region > Size Pair (shared module). */
 function buildBreadcrumb(route, fileName) {
-  const items = [
-    { name: 'Home', url: `${BASE_URL}/` },
-    { name: 'Shoe Converter', url: `${BASE_URL}/shoe-size-converter.html` }
-  ];
-
-  if (route.type === 'region') {
-    const fromLabel = getFromRegionLabel(route.from_region);
-    const toLabel = getFromRegionLabel(route.to_region);
-    items.push({ name: `${fromLabel} to ${toLabel}`, url: `${BASE_URL}/programmatic-pages/${fileName}` });
-  } else if (route.type === 'category') {
-    const genderCap = route.gender === 'men' ? "Men's" : route.gender === 'women' ? "Women's" : "Kids'";
-    items.push({ name: `${genderCap} Shoe Size Converter`, url: `${BASE_URL}/programmatic-pages/${fileName}` });
-  } else {
-    // Type A — size_pair: Home > Shoe Converter > Region Page > Size Pair Page
-    const fromLabel = getFromRegionLabel(route.from_region);
-    const toLabel = getFromRegionLabel(route.to_region);
-    const regionSlug = `${getRegionSlugSegment(route.from_region)}-to-${getRegionSlugSegment(route.to_region)}-shoe-size`;
-    const regionConverterUrl = `${BASE_URL}/programmatic-pages/${regionSlug}.html`;
-    items.push({ name: `${fromLabel} to ${toLabel}`, url: regionConverterUrl });
-    const lastLabel = `${fromLabel} ${route.size} to ${toLabel}`;
-    items.push({ name: lastLabel, url: `${BASE_URL}/programmatic-pages/${fileName}` });
-  }
-
-  // Root-relative hrefs for visible HTML (works from /programmatic-pages/*.html)
-  const link = (item, i) => {
-    if (i === items.length - 1) return `<span>${escapeHtml(item.name)}</span>`;
-    let href;
-    if (item.url === `${BASE_URL}/`) href = '/';
-    else if (item.url === `${BASE_URL}/shoe-size-converter.html`) href = '/shoe-size-converter.html';
-    else if (item.url.startsWith(`${BASE_URL}/programmatic-pages/`)) href = '/programmatic-pages/' + item.url.replace(`${BASE_URL}/programmatic-pages/`, '');
-    else href = item.url.replace(BASE_URL, '') || '/';
-    return `<a href="${escapeHtml(href)}">${escapeHtml(item.name)}</a>`;
-  };
-  const breadcrumbHtml = '<nav class="breadcrumbs" aria-label="Breadcrumb">' + items.map((item, i) => link(item, i)).join(' &gt; ') + '</nav>';
-
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: items.map((item, i) => ({
-      '@type': 'ListItem',
-      position: i + 1,
-      name: item.name,
-      item: item.url
-    }))
-  };
-
-  return { html: breadcrumbHtml, jsonLd: JSON.stringify(jsonLd) };
+  return structuralModules.buildProgrammaticBreadcrumb(route, fileName, BASE_URL);
 }
 
 function escapeHtml(s) {
@@ -407,6 +367,87 @@ const REGION_CONVERTER_SLUGS = [
 const MIN_INTERNAL_LINK_GRAPH = 30;
 const MAX_INTERNAL_LINK_GRAPH = 45;
 
+/** Step 3: Region Converters section — same spec as all generators (shared module). Uses link builder. */
+function buildRegionConvertersSection(currentFile) {
+  return structuralModules.getRegionConvertersSectionHtml(currentFile);
+}
+
+/** Step 3: Authority Links section — same spec as all generators (shared module). Uses link builder. */
+function buildAuthorityLinksSection(currentFile) {
+  return structuralModules.getAuthorityLinksSectionHtml(currentFile);
+}
+
+/** Related conversions grid for region or category pages (so every programmatic page has a grid + 15–25+ links). */
+function generateRelatedGridForRegionOrCategory(route, allRoutes) {
+  const added = new Set();
+  const items = [];
+
+  function add(href, text) {
+    if (added.has(href)) return;
+    added.add(href);
+    items.push({ href, text });
+  }
+
+  // Region converters (EU→US, US→UK, JP→US, CM→US, CM→EU, UK→EU, China, Japan, Korea, Inch)
+  const regionSlugs = [
+    { slug: 'eu-to-us-shoe-size', label: 'EU to US' },
+    { slug: 'us-to-uk-shoe-size', label: 'US to UK' },
+    { slug: 'japan-to-us-shoe-size', label: 'Japan to US' },
+    { slug: 'cm-to-us-shoe-size', label: 'CM to US' },
+    { slug: 'cm-to-eu-shoe-size', label: 'CM to EU' },
+    { slug: 'cm-to-uk-shoe-size', label: 'CM to UK' },
+    { slug: 'us-to-eu-shoe-size', label: 'US to EU' },
+    { slug: 'uk-to-us-shoe-size', label: 'UK to US' },
+    { slug: 'uk-to-eu-shoe-size', label: 'UK to EU' },
+    { slug: 'inch-to-us-shoe-size', label: 'Inch to US' },
+    { slug: 'inch-to-eu-shoe-size', label: 'Inch to EU' },
+    { slug: 'japan-to-eu-shoe-size', label: 'Japan to EU' },
+    { slug: 'eu-to-japan-shoe-size', label: 'EU to Japan' },
+    { slug: 'us-to-japan-shoe-size', label: 'US to Japan' },
+    { slug: 'china-to-us-shoe-size', label: 'China to US' },
+    { slug: 'china-to-eu-shoe-size', label: 'China to EU' },
+    { slug: 'korea-cm-to-us', label: 'Korea to US' },
+    { slug: 'women-cm-to-us', label: "Women's CM to US" },
+    { slug: 'men-cm-to-eu', label: "Men's CM to EU" },
+    { slug: 'kids-cm-to-us', label: "Kids' CM to US" }
+  ];
+  for (const r of regionSlugs) {
+    if (route.type === 'region' && route.slug === r.slug) continue;
+    add(r.slug + '.html', r.label + ' Shoe Size');
+  }
+
+  // Category converters
+  const categories = allRoutes.filter(r => r.type === 'category');
+  const categoryLabels = { men: "Men's", women: "Women's", kids: "Kids'" };
+  for (const r of categories) {
+    add(r.slug + '.html', categoryLabels[r.gender] + ' Shoe Size Converter');
+  }
+
+  if (route.type === 'region') {
+    const sizePairs = allRoutes.filter(r => r.type === 'size_pair' && r.from_region === route.from_region && r.to_region === route.to_region);
+    sizePairs.sort((a, b) => parseFloat(a.size) - parseFloat(b.size));
+    for (const r of sizePairs.slice(0, 12)) {
+      const genderTag = r.gender === 'women' ? "Women's " : r.gender === 'kids' ? "Kids' " : '';
+      add(r.slug + '.html', `${genderTag}${getFromRegionLabel(route.from_region)} ${r.size} to ${getFromRegionLabel(route.to_region)}`);
+    }
+  }
+
+  if (route.type === 'category') {
+    const sameGender = allRoutes.filter(r => r.type === 'size_pair' && r.gender === route.gender);
+    sameGender.sort((a, b) => `${a.from_region}-${a.to_region}`.localeCompare(`${b.from_region}-${b.to_region}`) || parseFloat(a.size) - parseFloat(b.size));
+    for (const r of sameGender.slice(0, 15)) {
+      add(r.slug + '.html', `${getFromRegionLabel(r.from_region)} ${r.size} to ${getFromRegionLabel(r.to_region)}`);
+    }
+  }
+
+  if (items.length === 0) return '';
+  const gridLinks = items.map(it => `<a href="${it.href}">${escapeHtml(it.text)}</a>`).join('\n        ');
+  return `<section class="related-size-grid">
+  <h2>Explore Nearby Size Conversions</h2>
+  <div class="grid">\n        ${gridLinks}\n  </div>
+</section>`;
+}
+
 /** Hub pages — linked from every page for 20–35 internal link target. */
 const HUB_PAGE_LINKS = [
   { href: '../index.html', text: 'Global Size Chart Home' },
@@ -433,32 +474,30 @@ const MEASUREMENT_CONVERTER_SAMPLE = [
 
 /**
  * Internal Link Graph Engine: 30+ contextual internal links per page (target 30–45).
- * Categories: ±1 sizes, same region, same gender, hub pages, measurement converters,
- * similar brands, similar garments, common fit problems, alternative regions, measurement refinements,
- * tools, printable guides, semantic pages, region converters, main converters.
+ * Uses internalLinkBuilder; currentFile is path of page being generated (e.g. programmatic-pages/eu-to-us-shoe-size.html).
  */
-function buildInternalLinkGraph(route, allRoutes, semanticRoutes = []) {
+function buildInternalLinkGraph(route, allRoutes, semanticRoutes = [], currentFile) {
   const added = new Set();
   const links = [];
-
-  function add(href, text) {
+  const h = (target) => internalLinkBuilder.href(currentFile, target);
+  function add(targetPath, text) {
+    const href = h(targetPath);
     if (added.has(href)) return;
     added.add(href);
     links.push({ href, text });
   }
 
   // Homepage + main converters (always)
-  add('../index.html', 'Global Size Chart Home');
-  add('../shoe-size-converter.html', 'Shoe Size Converter');
-  add('../clothing-size-converter.html', 'Clothing Size Converter');
+  add('index.html', 'Global Size Chart Home');
+  add('shoe-size-converter.html', 'Shoe Size Converter');
+  add('clothing-size-converter.html', 'Clothing Size Converter');
 
-  // Hub pages
-  for (const h of HUB_PAGE_LINKS) {
-    if (h.href === '../index.html') continue; // already added
-    add(h.href, h.text);
-  }
+  // Hub pages (target paths)
+  add('shoe-size-pages.html', 'Shoe Size Pages Index');
+  add('programmatic-index.html', 'Programmatic Index');
+  add('shoe-sizing-guides.html', 'Shoe Sizing Guides');
 
-  // Region converter links (programmatic); exclude current if Type B
+  // Region converter links (programmatic-pages/); exclude current if Type B
   const regionLabels = {
     'eu-to-us-shoe-size': 'EU to US Shoe Size',
     'us-to-eu-shoe-size': 'US to EU Shoe Size',
@@ -470,7 +509,7 @@ function buildInternalLinkGraph(route, allRoutes, semanticRoutes = []) {
   };
   for (const slug of REGION_CONVERTER_SLUGS) {
     if (route.type === 'region' && route.slug === slug) continue;
-    add(slug + '.html', regionLabels[slug] || slug.replace(/-/g, ' '));
+    add('programmatic-pages/' + slug + '.html', regionLabels[slug] || slug.replace(/-/g, ' '));
   }
 
   // A. ±1 size links (size_pair only)
@@ -485,8 +524,8 @@ function buildInternalLinkGraph(route, allRoutes, semanticRoutes = []) {
     samePair.sort((a, b) => parseFloat(a.size) - parseFloat(b.size));
     const idx = samePair.findIndex(r => String(r.size) === String(size));
     if (idx >= 0) {
-      if (idx > 0) add(samePair[idx - 1].slug + '.html', `${getFromRegionLabel(from)} ${samePair[idx - 1].size} to ${getFromRegionLabel(to)}`);
-      if (idx < samePair.length - 1) add(samePair[idx + 1].slug + '.html', `${getFromRegionLabel(from)} ${samePair[idx + 1].size} to ${getFromRegionLabel(to)}`);
+      if (idx > 0) add('programmatic-pages/' + samePair[idx - 1].slug + '.html', `${getFromRegionLabel(from)} ${samePair[idx - 1].size} to ${getFromRegionLabel(to)}`);
+      if (idx < samePair.length - 1) add('programmatic-pages/' + samePair[idx + 1].slug + '.html', `${getFromRegionLabel(from)} ${samePair[idx + 1].size} to ${getFromRegionLabel(to)}`);
     }
   }
 
@@ -503,9 +542,10 @@ function buildInternalLinkGraph(route, allRoutes, semanticRoutes = []) {
     let nearbyCount = 0;
     for (const r of sameRegion) {
       if (nearbyCount >= 6) break;
-      if (added.has(r.slug + '.html')) continue;
+      const target = 'programmatic-pages/' + r.slug + '.html';
+      if (added.has(h(target))) continue;
       nearbyCount++;
-      add(r.slug + '.html', `${getFromRegionLabel(from)} ${r.size} to ${getFromRegionLabel(to)}`);
+      add(target, `${getFromRegionLabel(from)} ${r.size} to ${getFromRegionLabel(to)}`);
     }
   }
 
@@ -516,7 +556,7 @@ function buildInternalLinkGraph(route, allRoutes, semanticRoutes = []) {
   sameGenderOther.sort((a, b) => `${a.from_region}-${a.to_region}`.localeCompare(`${b.from_region}-${b.to_region}`) || parseFloat(a.size) - parseFloat(b.size));
   for (const r of sameGenderOther) {
     if (links.length >= MAX_INTERNAL_LINK_GRAPH) break;
-    add(r.slug + '.html', `${getFromRegionLabel(r.from_region)} ${r.size} to ${getFromRegionLabel(r.to_region)}`);
+    add('programmatic-pages/' + r.slug + '.html', `${getFromRegionLabel(r.from_region)} ${r.size} to ${getFromRegionLabel(r.to_region)}`);
   }
 
   // Type B (region): add size_pair pages for this from/to
@@ -526,7 +566,7 @@ function buildInternalLinkGraph(route, allRoutes, semanticRoutes = []) {
     for (const r of sizePairs) {
       if (links.length >= MAX_INTERNAL_LINK_GRAPH) break;
       const genderTag = r.gender === 'women' ? "Women's " : r.gender === 'kids' ? "Kids' " : '';
-      add(r.slug + '.html', `${genderTag}${getFromRegionLabel(from)} ${r.size} to ${getFromRegionLabel(to)}`);
+      add('programmatic-pages/' + r.slug + '.html', `${genderTag}${getFromRegionLabel(from)} ${r.size} to ${getFromRegionLabel(to)}`);
     }
   }
 
@@ -536,17 +576,17 @@ function buildInternalLinkGraph(route, allRoutes, semanticRoutes = []) {
     sameGender.sort((a, b) => `${a.from_region}-${a.to_region}`.localeCompare(`${b.from_region}-${b.to_region}`) || parseFloat(a.size) - parseFloat(b.size));
     for (const r of sameGender) {
       if (links.length >= MAX_INTERNAL_LINK_GRAPH) break;
-      add(r.slug + '.html', `${getFromRegionLabel(r.from_region)} ${r.size} to ${getFromRegionLabel(r.to_region)}`);
+      add('programmatic-pages/' + r.slug + '.html', `${getFromRegionLabel(r.from_region)} ${r.size} to ${getFromRegionLabel(r.to_region)}`);
     }
   }
 
-  // Measurement converters (sample)
-  for (const m of MEASUREMENT_CONVERTER_SAMPLE) {
-    if (links.length >= MAX_INTERNAL_LINK_GRAPH) break;
-    add(m.href, m.text);
-  }
+  // Measurement converters (sample) — target paths
+  add('measurement/24-cm-to-us-shoe-size.html', '24 cm to US Shoe Size');
+  add('measurement/26-cm-to-us-shoe-size.html', '26 cm to US Shoe Size');
+  add('measurement/90cm-chest-to-us-shirt-size.html', '90 cm Chest to US Shirt Size');
+  add('measurement/70cm-waist-to-eu-pants.html', '70 cm Waist to EU Pants');
 
-  // --- Commercial internal link layer: similar brands, similar garments, fit problems, alternative regions, measurement refinements ---
+  // --- Similar brands, garments, fit problems, measurement refinements ---
   let brandRoutes = [];
   let clothingRoutes = [];
   let measurementRoutes = [];
@@ -554,61 +594,53 @@ function buildInternalLinkGraph(route, allRoutes, semanticRoutes = []) {
   if (fs.existsSync(path.join(DATA_DIR, 'clothing_routes.json'))) clothingRoutes = loadJson(path.join(DATA_DIR, 'clothing_routes.json'));
   if (fs.existsSync(path.join(DATA_DIR, 'measurement_routes.json'))) measurementRoutes = loadJson(path.join(DATA_DIR, 'measurement_routes.json'));
 
-  // Similar brands (brand size guide pages)
   for (const r of brandRoutes) {
     if (links.length >= MAX_INTERNAL_LINK_GRAPH) break;
-    if (r.type === 'brand_converter' && r.slug) add(`../brands/${r.slug}.html`, (r.brand || r.slug) + ' ' + (r.category === 'shoes' ? 'Shoe' : 'Clothing') + ' Size Guide');
+    if (r.type === 'brand_converter' && r.slug) add('brands/' + r.slug + '.html', (r.brand || r.slug) + ' ' + (r.category === 'shoes' ? 'Shoe' : 'Clothing') + ' Size Guide');
   }
 
-  // Similar garments (clothing conversion pages)
   for (const r of clothingRoutes.slice(0, 10)) {
     if (links.length >= MAX_INTERNAL_LINK_GRAPH) break;
     if (r.type === 'clothing_size_pair' && r.slug) {
       const cat = r.category === 'tops' ? 'Tops' : r.category === 'pants' ? 'Pants' : r.category === 'dresses' ? 'Dresses' : r.category === 'jackets' ? 'Jackets' : r.category;
       const g = r.gender === 'men' ? "Men's" : r.gender === 'women' ? "Women's" : "Kids'";
-      add(`../clothing/${r.slug}.html`, `${g} ${getFromRegionLabel(r.from_region)} ${r.size} to ${getFromRegionLabel(r.to_region)} ${cat}`);
+      add('clothing/' + r.slug + '.html', `${g} ${getFromRegionLabel(r.from_region)} ${r.size} to ${getFromRegionLabel(r.to_region)} ${cat}`);
     }
   }
 
-  // Common fit problems (semantic: sizing_myths, measurement_guides)
   const fitProblemSemantic = (semanticRoutes || []).filter(sr =>
     sr.slug && (sr.semantic_category === 'sizing_myths' || sr.semantic_category === 'measurement_guides' || /fit|mistake|measure/i.test(sr.title || sr.slug))
   );
   for (const sr of fitProblemSemantic) {
     if (links.length >= MAX_INTERNAL_LINK_GRAPH) break;
-    add(`../semantic/${sr.slug}.html`, sr.title || sr.slug.replace(/-/g, ' '));
+    add('semantic/' + sr.slug + '.html', sr.title || sr.slug.replace(/-/g, ' '));
   }
 
-  // Alternative regions (category converters)
   const categoryRoutes = allRoutes.filter(r => r.type === 'category');
   for (const r of categoryRoutes) {
     if (links.length >= MAX_INTERNAL_LINK_GRAPH) break;
     const label = (r.gender === 'men' ? "Men's" : r.gender === 'women' ? "Women's" : "Kids'") + ' Shoe Size Converter';
-    add(r.slug + '.html', label);
+    add('programmatic-pages/' + r.slug + '.html', label);
   }
 
-  // Measurement refinements (measurement converter pages)
   for (const r of measurementRoutes) {
     if (links.length >= MAX_INTERNAL_LINK_GRAPH) break;
     if (r.slug) {
       const t = r.measurement_type === 'foot_cm' ? (r.value_cm + ' cm to ' + (r.to_region || 'US') + ' Shoe Size') : r.measurement_type === 'chest_cm' ? (r.value_cm + ' cm Chest to ' + (r.to_region || 'US') + ' Shirt') : (r.value_cm + ' cm Waist to ' + (r.to_region || 'EU') + ' Pants');
-      add(`../measurement/${r.slug}.html`, t);
+      add('measurement/' + r.slug + '.html', t);
     }
   }
 
-  // Tools and printable guides
-  for (const t of TOOLS_AND_PRINTABLE_LINKS) {
-    if (links.length >= MAX_INTERNAL_LINK_GRAPH) break;
-    add(t.href, t.text);
-  }
+  add('tools/measurement-assistant.html', 'Measurement Assistant Tool');
+  add('printable/foot-measuring-sheet.html', 'Printable Foot Measuring Sheet');
+  add('printable/clothing-measurement-chart.html', 'Printable Clothing Measurement Chart');
+  add('printable/shoe-size-reference-chart.html', 'Printable Shoe Size Reference Chart');
 
-  // Semantic pages (same topic / measurement / fit)
   for (const sr of (semanticRoutes || [])) {
     if (links.length >= MAX_INTERNAL_LINK_GRAPH) break;
-    if (sr.slug) add(`../semantic/${sr.slug}.html`, sr.title || sr.slug.replace(/-/g, ' '));
+    if (sr.slug) add('semantic/' + sr.slug + '.html', sr.title || sr.slug.replace(/-/g, ' '));
   }
 
-  // Cap at MAX; ensure at least MIN
   const out = links.slice(0, MAX_INTERNAL_LINK_GRAPH);
   return out.map(l => `<li><a href="${l.href}">${escapeHtml(l.text)}</a></li>`).join('\n        ');
 }
@@ -1436,7 +1468,7 @@ let _sessionDepthBrandRoutes = null;
  * @param {object} opts - { pageType, basePath, programmaticRoutes?, semanticRoutes?, measurementRoutes?, clothingRoutes?, brandRoutes? }
  */
 function generateSessionDepthModules(route, opts) {
-  const basePath = opts.basePath || '../';
+  const currentFile = opts.currentFile || 'programmatic-pages/index.html';
   const pageType = opts.pageType || (route && route.type) || 'programmatic';
   const programmaticRoutes = opts.programmaticRoutes || [];
   let semanticRoutes = opts.semanticRoutes || [];
@@ -1461,10 +1493,7 @@ function generateSessionDepthModules(route, opts) {
   brandRoutes = brandRoutes || [];
 
   const sections = [];
-
-  function link(href, text) {
-    return `<li><a href="${escapeHtml(href)}">${escapeHtml(text)}</a></li>`;
-  }
+  const link = (targetPath, text) => `<li><a href="${escapeHtml(internalLinkBuilder.href(currentFile, targetPath))}">${escapeHtml(text)}</a></li>`;
 
   // 1. People Also Convert
   if (pageType === 'programmatic' || pageType === 'region' || pageType === 'category' || pageType === 'size_pair') {
@@ -1477,7 +1506,7 @@ function generateSessionDepthModules(route, opts) {
       let label = r.slug ? r.slug.replace(/-/g, ' ') : r.slug;
       if (r.type === 'region' && r.from_region && r.to_region) label = getFromRegionLabel(r.from_region) + ' to ' + getFromRegionLabel(r.to_region);
       if (r.type === 'category' && r.gender) label = (r.gender === 'men' ? "Men's" : r.gender === 'women' ? "Women's" : "Kids'") + ' Shoe Size Converter';
-      return link(basePath + 'programmatic-pages/' + r.slug + '.html', label);
+      return link('programmatic-pages/' + r.slug + '.html', label);
     });
     if (peopleLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">People Also Convert</h3><ul class="session-depth-links">' + peopleLinks.join('') + '</ul></div>');
   } else if (pageType === 'clothing' && clothingRoutes.length) {
@@ -1486,19 +1515,19 @@ function generateSessionDepthModules(route, opts) {
       const g = r.gender === 'men' ? "Men's" : r.gender === 'women' ? "Women's" : "Kids'";
       const cat = (r.category === 'tops' ? 'Tops' : r.category === 'pants' ? 'Pants' : r.category === 'dresses' ? 'Dresses' : r.category === 'jackets' ? 'Jackets' : r.category) || '';
       const label = `${g} ${getFromRegionLabel(r.from_region)} ${r.size} to ${getFromRegionLabel(r.to_region)} ${cat}`;
-      return link(basePath + 'clothing/' + r.slug + '.html', label);
+      return link('clothing/' + r.slug + '.html', label);
     });
     if (peopleLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">People Also Convert</h3><ul class="session-depth-links">' + peopleLinks.join('') + '</ul></div>');
   } else if (pageType === 'measurement' && measurementRoutes.length) {
     const others = measurementRoutes.filter(r => r.slug && r.slug !== route.slug).slice(0, 8);
     const peopleLinks = others.map(r => {
       const label = r.measurement_type === 'foot_cm' ? `${r.value_cm} cm to ${r.to_region} Shoe Size` : r.measurement_type === 'chest_cm' ? `${r.value_cm} cm chest to ${r.to_region}` : `${r.value_cm} cm waist to ${r.to_region}`;
-      return link(basePath + 'measurement/' + r.slug + '.html', label);
+      return link('measurement/' + r.slug + '.html', label);
     });
     if (peopleLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">People Also Convert</h3><ul class="session-depth-links">' + peopleLinks.join('') + '</ul></div>');
   } else if (pageType === 'brand' && brandRoutes.length) {
     const others = brandRoutes.filter(r => r.type === 'brand_converter' && r.slug !== route.slug).slice(0, 6);
-    const peopleLinks = others.map(r => link(basePath + 'brands/' + r.slug + '.html', (r.brand || r.slug) + ' Size Guide'));
+    const peopleLinks = others.map(r => link('brands/' + r.slug + '.html', (r.brand || r.slug) + ' Size Guide'));
     if (peopleLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">People Also Convert</h3><ul class="session-depth-links">' + peopleLinks.join('') + '</ul></div>');
   }
 
@@ -1508,7 +1537,7 @@ function generateSessionDepthModules(route, opts) {
     const fitFirst = fitRelated.filter(r => r.semantic_category === 'fit_guides').slice(0, 3);
     const measFirst = fitRelated.filter(r => r.semantic_category === 'measurement_guides').slice(0, 2);
     const rest = fitRelated.filter(r => !['fit_guides', 'measurement_guides'].includes(r.semantic_category)).slice(0, 3);
-    const fitLinks = [...fitFirst, ...measFirst, ...rest].slice(0, 6).map(r => link(basePath + 'semantic/' + r.slug + '.html', r.title || r.slug.replace(/-/g, ' ')));
+    const fitLinks = [...fitFirst, ...measFirst, ...rest].slice(0, 6).map(r => link('semantic/' + r.slug + '.html', r.title || r.slug.replace(/-/g, ' ')));
     if (fitLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">Related Fit Problems</h3><ul class="session-depth-links">' + fitLinks.join('') + '</ul></div>');
   }
 
@@ -1519,7 +1548,7 @@ function generateSessionDepthModules(route, opts) {
     const nearby = measurementRoutes.filter(r => r.slug && r.slug !== route.slug).slice(0, 8);
     const tryLinks = nearby.map(r => {
       const label = r.measurement_type === 'foot_cm' ? `${r.value_cm} cm to ${r.to_region} shoe size` : r.measurement_type === 'chest_cm' ? `${r.value_cm} cm chest to ${r.to_region}` : `${r.value_cm} cm waist to ${r.to_region}`;
-      return link(basePath + 'measurement/' + r.slug + '.html', label);
+      return link('measurement/' + r.slug + '.html', label);
     });
     if (tryLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">Try These Measurements</h3><ul class="session-depth-links">' + tryLinks.join('') + '</ul></div>');
   }
@@ -1529,26 +1558,26 @@ function generateSessionDepthModules(route, opts) {
     const sizeNum = parseFloat(route.size);
     const nearby = programmaticRoutes.filter(r => (r.type === 'size_pair' || !r.type) && r.from_region === route.from_region && r.to_region === route.to_region && r.gender === route.gender && r.slug !== route.slug);
     const withDist = nearby.map(r => ({ r, d: Math.abs(parseFloat(r.size) - sizeNum) })).sort((a, b) => a.d - b.d).slice(0, 7).map(x => x.r);
-    const otherLinks = withDist.map(r => link(basePath + 'programmatic-pages/' + r.slug + '.html', getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region)));
+    const otherLinks = withDist.map(r => link('programmatic-pages/' + r.slug + '.html', getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region)));
     if (otherLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">Other Sizes Near Yours</h3><ul class="session-depth-links">' + otherLinks.join('') + '</ul></div>');
   } else if (pageType === 'clothing' && route.category && route.size != null) {
     const sizeNum = parseFloat(route.size);
     const nearby = clothingRoutes.filter(r => r.type === 'clothing_size_pair' && r.category === route.category && r.gender === route.gender && r.slug !== route.slug);
     const withDist = nearby.map(r => ({ r, d: Math.abs(parseFloat(r.size) - sizeNum) })).sort((a, b) => a.d - b.d).slice(0, 6).map(x => x.r);
-    const otherLinks = withDist.map(r => link(basePath + 'clothing/' + r.slug + '.html', getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region)));
+    const otherLinks = withDist.map(r => link('clothing/' + r.slug + '.html', getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region)));
     if (otherLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">Other Sizes Near Yours</h3><ul class="session-depth-links">' + otherLinks.join('') + '</ul></div>');
   } else if (pageType === 'measurement' && route.value_cm != null) {
     const num = parseFloat(route.value_cm);
     const nearby = measurementRoutes.filter(r => r.slug !== route.slug && r.measurement_type === route.measurement_type);
     const withDist = nearby.map(r => ({ r, d: Math.abs(parseFloat(r.value_cm) - num) })).sort((a, b) => a.d - b.d).slice(0, 6).map(x => x.r);
-    const otherLinks = withDist.map(r => link(basePath + 'measurement/' + r.slug + '.html', r.value_cm + ' cm to ' + r.to_region));
+    const otherLinks = withDist.map(r => link('measurement/' + r.slug + '.html', r.value_cm + ' cm to ' + r.to_region));
     if (otherLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">Other Sizes Near Yours</h3><ul class="session-depth-links">' + otherLinks.join('') + '</ul></div>');
   }
 
   // 5. Same Brand — Different Region (brand pages: other brand guides, same/different category)
   if (pageType === 'brand' && brandRoutes.length) {
     const others = brandRoutes.filter(r => r.type === 'brand_converter' && r.slug !== route.slug).slice(0, 6);
-    const sameLinks = others.map(r => link(basePath + 'brands/' + r.slug + '.html', (r.brand || r.slug) + ' ' + (r.category === 'shoes' ? 'Shoe' : 'Clothing') + ' Guide'));
+    const sameLinks = others.map(r => link('brands/' + r.slug + '.html', (r.brand || r.slug) + ' ' + (r.category === 'shoes' ? 'Shoe' : 'Clothing') + ' Guide'));
     if (sameLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">Same Brand — Different Region</h3><ul class="session-depth-links">' + sameLinks.join('') + '</ul></div>');
   }
 
@@ -1562,7 +1591,7 @@ function generateSessionDepthModules(route, opts) {
  * Links to semantic pages, measurement tools, similar sizes, brand pages.
  */
 function buildConversionLoopSection(route, opts) {
-  const basePath = opts.basePath || '../';
+  const currentFile = opts.currentFile || 'programmatic-pages/index.html';
   const pageType = opts.pageType || (route && route.type) || 'programmatic';
   const programmaticRoutes = opts.programmaticRoutes || [];
   const semanticRoutes = opts.semanticRoutes || [];
@@ -1582,9 +1611,7 @@ function buildConversionLoopSection(route, opts) {
   measurementRoutes = measurementRoutes || [];
   brandRoutes = brandRoutes || [];
 
-  function link(href, text) {
-    return `<li><a href="${escapeHtml(href)}">${escapeHtml(text)}</a></li>`;
-  }
+  const link = (targetPath, text) => `<li><a href="${escapeHtml(internalLinkBuilder.href(currentFile, targetPath))}">${escapeHtml(text)}</a></li>`;
 
   const blocks = [];
 
@@ -1595,35 +1622,35 @@ function buildConversionLoopSection(route, opts) {
     const links = [];
     const nearby = programmaticRoutes.filter(r => (r.type === 'size_pair' || !r.type) && r.from_region === route.from_region && r.to_region === route.to_region && r.gender === route.gender && r.slug !== route.slug);
     const withDist = nearby.map(r => ({ r, d: Math.abs(parseFloat(r.size) - sizeNum) })).sort((a, b) => a.d - b.d).slice(0, 3).map(x => x.r);
-    withDist.forEach(r => links.push(link(basePath + 'programmatic-pages/' + r.slug + '.html', fromLabel + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region))));
+    withDist.forEach(r => links.push(link('programmatic-pages/' + r.slug + '.html', fromLabel + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region))));
     const meas = semanticRoutes.find(r => r.semantic_category === 'measurement_guides');
-    if (meas) links.push(link(basePath + 'semantic/' + meas.slug + '.html', 'How to measure your feet in CM'));
+    if (meas) links.push(link('semantic/' + meas.slug + '.html', 'How to measure your feet in CM'));
     const fit = semanticRoutes.find(r => r.semantic_category === 'fit_guides');
-    if (fit) links.push(link(basePath + 'semantic/' + fit.slug + '.html', 'Common fit mistakes'));
+    if (fit) links.push(link('semantic/' + fit.slug + '.html', 'Common fit mistakes'));
     if (measurementRoutes.length) {
       const foot = measurementRoutes.find(r => r.measurement_type === 'foot_cm');
-      if (foot) links.push(link(basePath + 'measurement/' + foot.slug + '.html', 'Convert cm to shoe size'));
+      if (foot) links.push(link('measurement/' + foot.slug + '.html', 'Convert cm to shoe size'));
     }
-    links.push(link(basePath + 'tools/measurement-assistant.html', 'Measurement Assistant tool'));
+    links.push(link('tools/measurement-assistant.html', 'Measurement Assistant tool'));
     if (links.length) blocks.push('<div class="conversion-loop__block"><h3 class="conversion-loop__title">If ' + escapeHtml(fromLabel) + ' ' + escapeHtml(String(route.size)) + ' didn\'t fit, try…</h3><ul class="conversion-loop__links">' + links.slice(0, 6).join('') + '</ul></div>');
   }
 
   // Region/category: "Not sure of your size? Try…"
   if ((pageType === 'programmatic' || pageType === 'region' || pageType === 'category') && (route.type === 'region' || route.type === 'category')) {
     const links = [];
-    semanticRoutes.filter(r => r.type === 'semantic' && (r.semantic_category === 'measurement_guides' || r.semantic_category === 'fit_guides')).slice(0, 2).forEach(r => links.push(link(basePath + 'semantic/' + r.slug + '.html', r.title || r.slug.replace(/-/g, ' '))));
-    if (measurementRoutes.length) links.push(link(basePath + 'measurement/' + measurementRoutes[0].slug + '.html', 'Convert cm to shoe size'));
-    links.push(link(basePath + 'tools/measurement-assistant.html', 'Measurement Assistant'));
+    semanticRoutes.filter(r => r.type === 'semantic' && (r.semantic_category === 'measurement_guides' || r.semantic_category === 'fit_guides')).slice(0, 2).forEach(r => links.push(link('semantic/' + r.slug + '.html', r.title || r.slug.replace(/-/g, ' '))));
+    if (measurementRoutes.length) links.push(link('measurement/' + measurementRoutes[0].slug + '.html', 'Convert cm to shoe size'));
+    links.push(link('tools/measurement-assistant.html', 'Measurement Assistant'));
     if (links.length) blocks.push('<div class="conversion-loop__block"><h3 class="conversion-loop__title">Not sure of your size? Try…</h3><ul class="conversion-loop__links">' + links.join('') + '</ul></div>');
   }
 
   // Clothing: "Size varies by brand — check…"
   if (pageType === 'clothing') {
     const links = [];
-    semanticRoutes.filter(r => r.type === 'semantic').slice(0, 2).forEach(r => links.push(link(basePath + 'semantic/' + r.slug + '.html', r.title || r.slug.replace(/-/g, ' '))));
-    if (brandRoutes.length) links.push(link(basePath + 'brands/' + brandRoutes[0].slug + '.html', (brandRoutes[0].brand || '') + ' size guide'));
-    links.push(link(basePath + 'tools/measurement-assistant.html', 'Measurement Assistant'));
-    links.push(link(basePath + 'clothing-size-converter.html', 'Clothing Size Converter'));
+    semanticRoutes.filter(r => r.type === 'semantic').slice(0, 2).forEach(r => links.push(link('semantic/' + r.slug + '.html', r.title || r.slug.replace(/-/g, ' '))));
+    if (brandRoutes.length) links.push(link('brands/' + brandRoutes[0].slug + '.html', (brandRoutes[0].brand || '') + ' size guide'));
+    links.push(link('tools/measurement-assistant.html', 'Measurement Assistant'));
+    links.push(link('clothing-size-converter.html', 'Clothing Size Converter'));
     if (links.length) blocks.push('<div class="conversion-loop__block"><h3 class="conversion-loop__title">Size varies by brand — check…</h3><ul class="conversion-loop__links">' + links.slice(0, 5).join('') + '</ul></div>');
   }
 
@@ -1631,11 +1658,11 @@ function buildConversionLoopSection(route, opts) {
   if (pageType === 'brand' && route.brand) {
     const links = [];
     const meas = semanticRoutes.find(r => r.semantic_category === 'measurement_guides');
-    if (meas) links.push(link(basePath + 'semantic/' + meas.slug + '.html', 'How to measure in CM'));
+    if (meas) links.push(link('semantic/' + meas.slug + '.html', 'How to measure in CM'));
     const fit = semanticRoutes.find(r => r.semantic_category === 'fit_guides');
-    if (fit) links.push(link(basePath + 'semantic/' + fit.slug + '.html', 'Fit and sizing tips'));
-    links.push(link(basePath + 'tools/measurement-assistant.html', 'Measurement Assistant'));
-    brandRoutes.filter(r => r.slug !== route.slug).slice(0, 2).forEach(r => links.push(link(basePath + 'brands/' + r.slug + '.html', (r.brand || r.slug) + ' size guide')));
+    if (fit) links.push(link('semantic/' + fit.slug + '.html', 'Fit and sizing tips'));
+    links.push(link('tools/measurement-assistant.html', 'Measurement Assistant'));
+    brandRoutes.filter(r => r.slug !== route.slug).slice(0, 2).forEach(r => links.push(link('brands/' + r.slug + '.html', (r.brand || r.slug) + ' size guide')));
     if (links.length) blocks.push('<div class="conversion-loop__block"><h3 class="conversion-loop__title">' + escapeHtml(route.brand) + ' sizing runs small — check…</h3><ul class="conversion-loop__links">' + links.slice(0, 5).join('') + '</ul></div>');
   }
 
@@ -1643,10 +1670,10 @@ function buildConversionLoopSection(route, opts) {
   if (pageType === 'measurement') {
     const links = [];
     const meas = semanticRoutes.find(r => r.semantic_category === 'measurement_guides');
-    if (meas) links.push(link(basePath + 'semantic/' + meas.slug + '.html', 'How to measure your feet in CM'));
-    links.push(link(basePath + 'tools/measurement-assistant.html', 'Measurement Assistant tool'));
-    links.push(link(basePath + 'shoe-size-converter.html', 'Shoe Size Converter'));
-    measurementRoutes.filter(r => r.slug !== route.slug).slice(0, 2).forEach(r => links.push(link(basePath + 'measurement/' + r.slug + '.html', r.value_cm + ' cm to ' + r.to_region)));
+    if (meas) links.push(link('semantic/' + meas.slug + '.html', 'How to measure your feet in CM'));
+    links.push(link('tools/measurement-assistant.html', 'Measurement Assistant tool'));
+    links.push(link('shoe-size-converter.html', 'Shoe Size Converter'));
+    measurementRoutes.filter(r => r.slug !== route.slug).slice(0, 2).forEach(r => links.push(link('measurement/' + r.slug + '.html', r.value_cm + ' cm to ' + r.to_region)));
     if (links.length) blocks.push('<div class="conversion-loop__block"><h3 class="conversion-loop__title">Measure again using CM…</h3><ul class="conversion-loop__links">' + links.slice(0, 5).join('') + '</ul></div>');
   }
 
@@ -1660,7 +1687,7 @@ function buildConversionLoopSection(route, opts) {
  * similar garment, measurement page, brand comparison. Output: <section class="next-step">.
  */
 function buildBehavioralRecommendations(route, opts) {
-  const basePath = opts.basePath || '../';
+  const currentFile = opts.currentFile || 'programmatic-pages/index.html';
   const pageType = opts.pageType || (route && route.type) || 'programmatic';
   let programmaticRoutes = opts.programmaticRoutes || [];
   const semanticRoutes = opts.semanticRoutes || [];
@@ -1684,9 +1711,7 @@ function buildBehavioralRecommendations(route, opts) {
   clothingRoutes = clothingRoutes || [];
   brandRoutes = brandRoutes || [];
 
-  function link(href, text) {
-    return `<li><a href="${escapeHtml(href)}">${escapeHtml(text)}</a></li>`;
-  }
+  const link = (targetPath, text) => `<li><a href="${escapeHtml(internalLinkBuilder.href(currentFile, targetPath))}">${escapeHtml(text)}</a></li>`;
 
   const blocks = [];
 
@@ -1696,18 +1721,18 @@ function buildBehavioralRecommendations(route, opts) {
     const fromLabel = getFromRegionLabel(route.from_region);
     const toLabel = getFromRegionLabel(route.to_region);
     const items = [];
-    if (prevR) items.push(link(basePath + 'programmatic-pages/' + prevR.slug + '.html', fromLabel + ' ' + prevR.size + ' to ' + toLabel));
-    if (nextR) items.push(link(basePath + 'programmatic-pages/' + nextR.slug + '.html', fromLabel + ' ' + nextR.size + ' to ' + toLabel));
+    if (prevR) items.push(link('programmatic-pages/' + prevR.slug + '.html', fromLabel + ' ' + prevR.size + ' to ' + toLabel));
+    if (nextR) items.push(link('programmatic-pages/' + nextR.slug + '.html', fromLabel + ' ' + nextR.size + ' to ' + toLabel));
     if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Next logical size</h3><ul class="next-step__links">' + items.join('') + '</ul></div>');
   } else if ((route.type === 'region' || route.type === 'category') && programmaticRoutes.length) {
     const sizePairs = programmaticRoutes.filter(r => (r.type === 'size_pair' || !r.type) && r.from_region && r.size != null);
     if (route.type === 'region') {
       const same = sizePairs.filter(r => r.from_region === route.from_region && r.to_region === route.to_region).slice(0, 3);
-      const items = same.map(r => link(basePath + 'programmatic-pages/' + r.slug + '.html', getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region)));
+      const items = same.map(r => link('programmatic-pages/' + r.slug + '.html', getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region)));
       if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Next logical size</h3><ul class="next-step__links">' + items.join('') + '</ul></div>');
     } else {
       const same = sizePairs.filter(r => r.gender === route.gender).slice(0, 3);
-      const items = same.map(r => link(basePath + 'programmatic-pages/' + r.slug + '.html', getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region)));
+      const items = same.map(r => link('programmatic-pages/' + r.slug + '.html', getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region)));
       if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Next logical size</h3><ul class="next-step__links">' + items.join('') + '</ul></div>');
     }
   }
@@ -1716,7 +1741,7 @@ function buildBehavioralRecommendations(route, opts) {
   if (programmaticRoutes.length) {
     const regionRoutes = programmaticRoutes.filter(r => r.type === 'region');
     const otherRegions = route.type === 'region' ? regionRoutes.filter(r => r.slug !== route.slug) : regionRoutes;
-    const items = otherRegions.slice(0, 4).map(r => link(basePath + 'programmatic-pages/' + r.slug + '.html', getFromRegionLabel(r.from_region) + ' to ' + getFromRegionLabel(r.to_region) + ' Shoe Size'));
+    const items = otherRegions.slice(0, 4).map(r => link('programmatic-pages/' + r.slug + '.html', getFromRegionLabel(r.from_region) + ' to ' + getFromRegionLabel(r.to_region) + ' Shoe Size'));
     if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Next region</h3><ul class="next-step__links">' + items.join('') + '</ul></div>');
   }
 
@@ -1726,13 +1751,13 @@ function buildBehavioralRecommendations(route, opts) {
     const items = others.map(r => {
       const g = r.gender === 'men' ? "Men's" : r.gender === 'women' ? "Women's" : "Kids'";
       const cat = (r.category === 'tops' ? 'Tops' : r.category === 'pants' ? 'Pants' : r.category === 'dresses' ? 'Dresses' : r.category === 'jackets' ? 'Jackets' : r.category) || '';
-      return link(basePath + 'clothing/' + r.slug + '.html', g + ' ' + getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region) + ' ' + cat);
+      return link('clothing/' + r.slug + '.html', g + ' ' + getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region) + ' ' + cat);
     });
     if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Similar garment</h3><ul class="next-step__links">' + items.join('') + '</ul></div>');
   } else if ((pageType === 'programmatic' || pageType === 'size_pair' || route.type === 'region' || route.type === 'category') && clothingRoutes.length) {
     const sample = clothingRoutes.filter(r => r.type === 'clothing_size_pair').slice(0, 3);
-    const items = sample.map(r => link(basePath + 'clothing/' + r.slug + '.html', (r.gender === 'women' ? "Women's" : r.gender === 'men' ? "Men's" : "Kids'") + ' ' + getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region)));
-    items.push(link(basePath + 'clothing-size-converter.html', 'Clothing Size Converter'));
+    const items = sample.map(r => link('clothing/' + r.slug + '.html', (r.gender === 'women' ? "Women's" : r.gender === 'men' ? "Men's" : "Kids'") + ' ' + getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region)));
+    items.push(link('clothing-size-converter.html', 'Clothing Size Converter'));
     if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Similar garment</h3><ul class="next-step__links">' + items.join('') + '</ul></div>');
   }
 
@@ -1741,21 +1766,21 @@ function buildBehavioralRecommendations(route, opts) {
     const foot = measurementRoutes.find(r => r.measurement_type === 'foot_cm');
     const sample = measurementRoutes.filter(r => r.slug).slice(0, 3);
     const items = [];
-    if (foot) items.push(link(basePath + 'measurement/' + foot.slug + '.html', 'Convert cm to shoe size'));
+    if (foot) items.push(link('measurement/' + foot.slug + '.html', 'Convert cm to shoe size'));
     sample.filter(r => r.slug !== (foot && foot.slug)).forEach(r => {
       if (items.length >= 4) return;
       const label = r.measurement_type === 'foot_cm' ? r.value_cm + ' cm to ' + r.to_region + ' shoe' : r.measurement_type === 'chest_cm' ? r.value_cm + ' cm chest' : r.value_cm + ' cm waist';
-      items.push(link(basePath + 'measurement/' + r.slug + '.html', label));
+      items.push(link('measurement/' + r.slug + '.html', label));
     });
     const measGuide = semanticRoutes.find(r => r.semantic_category === 'measurement_guides');
-    if (measGuide) items.push(link(basePath + 'semantic/' + measGuide.slug + '.html', measGuide.title || 'How to measure'));
+    if (measGuide) items.push(link('semantic/' + measGuide.slug + '.html', measGuide.title || 'How to measure'));
     if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Measurement page</h3><ul class="next-step__links">' + items.slice(0, 4).join('') + '</ul></div>');
   }
 
   // --- Brand comparison ---
   if (brandRoutes.length) {
     const sample = brandRoutes.filter(r => r.type === 'brand_converter').slice(0, 4);
-    const items = sample.map(r => link(basePath + 'brands/' + r.slug + '.html', (r.brand || r.slug) + ' size guide'));
+    const items = sample.map(r => link('brands/' + r.slug + '.html', (r.brand || r.slug) + ' size guide'));
     if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Brand comparison</h3><ul class="next-step__links">' + items.join('') + '</ul></div>');
   }
 
@@ -1769,13 +1794,15 @@ function buildBehavioralRecommendations(route, opts) {
  * from semantic pages. Content = description snippet + read-more link.
  */
 function buildHighRPMContentModules(route, opts) {
-  const basePath = opts.basePath || '../';
+  const currentFile = opts.currentFile || 'programmatic-pages/index.html';
   const semanticRoutes = opts.semanticRoutes || [];
   let brandRoutes = opts.brandRoutes || [];
   if (!brandRoutes.length && fs.existsSync(path.join(DATA_DIR, 'brand_routes.json'))) {
     brandRoutes = _sessionDepthBrandRoutes || loadJson(path.join(DATA_DIR, 'brand_routes.json'));
   }
   brandRoutes = brandRoutes || [];
+
+  const href = (targetPath) => internalLinkBuilder.href(currentFile, targetPath);
 
   function block(title, snippet, links) {
     if (!snippet && !links.length) return '';
@@ -1790,8 +1817,8 @@ function buildHighRPMContentModules(route, opts) {
   const fitMyths = semanticRoutes.find(r => r.type === 'semantic' && r.semantic_category === 'sizing_myths');
   const fitSnippet = [fitMeas && fitMeas.description, fitMyths && fitMyths.description].filter(Boolean).join(' ') || 'Fit issues often come from wrong measurements or mixing regional scales. Measure in CM and use our converter for your region.';
   const fitLinks = [];
-  if (fitMeas) fitLinks.push({ href: basePath + 'semantic/' + fitMeas.slug + '.html', text: fitMeas.title || 'How to measure' });
-  if (fitMyths) fitLinks.push({ href: basePath + 'semantic/' + fitMyths.slug + '.html', text: fitMyths.title || 'Common mistakes' });
+  if (fitMeas) fitLinks.push({ href: href('semantic/' + fitMeas.slug + '.html'), text: fitMeas.title || 'How to measure' });
+  if (fitMyths) fitLinks.push({ href: href('semantic/' + fitMyths.slug + '.html'), text: fitMyths.title || 'Common mistakes' });
   if (fitLinks.length || fitSnippet) modules.push(block('Fit Problems Explained', fitSnippet, fitLinks));
 
   // 2. Why Sizes Vary — sizing_standards + sizing_myths
@@ -1799,21 +1826,21 @@ function buildHighRPMContentModules(route, opts) {
   const whyMyths = semanticRoutes.find(r => r.type === 'semantic' && r.semantic_category === 'sizing_myths');
   const whySnippet = [whyStandards && whyStandards.description, whyMyths && whyMyths.description].filter(Boolean).join(' ') || 'Sizing systems differ by country and brand. US, UK, EU, and Japan use different scales; conversion charts align them.';
   const whyLinks = [];
-  if (whyStandards) whyLinks.push({ href: basePath + 'semantic/' + whyStandards.slug + '.html', text: whyStandards.title || 'How sizing works' });
-  if (whyMyths) whyLinks.push({ href: basePath + 'semantic/' + whyMyths.slug + '.html', text: whyMyths.title || 'Sizing mistakes' });
+  if (whyStandards) whyLinks.push({ href: href('semantic/' + whyStandards.slug + '.html'), text: whyStandards.title || 'How sizing works' });
+  if (whyMyths) whyLinks.push({ href: href('semantic/' + whyMyths.slug + '.html'), text: whyMyths.title || 'Sizing mistakes' });
   if (whyLinks.length || whySnippet) modules.push(block('Why Sizes Vary', whySnippet, whyLinks));
 
   // 3. Brand Differences — no semantic category; static copy + link to brand guides
   const brandSnippet = sanitizeForApprovalMode('Brands use different lasts and fit models. Nike often runs small; Adidas and Puma can differ by style. Always check the brand\'s size chart before buying.');
-  const brandLinks = [{ href: basePath + 'brand-size-guides.html', text: 'Brand size guides' }];
-  if (brandRoutes.length) brandLinks.push({ href: basePath + 'brands/' + brandRoutes[0].slug + '.html', text: (brandRoutes[0].brand || '') + ' size guide' });
+  const brandLinks = [{ href: href('brand-size-guides.html'), text: 'Brand size guides' }];
+  if (brandRoutes.length) brandLinks.push({ href: href('brands/' + brandRoutes[0].slug + '.html'), text: (brandRoutes[0].brand || '') + ' size guide' });
   modules.push(block('Brand Differences', brandSnippet, brandLinks));
 
   // 4. Regional Differences — regional_differences
   const regional = semanticRoutes.filter(r => r.type === 'semantic' && r.semantic_category === 'regional_differences');
   const regionalSnippet = regional.length ? regional.map(r => r.description).filter(Boolean).join(' ') : 'EU, US, UK, and Japanese shoe sizes use different numbering systems. EU is often about 1–1.5 larger than US for the same length.';
-  const regionalLinks = regional.slice(0, 3).map(r => ({ href: basePath + 'semantic/' + r.slug + '.html', text: r.title || r.slug.replace(/-/g, ' ') }));
-  if (!regionalLinks.length) regionalLinks.push({ href: basePath + 'semantic/why-eu-and-us-sizes-differ.html', text: 'Why EU and US sizes differ' });
+  const regionalLinks = regional.slice(0, 3).map(r => ({ href: href('semantic/' + r.slug + '.html'), text: r.title || r.slug.replace(/-/g, ' ') }));
+  if (!regionalLinks.length) regionalLinks.push({ href: href('semantic/why-eu-and-us-sizes-differ.html'), text: 'Why EU and US sizes differ' });
   modules.push(block('Regional Differences', regionalSnippet.slice(0, 320), regionalLinks));
 
   if (modules.length === 0) return '';
@@ -1823,6 +1850,7 @@ function buildHighRPMContentModules(route, opts) {
 function generatePage(route, template, shoeData, allRoutes, semanticRoutes = [], authorityGraph = {}) {
   const slug = route.slug;
   const fileName = slug + '.html';
+  const currentFile = 'programmatic-pages/' + fileName;
   const canonicalUrl = `${BASE_URL}/programmatic-pages/${fileName}`;
   const breadcrumb = buildBreadcrumb(route, fileName);
   const sizingKnowledgeHtml = buildSizingKnowledgeSection(route, authorityGraph, semanticRoutes);
@@ -1867,16 +1895,18 @@ function generatePage(route, template, shoeData, allRoutes, semanticRoutes = [],
       '{{FAQ_JSON_LD}}': buildRegionFaqJsonLd(fromLabel, toLabel),
       '{{ENHANCED_SERP_SCHEMAS}}': regionEnhanced,
       '{{SIZING_KNOWLEDGE_SECTION}}': sizingKnowledgeHtml,
-      '{{RELATED_SIZE_GRID}}': '',
-      '{{INTERNAL_LINK_GRAPH}}': buildInternalLinkGraph(route, allRoutes, semanticRoutes),
+      '{{RELATED_SIZE_GRID}}': generateRelatedGridForRegionOrCategory(route, allRoutes),
+      '{{INTERNAL_LINK_GRAPH}}': buildInternalLinkGraph(route, allRoutes, semanticRoutes, currentFile),
+      '{{REGION_CONVERTERS_SECTION}}': buildRegionConvertersSection(currentFile),
+      '{{AUTHORITY_LINKS_SECTION}}': buildAuthorityLinksSection(currentFile),
       '{{CRAWL_DISCOVERY_LINKS}}': '',
       '{{DISCOVERY_GRID_LINKS}}': '',
       '{{INTERNAL_LINKS}}': '',
       '{{DATA_INTENT}}': dataIntentAttr,
-      '{{CONVERSION_LOOP_MODULES}}': buildConversionLoopSection(route, { pageType: route.type || 'size_pair', programmaticRoutes: allRoutes, semanticRoutes, basePath: '../' }),
-      '{{BEHAVIORAL_RECOMMENDATIONS}}': buildBehavioralRecommendations(route, { pageType: route.type || 'size_pair', programmaticRoutes: allRoutes, semanticRoutes, basePath: '../' }),
-      '{{HIGH_RPM_CONTENT_MODULES}}': buildHighRPMContentModules(route, { semanticRoutes, basePath: '../' }),
-      '{{SESSION_DEPTH_MODULES}}': generateSessionDepthModules(route, { pageType: route.type || 'size_pair', programmaticRoutes: allRoutes, semanticRoutes, basePath: '../' }),
+      '{{CONVERSION_LOOP_MODULES}}': buildConversionLoopSection(route, { pageType: route.type || 'size_pair', programmaticRoutes: allRoutes, semanticRoutes, currentFile }),
+      '{{BEHAVIORAL_RECOMMENDATIONS}}': buildBehavioralRecommendations(route, { pageType: route.type || 'size_pair', programmaticRoutes: allRoutes, semanticRoutes, currentFile }),
+      '{{HIGH_RPM_CONTENT_MODULES}}': buildHighRPMContentModules(route, { semanticRoutes, currentFile }),
+      '{{SESSION_DEPTH_MODULES}}': generateSessionDepthModules(route, { pageType: route.type || 'size_pair', programmaticRoutes: allRoutes, semanticRoutes, currentFile }),
       '{{COMMERCIAL_CONTENT_BLOCKS}}': buildCommercialContentBlocks(route)
     };
   }
@@ -1918,16 +1948,18 @@ function generatePage(route, template, shoeData, allRoutes, semanticRoutes = [],
       '{{FAQ_JSON_LD}}': buildCategoryFaqJsonLd(genderLabel),
       '{{ENHANCED_SERP_SCHEMAS}}': categoryEnhanced,
       '{{SIZING_KNOWLEDGE_SECTION}}': sizingKnowledgeHtml,
-      '{{RELATED_SIZE_GRID}}': '',
-      '{{INTERNAL_LINK_GRAPH}}': buildInternalLinkGraph(route, allRoutes, semanticRoutes),
+      '{{RELATED_SIZE_GRID}}': generateRelatedGridForRegionOrCategory(route, allRoutes),
+      '{{INTERNAL_LINK_GRAPH}}': buildInternalLinkGraph(route, allRoutes, semanticRoutes, currentFile),
+      '{{REGION_CONVERTERS_SECTION}}': buildRegionConvertersSection(currentFile),
+      '{{AUTHORITY_LINKS_SECTION}}': buildAuthorityLinksSection(currentFile),
       '{{CRAWL_DISCOVERY_LINKS}}': '',
       '{{DISCOVERY_GRID_LINKS}}': '',
       '{{INTERNAL_LINKS}}': '',
       '{{DATA_INTENT}}': dataIntentAttr,
-      '{{CONVERSION_LOOP_MODULES}}': buildConversionLoopSection(route, { pageType: route.type || 'size_pair', programmaticRoutes: allRoutes, semanticRoutes, basePath: '../' }),
-      '{{BEHAVIORAL_RECOMMENDATIONS}}': buildBehavioralRecommendations(route, { pageType: route.type || 'size_pair', programmaticRoutes: allRoutes, semanticRoutes, basePath: '../' }),
-      '{{HIGH_RPM_CONTENT_MODULES}}': buildHighRPMContentModules(route, { semanticRoutes, basePath: '../' }),
-      '{{SESSION_DEPTH_MODULES}}': generateSessionDepthModules(route, { pageType: route.type || 'size_pair', programmaticRoutes: allRoutes, semanticRoutes, basePath: '../' }),
+      '{{CONVERSION_LOOP_MODULES}}': buildConversionLoopSection(route, { pageType: route.type || 'size_pair', programmaticRoutes: allRoutes, semanticRoutes, currentFile }),
+      '{{BEHAVIORAL_RECOMMENDATIONS}}': buildBehavioralRecommendations(route, { pageType: route.type || 'size_pair', programmaticRoutes: allRoutes, semanticRoutes, currentFile }),
+      '{{HIGH_RPM_CONTENT_MODULES}}': buildHighRPMContentModules(route, { semanticRoutes, currentFile }),
+      '{{SESSION_DEPTH_MODULES}}': generateSessionDepthModules(route, { pageType: route.type || 'size_pair', programmaticRoutes: allRoutes, semanticRoutes, currentFile }),
       '{{COMMERCIAL_CONTENT_BLOCKS}}': buildCommercialContentBlocks(route)
     };
   }
@@ -1974,15 +2006,17 @@ function generatePage(route, template, shoeData, allRoutes, semanticRoutes = [],
       '{{ENHANCED_SERP_SCHEMAS}}': sizePairEnhanced,
       '{{SIZING_KNOWLEDGE_SECTION}}': sizingKnowledgeHtml,
       '{{RELATED_SIZE_GRID}}': generateRelatedSizeGrid(route, allRoutes),
-      '{{INTERNAL_LINK_GRAPH}}': buildInternalLinkGraph(route, allRoutes, semanticRoutes),
+      '{{INTERNAL_LINK_GRAPH}}': buildInternalLinkGraph(route, allRoutes, semanticRoutes, currentFile),
+      '{{REGION_CONVERTERS_SECTION}}': buildRegionConvertersSection(currentFile),
+      '{{AUTHORITY_LINKS_SECTION}}': buildAuthorityLinksSection(currentFile),
       '{{CRAWL_DISCOVERY_LINKS}}': '',
       '{{DISCOVERY_GRID_LINKS}}': '',
       '{{INTERNAL_LINKS}}': '',
       '{{DATA_INTENT}}': dataIntentAttr,
-      '{{CONVERSION_LOOP_MODULES}}': buildConversionLoopSection(route, { pageType: route.type || 'size_pair', programmaticRoutes: allRoutes, semanticRoutes, basePath: '../' }),
-      '{{BEHAVIORAL_RECOMMENDATIONS}}': buildBehavioralRecommendations(route, { pageType: route.type || 'size_pair', programmaticRoutes: allRoutes, semanticRoutes, basePath: '../' }),
-      '{{HIGH_RPM_CONTENT_MODULES}}': buildHighRPMContentModules(route, { semanticRoutes, basePath: '../' }),
-      '{{SESSION_DEPTH_MODULES}}': generateSessionDepthModules(route, { pageType: route.type || 'size_pair', programmaticRoutes: allRoutes, semanticRoutes, basePath: '../' }),
+      '{{CONVERSION_LOOP_MODULES}}': buildConversionLoopSection(route, { pageType: route.type || 'size_pair', programmaticRoutes: allRoutes, semanticRoutes, currentFile }),
+      '{{BEHAVIORAL_RECOMMENDATIONS}}': buildBehavioralRecommendations(route, { pageType: route.type || 'size_pair', programmaticRoutes: allRoutes, semanticRoutes, currentFile }),
+      '{{HIGH_RPM_CONTENT_MODULES}}': buildHighRPMContentModules(route, { semanticRoutes, currentFile }),
+      '{{SESSION_DEPTH_MODULES}}': generateSessionDepthModules(route, { pageType: route.type || 'size_pair', programmaticRoutes: allRoutes, semanticRoutes, currentFile }),
       '{{COMMERCIAL_CONTENT_BLOCKS}}': buildCommercialContentBlocks(route)
     };
   }
@@ -2187,31 +2221,33 @@ function generateClothingProgrammaticPages(clothingRoutes, clothingData, semanti
     const extraLinks = [
       ...relatedGarments.map(r => {
         const l = CLOTHING_CATEGORY_LABELS[r.category] || r.category;
-        return { href: r.slug + '.html', text: CLOTHING_GENDER_LABELS[r.gender] + ' ' + getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region) + ' ' + l };
+        return { href: 'clothing/' + r.slug + '.html', text: CLOTHING_GENDER_LABELS[r.gender] + ' ' + getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region) + ' ' + l };
       }),
       ...similarBrands,
       ...fitProblems,
       ...alternativeRegions,
       ...measurementRefinements
     ];
-    const internalLinksHtml = buildPhase10InternalLinksBlock('../', semanticRoutes, extraLinks, 40);
+    const currentFile = 'clothing/' + fileName;
+    const H = (t) => internalLinkBuilder.href(currentFile, t);
+    const internalLinksHtml = buildPhase10InternalLinksBlock(currentFile, semanticRoutes, extraLinks, 40);
 
     let body = '';
     body += `<section class="content-section"><h1>${escapeHtml(title)}</h1>`;
     body += '<div class="ad-slot ad-top" data-module="ad-slot" data-slot="top"></div>';
     body += `<p class="mb-lg">${escapeHtml(description)}${toSize != null ? ` ${fromLabel} ${route.size} converts to approximately ${toLabel} ${toSize} for ${categoryLabel.toLowerCase()}.` : ''} Use the clothing converter below to get all regional equivalents.</p>`;
-    body += '<section class="content-section"><h2>Clothing converter tool</h2><p>Convert any clothing size between regions using our main tool:</p><p><a href="../clothing-size-converter.html" class="btn">Use Clothing Size Converter</a></p></section>';
+    body += '<section class="content-section"><h2>Clothing converter tool</h2><p>Convert any clothing size between regions using our main tool:</p><p><a href="' + H('clothing-size-converter.html') + '" class="btn">Use Clothing Size Converter</a></p></section>';
     body += '<div class="ad-slot ad-inline" data-module="ad-slot" data-slot="inline"></div>';
     body += '<section class="content-section"><h2>Body measurement explanation</h2><p>Accurate conversion depends on your body measurements. For tops and jackets, measure your <strong>chest</strong> at the fullest part. For pants, use <strong>waist</strong> and <strong>hips</strong>. For dresses, use bust, waist, and hips. Record measurements in centimeters for the best match to EU and international size charts. Different brands use different fit models—when in doubt, refer to the brand\'s size chart.</p></section>';
     body += '<section class="content-section"><h2>Fit differences</h2><p>' + sanitizeForApprovalMode('US and UK sizing often use different base measurements; EU and Asian sizes may run smaller. <strong>US</strong> tends to be more relaxed; <strong>EU</strong> and <strong>Asian</strong> cuts are often slimmer. Consider sizing up when buying from European or Japanese brands if you prefer a looser fit.') + '</p></section>';
     body += '<section class="content-section"><h2>Garment cut explanation</h2><p>' + categoryLabel + ' sizing varies by cut: slim, regular, and relaxed. Letter sizes (XS, S, M, L) usually reflect chest or bust for tops and dresses; numeric sizes (e.g. 32, 8) often reflect waist or a combined scale. Jackets may follow suit sizing or outerwear-specific charts. Always check the brand\'s size guide for the specific garment.</p></section>';
-    body += buildHighRPMContentModules(route, { semanticRoutes, basePath: '../' });
+    body += buildHighRPMContentModules(route, { semanticRoutes, currentFile });
     body += '<div class="ad-slot ad-inline" data-module="ad-slot" data-slot="mid"></div>';
     body += '<div class="fit-warning">' + buildMonetizationModulesForRoute(route) + buildCommercialContentBlocks(route) + '</div>';
-    body += '<div class="recommendation-zone">' + buildConversionLoopSection(route, { pageType: 'clothing', clothingRoutes, semanticRoutes, basePath: '../' }) + buildBehavioralRecommendations(route, { pageType: 'clothing', clothingRoutes, semanticRoutes, basePath: '../' }) + generateSessionDepthModules(route, { pageType: 'clothing', clothingRoutes, semanticRoutes, basePath: '../' }) + '</div>';
+    body += '<div class="recommendation-zone">' + buildConversionLoopSection(route, { pageType: 'clothing', clothingRoutes, semanticRoutes, currentFile }) + buildBehavioralRecommendations(route, { pageType: 'clothing', clothingRoutes, semanticRoutes, currentFile }) + generateSessionDepthModules(route, { pageType: 'clothing', clothingRoutes, semanticRoutes, currentFile }) + '</div>';
     body += '<div class="ad-slot ad-bottom" data-module="ad-slot" data-slot="bottom"></div>';
     body += '<div class="comparison-zone"><section class="content-section"><h2>Related links (same garment, hub, tools, guides)</h2><ul class="related-links">' + internalLinksHtml + '</ul></section></div>';
-    body += '<section class="content-section"><h2>Shoe sizing</h2><p>Need shoe size conversion? We also convert shoe sizes between US, UK, EU, Japan, and CM:</p><ul><li><a href="../shoe-size-converter.html">Shoe Size Converter</a></li><li><a href="../shoe-sizing-guides.html">Shoe Sizing Guides</a></li><li><a href="../shoe-size-pages.html">Shoe Size Conversion Index</a></li></ul></section>';
+    body += '<section class="content-section"><h2>Shoe sizing</h2><p>Need shoe size conversion? We also convert shoe sizes between US, UK, EU, Japan, and CM:</p><ul><li><a href="' + H('shoe-size-converter.html') + '">Shoe Size Converter</a></li><li><a href="' + H('shoe-sizing-guides.html') + '">Shoe Sizing Guides</a></li><li><a href="' + H('shoe-size-pages.html') + '">Shoe Size Conversion Index</a></li></ul></section>';
 
     const html = `<!DOCTYPE html>
 <html lang="en">
@@ -2222,7 +2258,7 @@ function generateClothingProgrammaticPages(clothingRoutes, clothingData, semanti
   <meta name="description" content="${escapeHtml(description)}">
   <link rel="canonical" href="${canonicalUrl}">
   <title>${escapeHtml(title)} | GlobalSizeChart.com</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="${H('styles.css')}">
   <script type="application/ld+json">${JSON.stringify(getOrganizationSchema())}</script>
   <script type="application/ld+json">${JSON.stringify(getWebSiteSchema())}</script>
   <script type="application/ld+json">${JSON.stringify(webPageJsonLd)}</script>
@@ -2232,24 +2268,24 @@ function generateClothingProgrammaticPages(clothingRoutes, clothingData, semanti
 <body ${dataIntentAttr}>
   <header>
     <div class="header-content">
-      <a href="../index.html" class="logo">GlobalSizeChart.com</a>
+      <a href="${H('index.html')}" class="logo">GlobalSizeChart.com</a>
       <nav>
         <ul>
-          <li><a href="../index.html">Home</a></li>
-          <li><a href="../shoe-size-converter.html">Shoe Converter</a></li>
-          <li><a href="../clothing-size-converter.html">Clothing Converter</a></li>
-          <li><a href="../measurement-tools.html">Measurement Tools</a></li>
-          <li><a href="../shoe-sizing-guides.html">Guides</a></li>
-          <li><a href="../legal/about.html">About</a></li>
-          <li><a href="../legal/contact.html">Contact</a></li>
-          <li><a href="../legal/privacy.html">Privacy</a></li>
+          <li><a href="${H('index.html')}">Home</a></li>
+          <li><a href="${H('shoe-size-converter.html')}">Shoe Converter</a></li>
+          <li><a href="${H('clothing-size-converter.html')}">Clothing Converter</a></li>
+          <li><a href="${H('measurement-tools.html')}">Measurement Tools</a></li>
+          <li><a href="${H('shoe-sizing-guides.html')}">Guides</a></li>
+          <li><a href="${H('legal/about.html')}">About</a></li>
+          <li><a href="${H('legal/contact.html')}">Contact</a></li>
+          <li><a href="${H('legal/privacy.html')}">Privacy</a></li>
         </ul>
       </nav>
     </div>
   </header>
   <main>
     <div class="container">
-      <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="../index.html">Home</a> &gt; <a href="../clothing-size-converter.html">Clothing Converter</a> &gt; <span>${escapeHtml(title)}</span></nav>
+      <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="${H('index.html')}">Home</a> &gt; <a href="${H('clothing-size-converter.html')}">Clothing Converter</a> &gt; <span>${escapeHtml(title)}</span></nav>
       ${body}
       <div class="ad-slot ad-sticky-mobile" data-module="ad-slot" data-slot="sticky-mobile"></div>
     </div>
@@ -2260,21 +2296,21 @@ function generateClothingProgrammaticPages(clothingRoutes, clothingData, semanti
         <div class="footer-section">
           <h3>Converters</h3>
           <ul>
-            <li><a href="../clothing-size-converter.html">Clothing Size Converter</a></li>
-            <li><a href="../shoe-size-converter.html">Shoe Size Converter</a></li>
-            <li><a href="../shoe-sizing-guides.html">Shoe Sizing Guides</a></li>
+            <li><a href="${H('clothing-size-converter.html')}">Clothing Size Converter</a></li>
+            <li><a href="${H('shoe-size-converter.html')}">Shoe Size Converter</a></li>
+            <li><a href="${H('shoe-sizing-guides.html')}">Shoe Sizing Guides</a></li>
           </ul>
         </div>
         <div class="footer-section">
           <h3>Information</h3>
           <ul>
-            <li><a href="../legal/privacy.html">Privacy</a></li>
-            <li><a href="../legal/terms.html">Terms</a></li>
-            <li><a href="../legal/disclaimer.html">Disclaimer</a></li>
-            <li><a href="../legal/editorial-policy.html">Editorial Policy</a></li>
-            <li><a href="../legal/contact.html">Contact</a></li>
-            <li><a href="../legal/about.html">About</a></li>
-            <li><a href="../legal/ai-usage-disclosure.html">AI Disclosure</a></li>
+            <li><a href="${H('legal/privacy.html')}">Privacy</a></li>
+            <li><a href="${H('legal/terms.html')}">Terms</a></li>
+            <li><a href="${H('legal/disclaimer.html')}">Disclaimer</a></li>
+            <li><a href="${H('legal/editorial-policy.html')}">Editorial Policy</a></li>
+            <li><a href="${H('legal/contact.html')}">Contact</a></li>
+            <li><a href="${H('legal/about.html')}">About</a></li>
+            <li><a href="${H('legal/ai-usage-disclosure.html')}">AI Disclosure</a></li>
           </ul>
         </div>
       </div>
@@ -2283,7 +2319,7 @@ function generateClothingProgrammaticPages(clothingRoutes, clothingData, semanti
       </div>
     </div>
   </footer>
-  <script src="../app.js"></script>
+  <script src="${H('app.js')}"></script>
 </body>
 </html>`;
 
@@ -2369,7 +2405,7 @@ function generateBrandConverters(brandRoutes, semanticRoutes) {
       : `<table class="size-table" aria-label="Approximate clothing size conversion"><thead><tr><th>US</th><th>UK</th><th>EU</th></tr></thead><tbody><tr><td>S</td><td>S</td><td>46</td></tr><tr><td>M</td><td>M</td><td>48</td></tr><tr><td>L</td><td>L</td><td>50</td></tr><tr><td>XL</td><td>XL</td><td>52</td></tr></tbody></table>`;
 
     const sameBrandLinks = brandRoutes.filter(r => r.type === 'brand_converter' && r.slug !== route.slug).map(r => ({
-      href: r.slug + '.html',
+      href: 'brands/' + r.slug + '.html',
       text: (r.brand || r.slug) + ' ' + (r.category === 'shoes' ? 'Shoe' : 'Clothing') + ' Size Guide'
     }));
     const clothingRoutesForBrand = fs.existsSync(path.join(DATA_DIR, 'clothing_routes.json')) ? loadJson(path.join(DATA_DIR, 'clothing_routes.json')) : [];
@@ -2390,7 +2426,9 @@ function generateBrandConverters(brandRoutes, semanticRoutes) {
       return { href: 'measurement/' + r.slug + '.html', text: t };
     });
     const brandExtraLinks = [...sameBrandLinks, ...similarGarments, ...fitProblemsBrand, ...alternativeRegionsBrand, ...measurementRefinementsBrand];
-    const brandInternalLinksHtml = buildPhase10InternalLinksBlock('../', semanticRoutes, brandExtraLinks, 40);
+    const currentFileBrand = 'brands/' + fileName;
+    const HB = (t) => internalLinkBuilder.href(currentFileBrand, t);
+    const brandInternalLinksHtml = buildPhase10InternalLinksBlock(currentFileBrand, semanticRoutes, brandExtraLinks, 40);
 
     let body = '';
     body += `<section class="content-section"><h1>${escapeHtml(title)}</h1>`;
@@ -2401,13 +2439,13 @@ function generateBrandConverters(brandRoutes, semanticRoutes) {
     body += `<section class="content-section"><h2>Fit tendencies</h2><p>${escapeHtml(copy.fit)}</p></section>`;
     const categoryNoun = category === 'shoes' ? 'shoe' : 'clothing';
     body += `<section class="content-section"><h2>Conversion comparison</h2><p>Approximate ${categoryNoun} size equivalents (use our converters for exact conversions):</p>${conversionTable}</section>`;
-    body += buildHighRPMContentModules(route, { semanticRoutes, brandRoutes, basePath: '../' });
+    body += buildHighRPMContentModules(route, { semanticRoutes, brandRoutes, currentFile: currentFileBrand });
     body += '<div class="ad-slot ad-inline" data-module="ad-slot" data-slot="inline"></div>';
-    body += '<section class="content-section"><h2>Generic converters</h2><p>Convert any size between regions using our tools:</p><ul><li><a href="../shoe-size-converter.html">Shoe Size Converter</a></li><li><a href="../clothing-size-converter.html">Clothing Size Converter</a></li><li><a href="../shoe-sizing-guides.html">Shoe Sizing Guides</a></li></ul></section>';
+    body += '<section class="content-section"><h2>Generic converters</h2><p>Convert any size between regions using our tools:</p><ul><li><a href="' + HB('shoe-size-converter.html') + '">Shoe Size Converter</a></li><li><a href="' + HB('clothing-size-converter.html') + '">Clothing Size Converter</a></li><li><a href="' + HB('shoe-sizing-guides.html') + '">Shoe Sizing Guides</a></li></ul></section>';
     body += '<section class="content-section"><h2>User fit warnings</h2><p><strong>Always check the brand\'s official size chart</strong> for the specific product. Sizing can change by season and style. When between sizes, consider sizing up for comfort or ordering two sizes and returning one. Read recent customer reviews for fit notes.</p></section>';
     body += '<div class="ad-slot ad-inline" data-module="ad-slot" data-slot="mid"></div>';
     body += '<div class="fit-warning">' + buildMonetizationModulesForRoute(route) + buildCommercialContentBlocks(route) + '</div>';
-    body += '<div class="recommendation-zone">' + buildConversionLoopSection(route, { pageType: 'brand', brandRoutes, semanticRoutes, basePath: '../' }) + buildBehavioralRecommendations(route, { pageType: 'brand', brandRoutes, semanticRoutes, basePath: '../' }) + generateSessionDepthModules(route, { pageType: 'brand', brandRoutes, semanticRoutes, basePath: '../' }) + '</div>';
+    body += '<div class="recommendation-zone">' + buildConversionLoopSection(route, { pageType: 'brand', brandRoutes, semanticRoutes, currentFile: currentFileBrand }) + buildBehavioralRecommendations(route, { pageType: 'brand', brandRoutes, semanticRoutes, currentFile: currentFileBrand }) + generateSessionDepthModules(route, { pageType: 'brand', brandRoutes, semanticRoutes, currentFile: currentFileBrand }) + '</div>';
     body += '<div class="ad-slot ad-bottom" data-module="ad-slot" data-slot="bottom"></div>';
     body += '<div class="comparison-zone"><section class="content-section"><h2>Related links (same brand, hub, tools, guides)</h2><ul class="related-links">' + brandInternalLinksHtml + '</ul></section></div>';
 
@@ -2420,7 +2458,7 @@ function generateBrandConverters(brandRoutes, semanticRoutes) {
   <meta name="description" content="${escapeHtml(description)}">
   <link rel="canonical" href="${canonicalUrl}">
   <title>${escapeHtml(title)} | GlobalSizeChart.com</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="${HB('styles.css')}">
   <script type="application/ld+json">${JSON.stringify(getOrganizationSchema())}</script>
   <script type="application/ld+json">${JSON.stringify(getWebSiteSchema())}</script>
   <script type="application/ld+json">${JSON.stringify(webPageJsonLd)}</script>
@@ -2430,24 +2468,24 @@ function generateBrandConverters(brandRoutes, semanticRoutes) {
 <body ${dataIntentAttr}>
   <header>
     <div class="header-content">
-      <a href="../index.html" class="logo">GlobalSizeChart.com</a>
+      <a href="${HB('index.html')}" class="logo">GlobalSizeChart.com</a>
       <nav>
         <ul>
-          <li><a href="../index.html">Home</a></li>
-          <li><a href="../shoe-size-converter.html">Shoe Converter</a></li>
-          <li><a href="../clothing-size-converter.html">Clothing Converter</a></li>
-          <li><a href="../measurement-tools.html">Measurement Tools</a></li>
-          <li><a href="../shoe-sizing-guides.html">Guides</a></li>
-          <li><a href="../legal/about.html">About</a></li>
-          <li><a href="../legal/contact.html">Contact</a></li>
-          <li><a href="../legal/privacy.html">Privacy</a></li>
+          <li><a href="${HB('index.html')}">Home</a></li>
+          <li><a href="${HB('shoe-size-converter.html')}">Shoe Converter</a></li>
+          <li><a href="${HB('clothing-size-converter.html')}">Clothing Converter</a></li>
+          <li><a href="${HB('measurement-tools.html')}">Measurement Tools</a></li>
+          <li><a href="${HB('shoe-sizing-guides.html')}">Guides</a></li>
+          <li><a href="${HB('legal/about.html')}">About</a></li>
+          <li><a href="${HB('legal/contact.html')}">Contact</a></li>
+          <li><a href="${HB('legal/privacy.html')}">Privacy</a></li>
         </ul>
       </nav>
     </div>
   </header>
   <main>
     <div class="container">
-      <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="../index.html">Home</a> &gt; <a href="../${category === 'shoes' ? 'shoe-size-converter' : 'clothing-size-converter'}.html">${escapeHtml(categoryLabel)} Converter</a> &gt; <span>${escapeHtml(brand)} Size Guide</span></nav>
+      <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="${HB('index.html')}">Home</a> &gt; <a href="${HB((category === 'shoes' ? 'shoe-size-converter' : 'clothing-size-converter') + '.html')}">${escapeHtml(categoryLabel)} Converter</a> &gt; <span>${escapeHtml(brand)} Size Guide</span></nav>
       ${body}
       <div class="ad-slot ad-sticky-mobile" data-module="ad-slot" data-slot="sticky-mobile"></div>
     </div>
@@ -2458,21 +2496,21 @@ function generateBrandConverters(brandRoutes, semanticRoutes) {
         <div class="footer-section">
           <h3>Converters</h3>
           <ul>
-            <li><a href="../shoe-size-converter.html">Shoe Size Converter</a></li>
-            <li><a href="../clothing-size-converter.html">Clothing Size Converter</a></li>
-            <li><a href="../shoe-sizing-guides.html">Shoe Sizing Guides</a></li>
+            <li><a href="${HB('shoe-size-converter.html')}">Shoe Size Converter</a></li>
+            <li><a href="${HB('clothing-size-converter.html')}">Clothing Size Converter</a></li>
+            <li><a href="${HB('shoe-sizing-guides.html')}">Shoe Sizing Guides</a></li>
           </ul>
         </div>
         <div class="footer-section">
           <h3>Information</h3>
           <ul>
-            <li><a href="../legal/privacy.html">Privacy</a></li>
-            <li><a href="../legal/terms.html">Terms</a></li>
-            <li><a href="../legal/disclaimer.html">Disclaimer</a></li>
-            <li><a href="../legal/editorial-policy.html">Editorial Policy</a></li>
-            <li><a href="../legal/contact.html">Contact</a></li>
-            <li><a href="../legal/about.html">About</a></li>
-            <li><a href="../legal/ai-usage-disclosure.html">AI Disclosure</a></li>
+            <li><a href="${HB('legal/privacy.html')}">Privacy</a></li>
+            <li><a href="${HB('legal/terms.html')}">Terms</a></li>
+            <li><a href="${HB('legal/disclaimer.html')}">Disclaimer</a></li>
+            <li><a href="${HB('legal/editorial-policy.html')}">Editorial Policy</a></li>
+            <li><a href="${HB('legal/contact.html')}">Contact</a></li>
+            <li><a href="${HB('legal/about.html')}">About</a></li>
+            <li><a href="${HB('legal/ai-usage-disclosure.html')}">AI Disclosure</a></li>
           </ul>
         </div>
       </div>
@@ -2481,7 +2519,7 @@ function generateBrandConverters(brandRoutes, semanticRoutes) {
       </div>
     </div>
   </footer>
-  <script src="../app.js"></script>
+  <script src="${HB('app.js')}"></script>
 </body>
 </html>`;
 
@@ -2679,7 +2717,8 @@ function generateCMConverters(measurementRoutes, shoeData, clothingData, semanti
 
     body += '<section class="content-section"><h2>Precision disclaimer</h2><p><strong>Conversions are approximate.</strong> Size charts vary by brand and country. This tool uses standard reference charts. Always check the retailer or brand size guide for the specific product. When between sizes, use the fit recommendations below or try both sizes if possible.</p></section>';
 
-    body += buildHighRPMContentModules(route, { semanticRoutes, basePath: '../' });
+    const currentFileMeas = 'measurement/' + slug + '.html';
+    body += buildHighRPMContentModules(route, { semanticRoutes, currentFile: currentFileMeas });
 
     body += '<section class="content-section"><h2>Measurement accuracy guide</h2><p>' + escapeHtml(accuracyGuide) + '</p></section>';
 
@@ -2689,12 +2728,12 @@ function generateCMConverters(measurementRoutes, shoeData, clothingData, semanti
     body += '<section class="content-section"><h2>Fit recommendations</h2><p>' + escapeHtml(fitRecommendations) + '</p></section>';
     body += '<div class="ad-slot ad-inline" data-module="ad-slot" data-slot="mid"></div>';
     body += '<div class="fit-warning">' + buildMonetizationModulesForRoute(route) + buildCommercialContentBlocks(route) + '</div>';
-    body += '<div class="recommendation-zone">' + buildConversionLoopSection(route, { pageType: 'measurement', measurementRoutes: routes, semanticRoutes, basePath: '../' }) + buildBehavioralRecommendations(route, { pageType: 'measurement', measurementRoutes: routes, semanticRoutes, basePath: '../' }) + generateSessionDepthModules(route, { pageType: 'measurement', measurementRoutes: routes, semanticRoutes, basePath: '../' }) + '</div>';
+    body += '<div class="recommendation-zone">' + buildConversionLoopSection(route, { pageType: 'measurement', measurementRoutes: routes, semanticRoutes, currentFile: currentFileMeas }) + buildBehavioralRecommendations(route, { pageType: 'measurement', measurementRoutes: routes, semanticRoutes, currentFile: currentFileMeas }) + generateSessionDepthModules(route, { pageType: 'measurement', measurementRoutes: routes, semanticRoutes, currentFile: currentFileMeas }) + '</div>';
 
     body += '<div class="ad-slot ad-bottom" data-module="ad-slot" data-slot="bottom"></div>';
     const measurementExtraLinks = routes.filter(r => r.slug !== slug).slice(0, 12).map(r => {
       const t = r.measurement_type === 'foot_cm' ? (r.value_cm + ' cm to ' + r.to_region + ' Shoe Size') : r.measurement_type === 'chest_cm' ? (r.value_cm + ' cm chest to ' + r.to_region + ' Shirt') : (r.value_cm + ' cm waist to ' + r.to_region + ' Pants');
-      return { href: r.slug + '.html', text: t };
+      return { href: 'measurement/' + r.slug + '.html', text: t };
     });
     const brandRoutesMeas = fs.existsSync(path.join(DATA_DIR, 'brand_routes.json')) ? loadJson(path.join(DATA_DIR, 'brand_routes.json')) : [];
     const clothingRoutesMeas = fs.existsSync(path.join(DATA_DIR, 'clothing_routes.json')) ? loadJson(path.join(DATA_DIR, 'clothing_routes.json')) : [];
@@ -2708,7 +2747,8 @@ function generateCMConverters(measurementRoutes, shoeData, clothingData, semanti
     const fitProblemsMeas = (semanticRoutes || []).filter(sr => sr.slug && (sr.semantic_category === 'sizing_myths' || sr.semantic_category === 'measurement_guides' || /fit|mistake|measure/i.test(sr.title || sr.slug))).slice(0, 5).map(sr => ({ href: 'semantic/' + sr.slug + '.html', text: sr.title || sr.slug.replace(/-/g, ' ') }));
     const alternativeRegionsMeas = [...programmaticRoutesMeas.filter(r => r.type === 'region').slice(0, 4).map(r => ({ href: 'programmatic-pages/' + r.slug + '.html', text: getFromRegionLabel(r.from_region) + ' to ' + getFromRegionLabel(r.to_region) + ' Shoe Size' })), ...programmaticRoutesMeas.filter(r => r.type === 'category').slice(0, 3).map(r => ({ href: 'programmatic-pages/' + r.slug + '.html', text: (r.gender === 'men' ? "Men's" : r.gender === 'women' ? "Women's" : "Kids'") + ' Shoe Size Converter' }))];
     const measurementAllLinks = [...measurementExtraLinks, ...similarBrandsMeas, ...similarGarmentsMeas, ...fitProblemsMeas, ...alternativeRegionsMeas];
-    body += '<div class="comparison-zone"><section class="content-section"><h2>Related links (measurement converters, hub, tools, guides)</h2><ul class="related-links">' + buildPhase10InternalLinksBlock('../', semanticRoutes, measurementAllLinks, 40) + '</ul></section></div>';
+    const Hmeas = (t) => internalLinkBuilder.href(currentFileMeas, t);
+    body += '<div class="comparison-zone"><section class="content-section"><h2>Related links (measurement converters, hub, tools, guides)</h2><ul class="related-links">' + buildPhase10InternalLinksBlock(currentFileMeas, semanticRoutes, measurementAllLinks, 40) + '</ul></section></div>';
 
     const dataIntentAttr = getDataIntentAttr(route);
     const html = `<!DOCTYPE html>
@@ -2720,7 +2760,7 @@ function generateCMConverters(measurementRoutes, shoeData, clothingData, semanti
   <meta name="description" content="${escapeHtml(description)}">
   <link rel="canonical" href="${canonicalUrl}">
   <title>${escapeHtml(title)} | GlobalSizeChart.com</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="${Hmeas('styles.css')}">
   <script type="application/ld+json">${JSON.stringify(getOrganizationSchema())}</script>
   <script type="application/ld+json">${JSON.stringify(getWebSiteSchema())}</script>
   <script type="application/ld+json">${JSON.stringify(webPageJsonLd)}</script>
@@ -2731,22 +2771,23 @@ function generateCMConverters(measurementRoutes, shoeData, clothingData, semanti
 <body ${dataIntentAttr}>
   <header>
     <div class="header-content">
-      <a href="../index.html" class="logo">GlobalSizeChart.com</a>
+      <a href="${Hmeas('index.html')}" class="logo">GlobalSizeChart.com</a>
       <nav>
         <ul>
-          <li><a href="../index.html">Home</a></li>
-          <li><a href="../shoe-size-converter.html">Shoe Converter</a></li>
-          <li><a href="../clothing-size-converter.html">Clothing Converter</a></li>
-          <li><a href="../measurement-tools.html">Measurement Tools</a></li>
-          <li><a href="../shoe-sizing-guides.html">Guides</a></li>
-          <li><a href="../legal/about.html">About</a></li>
-          <li><a href="../legal/contact.html">Contact</a></li>
-          <li><a href="../legal/privacy.html">Privacy</a></li>
+          <li><a href="${Hmeas('index.html')}">Home</a></li>
+          <li><a href="${Hmeas('shoe-size-converter.html')}">Shoe Converter</a></li>
+          <li><a href="${Hmeas('clothing-size-converter.html')}">Clothing Converter</a></li>
+          <li><a href="${Hmeas('measurement-tools.html')}">Measurement Tools</a></li>
+          <li><a href="${Hmeas('shoe-sizing-guides.html')}">Guides</a></li>
+          <li><a href="${Hmeas('legal/about.html')}">About</a></li>
+          <li><a href="${Hmeas('legal/contact.html')}">Contact</a></li>
+          <li><a href="${Hmeas('legal/privacy.html')}">Privacy</a></li>
         </ul>
       </nav>
     </div>
   </header>
   <main class="main-content">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="${Hmeas('index.html')}">Home</a> &gt; <a href="${Hmeas('shoe-size-converter.html')}">Shoe Converter</a> &gt; <span>${escapeHtml(title)}</span></nav>
     ${body}
     <div class="ad-slot ad-sticky-mobile" data-module="ad-slot" data-slot="sticky-mobile"></div>
   </main>
@@ -2756,13 +2797,13 @@ function generateCMConverters(measurementRoutes, shoeData, clothingData, semanti
         <div class="footer-section">
           <h3>Information</h3>
           <ul>
-            <li><a href="../legal/privacy.html">Privacy</a></li>
-            <li><a href="../legal/terms.html">Terms</a></li>
-            <li><a href="../legal/disclaimer.html">Disclaimer</a></li>
-            <li><a href="../legal/editorial-policy.html">Editorial Policy</a></li>
-            <li><a href="../legal/contact.html">Contact</a></li>
-            <li><a href="../legal/about.html">About</a></li>
-            <li><a href="../legal/ai-usage-disclosure.html">AI Disclosure</a></li>
+            <li><a href="${Hmeas('legal/privacy.html')}">Privacy</a></li>
+            <li><a href="${Hmeas('legal/terms.html')}">Terms</a></li>
+            <li><a href="${Hmeas('legal/disclaimer.html')}">Disclaimer</a></li>
+            <li><a href="${Hmeas('legal/editorial-policy.html')}">Editorial Policy</a></li>
+            <li><a href="${Hmeas('legal/contact.html')}">Contact</a></li>
+            <li><a href="${Hmeas('legal/about.html')}">About</a></li>
+            <li><a href="${Hmeas('legal/ai-usage-disclosure.html')}">AI Disclosure</a></li>
           </ul>
         </div>
       </div>
@@ -2771,7 +2812,7 @@ function generateCMConverters(measurementRoutes, shoeData, clothingData, semanti
       </div>
     </div>
   </footer>
-  <script src="../app.js"></script>
+  <script src="${Hmeas('app.js')}"></script>
 </body>
 </html>`;
 
@@ -2903,6 +2944,7 @@ function generatePrintableGuides(shoeData) {
     </div>
   </header>
   <main class="printable-content">
+    <nav class="breadcrumbs screen-only" aria-label="Breadcrumb"><a href="../index.html">Home</a> &gt; <a href="../printable-size-guides.html">Printable Guides</a> &gt; <span>${escapeHtml(footSheet.title)}</span></nav>
     <div class="print-actions screen-only"><button type="button" onclick="window.print()">Print / Save as PDF</button></div>
     <h1>${escapeHtml(footSheet.title)}</h1>
     <p>Use this sheet to measure your foot length in centimeters, then convert to your shoe size online.</p>
@@ -2974,6 +3016,7 @@ function generatePrintableGuides(shoeData) {
     </div>
   </header>
   <main class="printable-content">
+    <nav class="breadcrumbs screen-only" aria-label="Breadcrumb"><a href="../index.html">Home</a> &gt; <a href="../printable-size-guides.html">Printable Guides</a> &gt; <span>${escapeHtml(clothingSheet.title)}</span></nav>
     <div class="print-actions screen-only"><button type="button" onclick="window.print()">Print / Save as PDF</button></div>
     <h1>${escapeHtml(clothingSheet.title)}</h1>
     <p>Measure your chest, waist, and hips in centimeters and use our converter to find your size.</p>
@@ -3058,6 +3101,7 @@ function generatePrintableGuides(shoeData) {
     </div>
   </header>
   <main class="printable-content">
+    <nav class="breadcrumbs screen-only" aria-label="Breadcrumb"><a href="../index.html">Home</a> &gt; <a href="../printable-size-guides.html">Printable Guides</a> &gt; <span>${escapeHtml(refTitle)}</span></nav>
     <div class="print-actions screen-only"><button type="button" onclick="window.print()">Print / Save as PDF</button></div>
     <h1>${escapeHtml(refTitle)}</h1>
     <p>Reference table for US, UK, EU shoe sizes and foot length in cm. For full conversion use our online converter.</p>
@@ -3181,22 +3225,23 @@ function generateMeasurementTools(shoeData, clothingData) {
 <body ${getDataIntentAttr({ type: 'tool' })}>
   <header>
     <div class="header-content">
-      <a href="index.html" class="logo">GlobalSizeChart.com</a>
+      <a href="../index.html" class="logo">GlobalSizeChart.com</a>
       <nav>
         <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="shoe-size-converter.html">Shoe Converter</a></li>
-          <li><a href="clothing-size-converter.html">Clothing Converter</a></li>
-          <li><a href="measurement-tools.html">Measurement Tools</a></li>
-          <li><a href="shoe-sizing-guides.html">Guides</a></li>
-          <li><a href="legal/about.html">About</a></li>
-          <li><a href="legal/contact.html">Contact</a></li>
-          <li><a href="legal/privacy.html">Privacy</a></li>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../shoe-size-converter.html">Shoe Converter</a></li>
+          <li><a href="../clothing-size-converter.html">Clothing Converter</a></li>
+          <li><a href="../measurement-tools.html">Measurement Tools</a></li>
+          <li><a href="../shoe-sizing-guides.html">Guides</a></li>
+          <li><a href="../legal/about.html">About</a></li>
+          <li><a href="../legal/contact.html">Contact</a></li>
+          <li><a href="../legal/privacy.html">Privacy</a></li>
         </ul>
       </nav>
     </div>
   </header>
   <main class="main-content" style="max-width: 900px; margin: 0 auto; padding: 1rem;">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="../index.html">Home</a> &gt; <a href="../measurement-tools.html">Measurement Tools</a> &gt; <span>Measurement Assistant</span></nav>
     <h1>Measurement Assistant</h1>
     <p>Use the tools below to convert units, calculate shoe size from foot length, get clothing size recommendations, and see a combined size summary. All recommendations are approximate; always check the brand size chart.</p>
 
@@ -3330,23 +3375,23 @@ function generateMeasurementTools(shoeData, clothingData) {
         <div class="footer-section">
           <h3>Converters</h3>
           <ul>
-            <li><a href="shoe-size-converter.html">Shoe Size Converter</a></li>
-            <li><a href="clothing-size-converter.html">Clothing Size Converter</a></li>
-            <li><a href="us-to-eu-size.html">US to EU Size</a></li>
-            <li><a href="uk-to-us-size.html">UK to US Size</a></li>
-            <li><a href="cm-to-us-shoe-size.html">CM to US Shoe Size</a></li>
+            <li><a href="../shoe-size-converter.html">Shoe Size Converter</a></li>
+            <li><a href="../clothing-size-converter.html">Clothing Size Converter</a></li>
+            <li><a href="../us-to-eu-size.html">US to EU Size</a></li>
+            <li><a href="../uk-to-us-size.html">UK to US Size</a></li>
+            <li><a href="../cm-to-us-shoe-size.html">CM to US Shoe Size</a></li>
           </ul>
         </div>
         <div class="footer-section">
           <h3>Information</h3>
           <ul>
-            <li><a href="legal/privacy.html">Privacy</a></li>
-            <li><a href="legal/terms.html">Terms</a></li>
-            <li><a href="legal/disclaimer.html">Disclaimer</a></li>
-            <li><a href="legal/editorial-policy.html">Editorial Policy</a></li>
-            <li><a href="legal/contact.html">Contact</a></li>
-            <li><a href="legal/about.html">About</a></li>
-            <li><a href="legal/ai-usage-disclosure.html">AI Disclosure</a></li>
+            <li><a href="../legal/privacy.html">Privacy</a></li>
+            <li><a href="../legal/terms.html">Terms</a></li>
+            <li><a href="../legal/disclaimer.html">Disclaimer</a></li>
+            <li><a href="../legal/editorial-policy.html">Editorial Policy</a></li>
+            <li><a href="../legal/contact.html">Contact</a></li>
+            <li><a href="../legal/about.html">About</a></li>
+            <li><a href="../legal/ai-usage-disclosure.html">AI Disclosure</a></li>
           </ul>
         </div>
       </div>
@@ -3862,6 +3907,17 @@ function generateProgrammaticHub(allRoutes) {
   }
   body += '</ul></section>';
 
+  const breadcrumbItems = [
+    { name: 'Home', url: `${BASE_URL}/` },
+    { name: 'Shoe Converter', url: `${BASE_URL}/shoe-size-converter.html` },
+    { name: 'Shoe Size Pages', url: `${BASE_URL}/shoe-size-pages.html` }
+  ];
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbItems.map((item, i) => ({ '@type': 'ListItem', position: i + 1, name: item.name, item: item.url }))
+  };
+
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -3872,6 +3928,7 @@ function generateProgrammaticHub(allRoutes) {
   <link rel="canonical" href="${BASE_URL}/shoe-size-pages.html">
   <title>Complete Shoe Size Conversion Index | GlobalSizeChart.com</title>
   <link rel="stylesheet" href="styles.css">
+  <script type="application/ld+json">${JSON.stringify(breadcrumbJsonLd)}</script>
 </head>
 <body>
   <header>
@@ -3893,6 +3950,7 @@ function generateProgrammaticHub(allRoutes) {
   </header>
   <main>
     <div class="container">
+      <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> &gt; <a href="shoe-size-converter.html">Shoe Converter</a> &gt; <span>Shoe Size Pages</span></nav>
       ${body}
     </div>
   </main>
@@ -4133,11 +4191,18 @@ function generateBrandSizeGuidesHub(brandGenerated = [], brandRoutes = []) {
   });
 }
 
-function generateCMMeasurementConvertersHub(measurementGenerated = []) {
-  const links = (measurementGenerated || []).map(f => ({
-    href: 'measurement/' + f,
-    text: f.replace('.html', '').replace(/-/g, ' ')
-  }));
+function generateCMMeasurementConvertersHub(measurementGenerated = [], regionRoutes = []) {
+  const links = [];
+  const regionLabels = { CM: 'CM', INCH: 'Inch', EU: 'EU', US: 'US', UK: 'UK', JP: 'Japan', CN: 'China', KR: 'Korea' };
+  for (const r of regionRoutes || []) {
+    if (r.type !== 'region' || !r.slug) continue;
+    const from = regionLabels[r.from_region] || r.from_region;
+    const to = regionLabels[r.to_region] || r.to_region;
+    links.push({ href: 'programmatic-pages/' + r.slug + '.html', text: from + ' to ' + to + ' Shoe Size' });
+  }
+  for (const f of measurementGenerated || []) {
+    links.push({ href: 'measurement/' + f, text: f.replace('.html', '').replace(/-/g, ' ') });
+  }
   return buildHubPage({
     slug: 'cm-measurement-converters',
     title: 'CM Measurement Converters',
@@ -4338,39 +4403,40 @@ const LINK_PREFIX_FROM_SUBDIR = '../';
 
 /**
  * Build 30+ internal links for pages in a subdir (clothing, brands, measurement).
- * Categories: hub pages, tools, printable, measurement converters, semantic pages; plus caller adds same garment/brand/measurement, similar brands, similar garments, fit problems, alternative regions, measurement refinements, product examples.
+ * currentFile = path from site root (e.g. 'clothing/foo.html', 'brands/bar.html'). All targetPaths are root-relative.
  */
-function buildPhase10InternalLinksBlock(linkPrefix, semanticRoutes = [], extraLinks = [], maxTotal = 40) {
+function buildPhase10InternalLinksBlock(currentFile, semanticRoutes = [], extraLinks = [], maxTotal = 40) {
   const added = new Set();
   const links = [];
-  const p = linkPrefix || LINK_PREFIX_FROM_SUBDIR;
+  const cur = currentFile || 'index.html';
 
-  function add(href, text) {
+  function add(targetPath, text) {
+    const href = internalLinkBuilder.href(cur, targetPath);
     if (added.has(href)) return;
     added.add(href);
     links.push({ href, text });
   }
 
-  add(p + 'index.html', 'Global Size Chart Home');
-  add(p + 'shoe-size-converter.html', 'Shoe Size Converter');
-  add(p + 'clothing-size-converter.html', 'Clothing Size Converter');
-  add(p + 'shoe-size-pages.html', 'Shoe Size Pages Index');
-  add(p + 'programmatic-index.html', 'Programmatic Index');
-  add(p + 'shoe-sizing-guides.html', 'Shoe Sizing Guides');
-  add(p + 'clothing-size-pages.html', 'Clothing Size Pages');
-  add(p + 'brand-size-guides.html', 'Brand Size Guides');
-  add(p + 'tools/measurement-assistant.html', 'Measurement Assistant Tool');
-  add(p + 'tools/fit-assistant.html', 'Fit Assistant');
-  add(p + 'printable/foot-measuring-sheet.html', 'Printable Foot Measuring Sheet');
-  add(p + 'printable/clothing-measurement-chart.html', 'Printable Clothing Measurement Chart');
-  add(p + 'printable/shoe-size-reference-chart.html', 'Printable Shoe Size Reference Chart');
-  add(p + 'measurement/24-cm-to-us-shoe-size.html', '24 cm to US Shoe Size');
-  add(p + 'measurement/26-cm-to-us-shoe-size.html', '26 cm to US Shoe Size');
-  add(p + 'measurement/90cm-chest-to-us-shirt-size.html', '90 cm Chest to US Shirt');
-  add(p + 'measurement/70cm-waist-to-eu-pants.html', '70 cm Waist to EU Pants');
+  add('index.html', 'Global Size Chart Home');
+  add('shoe-size-converter.html', 'Shoe Size Converter');
+  add('clothing-size-converter.html', 'Clothing Size Converter');
+  add('shoe-size-pages.html', 'Shoe Size Pages Index');
+  add('programmatic-index.html', 'Programmatic Index');
+  add('shoe-sizing-guides.html', 'Shoe Sizing Guides');
+  add('clothing-size-pages.html', 'Clothing Size Pages');
+  add('brand-size-guides.html', 'Brand Size Guides');
+  add('tools/measurement-assistant.html', 'Measurement Assistant Tool');
+  add('tools/fit-assistant.html', 'Fit Assistant');
+  add('printable/foot-measuring-sheet.html', 'Printable Foot Measuring Sheet');
+  add('printable/clothing-measurement-chart.html', 'Printable Clothing Measurement Chart');
+  add('printable/shoe-size-reference-chart.html', 'Printable Shoe Size Reference Chart');
+  add('measurement/24-cm-to-us-shoe-size.html', '24 cm to US Shoe Size');
+  add('measurement/26-cm-to-us-shoe-size.html', '26 cm to US Shoe Size');
+  add('measurement/90cm-chest-to-us-shirt-size.html', '90 cm Chest to US Shirt');
+  add('measurement/70cm-waist-to-eu-pants.html', '70 cm Waist to EU Pants');
   for (const sr of (semanticRoutes || []).slice(0, 12)) {
     if (links.length >= maxTotal) break;
-    if (sr.slug) add(p + 'semantic/' + sr.slug + '.html', sr.title || sr.slug.replace(/-/g, ' '));
+    if (sr.slug) add('semantic/' + sr.slug + '.html', sr.title || sr.slug.replace(/-/g, ' '));
   }
   for (const x of extraLinks) {
     if (links.length >= maxTotal) break;
@@ -5313,7 +5379,7 @@ function runPhase10Generator(config) {
   console.log('  wrote clothing-size-pages.html');
   fs.writeFileSync(path.join(ROOT, 'brand-size-guides.html'), generateBrandSizeGuidesHub(brandGenerated, brandRoutes), 'utf8');
   console.log('  wrote brand-size-guides.html');
-  fs.writeFileSync(path.join(ROOT, 'cm-measurement-converters.html'), generateCMMeasurementConvertersHub(measurementGenerated), 'utf8');
+  fs.writeFileSync(path.join(ROOT, 'cm-measurement-converters.html'), generateCMMeasurementConvertersHub(measurementGenerated, routes.filter(r => r.type === 'region')), 'utf8');
   console.log('  wrote cm-measurement-converters.html');
   fs.writeFileSync(path.join(ROOT, 'printable-size-guides.html'), generatePrintableSizeGuidesHub(printableGenerated), 'utf8');
   console.log('  wrote printable-size-guides.html');

@@ -1,0 +1,68 @@
+{
+  "audit_type": "navigation",
+  "site": "GlobalSizeChart",
+  "date": "2026-02-04",
+  "scope": "header and footer navigation across static HTML and key hub pages",
+  "verified_urls": {
+    "/brand-sizing-guide.html": {
+      "status": "did_not_exist",
+      "action": "created_minimal_authority_page",
+      "notes": "Page created with H1, 300–500 words, links to converters and semantic pages, BreadcrumbList and FAQ schema; no ads or monetization."
+    },
+    "/clothing-size-pages.html": {
+      "status": "exists",
+      "action": "none"
+    },
+    "/measurement-tools.html": {
+      "status": "exists",
+      "action": "none"
+    },
+    "/printable-size-guides.html": {
+      "status": "exists",
+      "action": "none"
+    }
+  },
+  "broken_links": [],
+  "fixed_links": [
+    {
+      "url": "/brand-sizing-guide.html",
+      "resolution": "created_minimal_authority_page",
+      "details": "URL was verified per audit; no existing nav link pointed to it. Page created so the URL is valid and future references do not 404."
+    }
+  ],
+  "temporary_removals": [],
+  "nav_links_checked": {
+    "header": [
+      "index.html",
+      "shoe-size-converter.html",
+      "clothing-size-converter.html",
+      "measurement-tools.html",
+      "shoe-sizing-guides.html",
+      "legal/about.html",
+      "legal/contact.html",
+      "legal/privacy.html"
+    ],
+    "footer_information": [
+      "legal/privacy.html",
+      "legal/terms.html",
+      "legal/disclaimer.html",
+      "legal/editorial-policy.html",
+      "legal/contact.html",
+      "legal/about.html",
+      "legal/ai-usage-disclosure.html"
+    ],
+    "footer_converters": [
+      "shoe-size-converter.html",
+      "clothing-size-converter.html",
+      "us-to-eu-size.html",
+      "uk-to-us-size.html",
+      "cm-to-us-shoe-size.html"
+    ],
+    "all_resolve": true
+  },
+  "notes": [
+    "Header/footer nav was scanned on index.html, legal/about.html, brand-size-guides.html, clothing-size-pages.html, measurement-tools.html, printable-size-guides.html, and best-fitting-shoes.html.",
+    "Programmatic templates use relative paths to ../index.html, ../shoe-size-converter.html, ../clothing-size-converter.html, ../legal/about.html, ../legal/contact.html; all resolve.",
+    "Site uses brand-size-guides.html (with 's') in nav and content; no link pointed to brand-sizing-guide.html. brand-sizing-guide.html was created as a dedicated authority page for the verified slug."
+  ]
+}

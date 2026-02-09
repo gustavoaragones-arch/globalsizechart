@@ -252,7 +252,20 @@ function expandMassRoutes(shoeData, clothingData, options = {}) {
   const existingSlugs = existingProgrammaticSlugs(programmaticRoutes);
 
   const expandedSizePair = expandSizePairRoutes(shoeData, existingSlugs);
-  const mergedProgrammatic = mergeRoutes(programmaticRoutes, expandedSizePair);
+  let mergedProgrammatic = mergeRoutes(programmaticRoutes, expandedSizePair);
+
+  // Merge extended converter coverage from generators/ (missing region hubs)
+  const generatorModules = [
+    require('../generators/generate-cm-converters.js'),
+    require('../generators/generate-measurement-converters.js'),
+    require('../generators/generate-kids-measurement.js'),
+    require('../generators/generate-cross-region-measurement.js')
+  ];
+  const extraRegionRoutes = [];
+  for (const mod of generatorModules) {
+    if (mod && typeof mod.getRoutes === 'function') extraRegionRoutes.push(...mod.getRoutes());
+  }
+  mergedProgrammatic = mergeRoutes(mergedProgrammatic, extraRegionRoutes);
   const programmaticSlugsAfter = new Set(mergedProgrammatic.map(r => r.slug));
 
   const semanticPath = path.join(DATA_DIR, 'semantic_routes.json');
@@ -334,6 +347,12 @@ function main() {
     console.warn('Warning: total pages generated (' + result.totalPages + ') is below target (' + TARGET_MIN_PAGES + ').');
   } else {
     console.log('\nPhase 10 complete. Total pages: ' + result.totalPages + ' (target: ' + TARGET_MIN_PAGES + '+).');
+  }
+
+  const { run: runPrebuildValidation } = require('./prebuild-link-validation.js');
+  if (!runPrebuildValidation()) {
+    console.error('Prebuild link validation failed. Fix missing internal link targets and re-run.');
+    process.exit(1);
   }
   return result;
 }

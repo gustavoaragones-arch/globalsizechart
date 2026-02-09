@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-02-08T15:25:53.032Z",
+  "generatedAt": "2026-02-09T02:52:35.464Z",
   "semantic_page_count": 6,
-  "average_internal_links": 57.8,
+  "average_internal_links": 63.8,
   "orphan_pages": [],
   "schema_validation": {
     "semantic": {
@@ -9,8 +9,8 @@
       "article_or_howto": 6
     },
     "programmatic": {
-      "faq": 79,
-      "breadcrumb": 79
+      "faq": 754,
+      "breadcrumb": 754
     }
   },
   "cluster_integrity": {
@@ -19,6 +19,6 @@
     "semantic_links_requirements_met": true
   },
   "sitemap_includes_semantic": true,
-  "duplicate_titles": 13,
+  "duplicate_titles": 252,
   "internal_links_increased": true
 }

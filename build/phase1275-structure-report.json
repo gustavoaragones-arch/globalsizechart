@@ -1,0 +1,455 @@
+{
+  "generatedAt": "2026-02-09T03:14:15.713Z",
+  "total_pages": 1057,
+  "orphan_pages": [],
+  "orphan_count": 0,
+  "broken_internal_links": [],
+  "broken_internal_links_count": 0,
+  "pages_with_under_10_internal_links": [
+    {
+      "path": "printable/clothing-measurement-chart.html",
+      "count": 4
+    },
+    {
+      "path": "printable/foot-measuring-sheet.html",
+      "count": 4
+    },
+    {
+      "path": "printable/shoe-size-reference-chart.html",
+      "count": 4
+    },
+    {
+      "path": "tools/fit-assistant.html",
+      "count": 8
+    }
+  ],
+  "pages_under_10_links_count": 4,
+  "pages_missing_breadcrumb_schema": [],
+  "pages_missing_breadcrumb_count": 0,
+  "missing_hubs": [],
+  "duplicate_titles": [
+    {
+      "title": "Men's US L to UK Tops Size | GlobalSizeChart.com",
+      "pages": [
+        "clothing/clothing-men-tops-L-US-to-UK.html",
+        "clothing/mens-large-us-to-uk.html"
+      ]
+    },
+    {
+      "title": "Men's US M to EU Tops Size | GlobalSizeChart.com",
+      "pages": [
+        "clothing/clothing-men-tops-M-US-to-EU.html",
+        "clothing/mens-medium-us-to-eu.html"
+      ]
+    },
+    {
+      "title": "Women's US 6 to EU Pants Size | GlobalSizeChart.com",
+      "pages": [
+        "clothing/clothing-women-pants-6-US-to-EU.html",
+        "clothing/womens-pants-us-6-to-eu.html"
+      ]
+    },
+    {
+      "title": "How to Measure Your Feet in CM | GlobalSizeChart.com",
+      "pages": [
+        "how-to-measure-feet-cm.html",
+        "semantic/how-to-measure-feet-cm.html"
+      ]
+    },
+    {
+      "title": "101 cm Chest to EU Shirt Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/101cm-chest-to-eu-shirt-size-men.html",
+        "measurement/101cm-chest-to-eu-shirt-size-women.html"
+      ]
+    },
+    {
+      "title": "101 cm Chest to US Shirt Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/101cm-chest-to-us-shirt-size-men.html",
+        "measurement/101cm-chest-to-us-shirt-size-women.html"
+      ]
+    },
+    {
+      "title": "106 cm Chest to EU Shirt Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/106cm-chest-to-eu-shirt-size-men.html",
+        "measurement/106cm-chest-to-eu-shirt-size-women.html"
+      ]
+    },
+    {
+      "title": "106 cm Chest to US Shirt Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/106cm-chest-to-us-shirt-size-men.html",
+        "measurement/106cm-chest-to-us-shirt-size-women.html"
+      ]
+    },
+    {
+      "title": "111 cm Chest to EU Shirt Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/111cm-chest-to-eu-shirt-size-men.html",
+        "measurement/111cm-chest-to-eu-shirt-size-women.html"
+      ]
+    },
+    {
+      "title": "111 cm Chest to US Shirt Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/111cm-chest-to-us-shirt-size-men.html",
+        "measurement/111cm-chest-to-us-shirt-size-women.html"
+      ]
+    },
+    {
+      "title": "20.5 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/20-5-cm-to-us-shoe-size-men.html",
+        "measurement/20-5-cm-to-us-shoe-size-women.html"
+      ]
+    },
+    {
+      "title": "20 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/20-cm-to-us-shoe-size-men.html",
+        "measurement/20-cm-to-us-shoe-size-women.html"
+      ]
+    },
+    {
+      "title": "21.5 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/21-5-cm-to-us-shoe-size-men.html",
+        "measurement/21-5-cm-to-us-shoe-size-women.html"
+      ]
+    },
+    {
+      "title": "21 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/21-cm-to-us-shoe-size-men.html",
+        "measurement/21-cm-to-us-shoe-size-women.html"
+      ]
+    },
+    {
+      "title": "22.5 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/22-5-cm-to-us-shoe-size-men.html",
+        "measurement/22-5-cm-to-us-shoe-size-women.html"
+      ]
+    },
+    {
+      "title": "22 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/22-cm-to-us-shoe-size-men.html",
+        "measurement/22-cm-to-us-shoe-size-women.html"
+      ]
+    },
+    {
+      "title": "23.5 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/23-5-cm-to-us-shoe-size-men.html",
+        "measurement/23-5-cm-to-us-shoe-size-women.html"
+      ]
+    },
+    {
+      "title": "23 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/23-cm-to-us-shoe-size-men.html",
+        "measurement/23-cm-to-us-shoe-size-women.html"
+      ]
+    },
+    {
+      "title": "24.5 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/24-5-cm-to-us-shoe-size-men.html",
+        "measurement/24-5-cm-to-us-shoe-size-women.html"
+      ]
+    },
+    {
+      "title": "24 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/24-cm-to-us-shoe-size-men.html",
+        "measurement/24-cm-to-us-shoe-size-women.html",
+        "measurement/24-cm-to-us-shoe-size.html"
+      ]
+    },
+    {
+      "title": "25.5 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/25-5-cm-to-us-shoe-size-men.html",
+        "measurement/25-5-cm-to-us-shoe-size-women.html"
+      ]
+    },
+    {
+      "title": "25 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/25-cm-to-us-shoe-size-men.html",
+        "measurement/25-cm-to-us-shoe-size-women.html",
+        "measurement/25-cm-to-us-shoe-size.html"
+      ]
+    },
+    {
+      "title": "26.5 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/26-5-cm-to-us-shoe-size-men.html",
+        "measurement/26-5-cm-to-us-shoe-size-women.html"
+      ]
+    },
+    {
+      "title": "26 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/26-cm-to-us-shoe-size-men.html",
+        "measurement/26-cm-to-us-shoe-size-women.html",
+        "measurement/26-cm-to-us-shoe-size.html"
+      ]
+    },
+    {
+      "title": "27.5 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/27-5-cm-to-us-shoe-size-men.html",
+        "measurement/27-5-cm-to-us-shoe-size-women.html"
+      ]
+    },
+    {
+      "title": "27 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/27-cm-to-us-shoe-size-men.html",
+        "measurement/27-cm-to-us-shoe-size-women.html"
+      ]
+    },
+    {
+      "title": "28.5 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/28-5-cm-to-us-shoe-size-men.html",
+        "measurement/28-5-cm-to-us-shoe-size-women.html"
+      ]
+    },
+    {
+      "title": "28 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/28-cm-to-us-shoe-size-men.html",
+        "measurement/28-cm-to-us-shoe-size-women.html"
+      ]
+    },
+    {
+      "title": "29.5 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/29-5-cm-to-us-shoe-size-men.html",
+        "measurement/29-5-cm-to-us-shoe-size-women.html"
+      ]
+    },
+    {
+      "title": "29 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/29-cm-to-us-shoe-size-men.html",
+        "measurement/29-cm-to-us-shoe-size-women.html"
+      ]
+    },
+    {
+      "title": "30.5 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/30-5-cm-to-us-shoe-size-men.html",
+        "measurement/30-5-cm-to-us-shoe-size-women.html"
+      ]
+    },
+    {
+      "title": "30 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/30-cm-to-us-shoe-size-men.html",
+        "measurement/30-cm-to-us-shoe-size-women.html"
+      ]
+    },
+    {
+      "title": "31.5 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/31-5-cm-to-us-shoe-size-men.html",
+        "measurement/31-5-cm-to-us-shoe-size-women.html"
+      ]
+    },
+    {
+      "title": "31 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/31-cm-to-us-shoe-size-men.html",
+        "measurement/31-cm-to-us-shoe-size-women.html"
+      ]
+    },
+    {
+      "title": "32 cm to US Shoe Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/32-cm-to-us-shoe-size-men.html",
+        "measurement/32-cm-to-us-shoe-size-women.html"
+      ]
+    },
+    {
+      "title": "66 cm Waist to US Pants Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/66cm-waist-to-us-pants-women.html",
+        "measurement/66cm-waist-to-us-womens-pants.html"
+      ]
+    },
+    {
+      "title": "71 cm Waist to EU Pants Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/71cm-waist-to-eu-pants-men.html",
+        "measurement/71cm-waist-to-eu-pants-women.html"
+      ]
+    },
+    {
+      "title": "71 cm Waist to US Pants Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/71cm-waist-to-us-pants-men.html",
+        "measurement/71cm-waist-to-us-pants-women.html"
+      ]
+    },
+    {
+      "title": "76 cm Waist to EU Pants Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/76cm-waist-to-eu-pants-men.html",
+        "measurement/76cm-waist-to-eu-pants-women.html"
+      ]
+    },
+    {
+      "title": "76 cm Waist to US Pants Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/76cm-waist-to-us-pants-men.html",
+        "measurement/76cm-waist-to-us-pants-women.html",
+        "measurement/76cm-waist-to-us-pants.html"
+      ]
+    },
+    {
+      "title": "81 cm Waist to EU Pants Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/81cm-waist-to-eu-pants-men.html",
+        "measurement/81cm-waist-to-eu-pants-women.html"
+      ]
+    },
+    {
+      "title": "81 cm Waist to US Pants Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/81cm-waist-to-us-pants-men.html",
+        "measurement/81cm-waist-to-us-pants-women.html"
+      ]
+    },
+    {
+      "title": "86 cm Chest to EU Shirt Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/86cm-chest-to-eu-shirt-size-men.html",
+        "measurement/86cm-chest-to-eu-shirt-size-women.html"
+      ]
+    },
+    {
+      "title": "86 cm Chest to US Shirt Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/86cm-chest-to-us-shirt-size-men.html",
+        "measurement/86cm-chest-to-us-shirt-size-women.html"
+      ]
+    },
+    {
+      "title": "86 cm Waist to EU Pants Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/86cm-waist-to-eu-pants-men.html",
+        "measurement/86cm-waist-to-eu-pants-women.html"
+      ]
+    },
+    {
+      "title": "86 cm Waist to US Pants Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/86cm-waist-to-us-pants-men.html",
+        "measurement/86cm-waist-to-us-pants-women.html"
+      ]
+    },
+    {
+      "title": "91 cm Chest to EU Shirt Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/91cm-chest-to-eu-shirt-size-men.html",
+        "measurement/91cm-chest-to-eu-shirt-size-women.html"
+      ]
+    },
+    {
+      "title": "91 cm Chest to US Shirt Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/91cm-chest-to-us-shirt-size-men.html",
+        "measurement/91cm-chest-to-us-shirt-size-women.html"
+      ]
+    },
+    {
+      "title": "91 cm Waist to EU Pants Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/91cm-waist-to-eu-pants-men.html",
+        "measurement/91cm-waist-to-eu-pants-women.html"
+      ]
+    },
+    {
+      "title": "91 cm Waist to US Pants Size | GlobalSizeChart.com",
+      "pages": [
+        "measurement/91cm-waist-to-us-pants-men.html",
+        "measurement/91cm-waist-to-us-pants-women.html"
+      ]
+    }
+  ],
+  "duplicate_titles_count": 307,
+  "pages_missing_meta_description": [
+    "brands/levis-jeans-size-guide.html",
+    "kids-shoe-size-pages.html",
+    "mens-shoe-size-pages.html",
+    "programmatic-pages/kids-shoe-size-converter.html",
+    "programmatic-pages/mens-shoe-size-converter.html",
+    "programmatic-pages/womens-shoe-size-converter.html",
+    "womens-shoe-size-pages.html"
+  ],
+  "pages_missing_meta_description_count": 7,
+  "pages_not_linked_from_hubs": [
+    "clothing-fit-problems.html",
+    "clothing-size-pages.html",
+    "common-sizing-problems.html",
+    "shoe-fit-problems.html"
+  ],
+  "pages_not_linked_from_hubs_count": 4,
+  "avg_internal_links": 89.8,
+  "authority_coverage_score": 1,
+  "crawl_depth_estimate": 4,
+  "unreachable_from_index": 0,
+  "phase13_readiness": true,
+  "phase13_criteria": {
+    "broken_links": {
+      "required": 0,
+      "actual": 0,
+      "pass": true
+    },
+    "orphan_pages": {
+      "required": 0,
+      "actual": 0,
+      "pass": true
+    },
+    "pages_under_10_links": {
+      "required": " < 5",
+      "actual": 4,
+      "pass": true
+    },
+    "missing_breadcrumb": {
+      "required": "0–2",
+      "actual": 0,
+      "pass": true
+    },
+    "authority_coverage": {
+      "required": "≥0.995",
+      "actual": 1,
+      "pass": true
+    },
+    "crawl_depth": {
+      "required": "≤4",
+      "actual": 4,
+      "pass": true
+    },
+    "unreachable_from_index": {
+      "required": 0,
+      "actual": 0,
+      "pass": true
+    }
+  },
+  "summary": {
+    "total_pages": 1057,
+    "orphan_count": 0,
+    "broken_links_count": 0,
+    "under_10_links_count": 4,
+    "missing_breadcrumb_count": 0,
+    "missing_meta_count": 7,
+    "unreachable_count": 0
+  }
+}
