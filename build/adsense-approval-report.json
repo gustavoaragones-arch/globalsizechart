@@ -1,0 +1,123 @@
+{
+  "generatedAt": "2026-02-09T00:22:59.531Z",
+  "pages_analyzed": 1035,
+  "avg_content_quality_score": 90,
+  "trust_pages_present": {
+    "present": [
+      "legal/privacy.html",
+      "legal/terms.html",
+      "legal/disclaimer.html",
+      "legal/editorial-policy.html",
+      "legal/contact.html",
+      "legal/about.html",
+      "legal/ai-usage-disclosure.html"
+    ],
+    "missing": [],
+    "all_present": true
+  },
+  "layout_compliance_score": 0,
+  "layout_warnings_count": 88,
+  "policy_risk_flags": {
+    "prohibited_content": 1,
+    "medical_claims": 0,
+    "financial_guarantees": 0,
+    "fake_reviews": 0,
+    "copied_brand": 0,
+    "scraped_tables": 1,
+    "excessive_outbound": 0,
+    "thin_pages": 8,
+    "total_warnings": 10
+  },
+  "monetization_safety_status": "at_risk",
+  "thin_page_detection": {
+    "threshold_words": 200,
+    "count": 8,
+    "sample": [
+      {
+        "path": "shoe-sizing-guides.html",
+        "word_count": 98
+      },
+      {
+        "path": "printable/clothing-measurement-chart.html",
+        "word_count": 102
+      },
+      {
+        "path": "printable/foot-measuring-sheet.html",
+        "word_count": 115
+      },
+      {
+        "path": "measurement-tools.html",
+        "word_count": 129
+      },
+      {
+        "path": "printable/shoe-size-reference-chart.html",
+        "word_count": 139
+      },
+      {
+        "path": "brand-size-guides.html",
+        "word_count": 159
+      },
+      {
+        "path": "printable-size-guides.html",
+        "word_count": 160
+      },
+      {
+        "path": "uk-to-us-size.html",
+        "word_count": 196
+      }
+    ]
+  },
+  "orphan_page_detection": {
+    "count": 222,
+    "sample": [
+      "legal/content-policy.html",
+      "programmatic-pages/china-42-to-us-shoe-size.html",
+      "programmatic-pages/mens-eu-45-to-us-shoe-size.html",
+      "clothing/clothing-men-pants-30-EU-to-US.html",
+      "clothing/clothing-men-pants-30-UK-to-US.html",
+      "clothing/clothing-men-pants-32-EU-to-US.html",
+      "clothing/clothing-men-pants-32-UK-to-US.html",
+      "clothing/clothing-men-pants-32-US-to-EU.html",
+      "clothing/clothing-men-pants-32-US-to-UK.html",
+      "clothing/clothing-men-pants-34-EU-to-US.html",
+      "clothing/clothing-men-pants-34-UK-to-US.html",
+      "clothing/clothing-men-pants-34-US-to-EU.html",
+      "clothing/clothing-men-pants-34-US-to-UK.html",
+      "clothing/clothing-men-pants-36-EU-to-US.html",
+      "clothing/clothing-men-pants-36-UK-to-US.html",
+      "clothing/clothing-men-pants-36-US-to-EU.html",
+      "clothing/clothing-men-pants-36-US-to-UK.html",
+      "clothing/clothing-men-pants-38-EU-to-US.html",
+      "clothing/clothing-men-pants-38-UK-to-US.html",
+      "clothing/clothing-men-pants-38-US-to-EU.html",
+      "clothing/clothing-men-pants-38-US-to-UK.html",
+      "clothing/clothing-men-pants-40-EU-to-US.html",
+      "clothing/clothing-men-pants-40-UK-to-US.html",
+      "clothing/clothing-men-pants-40-US-to-EU.html",
+      "clothing/clothing-men-pants-40-US-to-UK.html",
+      "clothing/clothing-men-pants-42-EU-to-US.html",
+      "clothing/clothing-men-pants-42-UK-to-US.html",
+      "clothing/clothing-men-pants-42-US-to-EU.html",
+      "clothing/clothing-men-pants-42-US-to-UK.html",
+      "clothing/clothing-men-tops-L-EU-to-US.html"
+    ],
+    "note": "Showing first 30 of 222 orphans"
+  },
+  "approval_readiness_estimate": {
+    "score": 56,
+    "label": "needs_improvement",
+    "summary": "Some improvements needed: review policy flags, thin pages, and layout warnings."
+  },
+  "hard_rules_compliance": {
+    "no_adsense_scripts": true,
+    "no_affiliate_activated": true,
+    "no_popups": true,
+    "no_newsletter_forms": true,
+    "no_aggressive_ctas": true,
+    "no_external_trackers": true,
+    "no_cookies_introduced": true,
+    "no_login_systems": true,
+    "no_frameworks_introduced": true,
+    "no_page_speed_reduction": true
+  }
+}

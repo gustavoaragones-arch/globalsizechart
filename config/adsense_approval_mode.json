@@ -1,0 +1,9 @@
+{
+  "adsense_approval_mode": true,
+  "monetization_block_titles": [
+    "Sizing Insights",
+    "Fit Considerations",
+    "Sizing Examples"
+  ],
+  "_comment": "When adsense_approval_mode is true: affiliate links disabled, product modules informational only, no commercial CTA (buy/shop/deal), monetization blocks use the titles above."
+}

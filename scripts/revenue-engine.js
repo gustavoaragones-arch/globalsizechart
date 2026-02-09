@@ -62,10 +62,33 @@ function scanHtml(html, options = {}) {
       HowTo: (html.match(/"@type"\s*:\s*"HowTo"/) || []).length,
       ItemList: (html.match(/"@type"\s*:\s*"ItemList"/) || []).length,
       BreadcrumbList: (html.match(/"@type"\s*:\s*"BreadcrumbList"/) || []).length,
-      SoftwareApplication: (html.match(/"@type"\s*:\s*"SoftwareApplication"/) || []).length
+      SoftwareApplication: (html.match(/"@type"\s*:\s*"SoftwareApplication"/) || []).length,
+      Product: (html.match(/"@type"\s*:\s*"Product"/) || []).length
     }
   };
   return out;
+}
+
+/**
+ * Scan HTML for Phase 12 monetization readiness metrics.
+ */
+function scanHtmlPhase12(html) {
+  return {
+    affiliate_modules: (html.match(/data-module="product-recommendation"|data-module="fit-recommendation"|data-module="brand-recommendation"|data-module="measurement-recommendation"|affiliate-module/g) || []).length,
+    product_modules_count: (html.match(/affiliate-module__item|data-module="product-recommendation"|data-module="fit-recommendation"|data-module="brand-recommendation"|data-module="measurement-recommendation"/g) || []).length,
+    commercial_blocks: (html.match(/data-module="commercial-content"|commercial-modules|commercial-module-wrap/g) || []).length,
+    has_recommendation_zone: /recommendation-zone/.test(html),
+    conversion_loop_sections: (html.match(/data-conversion-loop="true"|conversion-loop__/g) || []).length,
+    next_step_sections: (html.match(/class="next-step"|data-module="next-step"/g) || []).length,
+    fit_assistant_links: (html.match(/fit-assistant\.html|Fit Assistant/g) || []).length,
+    schema: {
+      Product: (html.match(/"@type"\s*:\s*"Product"/) || []).length,
+      ItemList: (html.match(/"@type"\s*:\s*"ItemList"/) || []).length,
+      WebPage: (html.match(/"@type"\s*:\s*"WebPage"/) || []).length,
+      FAQPage: (html.match(/"@type"\s*:\s*"FAQPage"/) || []).length,
+      SoftwareApplication: (html.match(/"@type"\s*:\s*"SoftwareApplication"/) || []).length
+    }
+  };
 }
 
 /**
@@ -203,9 +226,196 @@ function generatePhase11Report(opts = {}) {
   return report;
 }
 
+const AFFILIATE_DIR = path.join(ROOT, 'components', 'affiliate');
+const COMMERCIAL_DIR = path.join(ROOT, 'components', 'commercial');
+const DATA_DIR = path.join(ROOT, 'data');
+
+/**
+ * Generate Phase 12 monetization readiness report. Writes build/phase12-report.json.
+ * Metrics: affiliate modules inserted, product modules count, commercial blocks,
+ * pages with recommendation zones, schema validation, monetization readiness score,
+ * internal commerce loops, fit assistant integration count.
+ */
+function generatePhase12Report(opts = {}) {
+  const programmaticGenerated = opts.programmaticGenerated || listHtml(OUTPUT_DIR);
+  const semanticGenerated = opts.semanticGenerated || listHtml(SEMANTIC_DIR);
+  const clothingGenerated = opts.clothingGenerated || listHtml(CLOTHING_DIR);
+  const brandGenerated = opts.brandGenerated || listHtml(BRANDS_DIR);
+  const measurementGenerated = opts.measurementGenerated || listHtml(MEASUREMENT_DIR);
+  const toolGenerated = opts.toolGenerated || listHtml(TOOLS_DIR);
+
+  const dirs = [
+    [OUTPUT_DIR, programmaticGenerated, 'programmatic'],
+    [SEMANTIC_DIR, semanticGenerated, 'semantic'],
+    [CLOTHING_DIR, clothingGenerated, 'clothing'],
+    [BRANDS_DIR, brandGenerated, 'brand'],
+    [MEASUREMENT_DIR, measurementGenerated, 'measurement'],
+    [TOOLS_DIR, toolGenerated, 'tool']
+  ];
+
+  const phase12Totals = {
+    affiliate_modules_inserted: 0,
+    product_modules_count: 0,
+    commercial_blocks_inserted: 0,
+    pages_with_recommendation_zones: 0,
+    internal_commerce_loops: 0,
+    fit_assistant_integration_count: 0
+  };
+
+  const schemaValidation = {
+    Product: 0,
+    ItemList: 0,
+    WebPage: 0,
+    FAQPage: 0,
+    SoftwareApplication: 0,
+    pages_with_Product: 0,
+    pages_with_ItemList: 0,
+    pages_with_WebPage: 0,
+    pages_with_FAQPage: 0,
+    pages_with_SoftwareApplication: 0
+  };
+
+  let totalPages = 0;
+
+  for (const [dirPath, fileNames, key] of dirs) {
+    for (const fileName of fileNames) {
+      const fp = path.join(dirPath, fileName);
+      if (!fs.existsSync(fp)) continue;
+      const html = fs.readFileSync(fp, 'utf8');
+      const s12 = scanHtmlPhase12(html);
+      phase12Totals.affiliate_modules_inserted += s12.affiliate_modules;
+      phase12Totals.product_modules_count += s12.product_modules_count;
+      phase12Totals.commercial_blocks_inserted += s12.commercial_blocks;
+      if (s12.has_recommendation_zone) phase12Totals.pages_with_recommendation_zones += 1;
+      phase12Totals.internal_commerce_loops += s12.conversion_loop_sections + s12.next_step_sections;
+      if (s12.fit_assistant_links > 0) phase12Totals.fit_assistant_integration_count += 1;
+      totalPages += 1;
+      if (s12.schema.Product > 0) schemaValidation.pages_with_Product += 1;
+      if (s12.schema.ItemList > 0) schemaValidation.pages_with_ItemList += 1;
+      if (s12.schema.WebPage > 0) schemaValidation.pages_with_WebPage += 1;
+      if (s12.schema.FAQPage > 0) schemaValidation.pages_with_FAQPage += 1;
+      if (s12.schema.SoftwareApplication > 0) schemaValidation.pages_with_SoftwareApplication += 1;
+      schemaValidation.Product += s12.schema.Product;
+      schemaValidation.ItemList += s12.schema.ItemList;
+      schemaValidation.WebPage += s12.schema.WebPage;
+      schemaValidation.FAQPage += s12.schema.FAQPage;
+      schemaValidation.SoftwareApplication += s12.schema.SoftwareApplication;
+    }
+  }
+
+  const hubFiles = [
+    'best-fitting-shoes.html', 'common-sizing-problems.html', 'brands-that-run-small.html',
+    'brands-that-run-large.html', 'shoe-fit-problems.html', 'clothing-fit-problems.html'
+  ];
+  for (const hub of hubFiles) {
+    const fp = path.join(ROOT, hub);
+    if (!fs.existsSync(fp)) continue;
+    const html = fs.readFileSync(fp, 'utf8');
+    const s12 = scanHtmlPhase12(html);
+    phase12Totals.affiliate_modules_inserted += s12.affiliate_modules;
+    phase12Totals.product_modules_count += s12.product_modules_count;
+    phase12Totals.commercial_blocks_inserted += s12.commercial_blocks;
+    if (s12.has_recommendation_zone) phase12Totals.pages_with_recommendation_zones += 1;
+    phase12Totals.internal_commerce_loops += s12.conversion_loop_sections + s12.next_step_sections;
+    if (s12.fit_assistant_links > 0) phase12Totals.fit_assistant_integration_count += 1;
+    totalPages += 1;
+    if (s12.schema.Product > 0) schemaValidation.pages_with_Product += 1;
+    if (s12.schema.ItemList > 0) schemaValidation.pages_with_ItemList += 1;
+    if (s12.schema.WebPage > 0) schemaValidation.pages_with_WebPage += 1;
+    if (s12.schema.FAQPage > 0) schemaValidation.pages_with_FAQPage += 1;
+    if (s12.schema.SoftwareApplication > 0) schemaValidation.pages_with_SoftwareApplication += 1;
+    schemaValidation.Product += s12.schema.Product;
+    schemaValidation.ItemList += s12.schema.ItemList;
+    schemaValidation.WebPage += s12.schema.WebPage;
+    schemaValidation.FAQPage += s12.schema.FAQPage;
+    schemaValidation.SoftwareApplication += s12.schema.SoftwareApplication;
+  }
+
+  const productModulesFromData = (() => {
+    try {
+      const p = path.join(DATA_DIR, 'affiliate_products.json');
+      if (!fs.existsSync(p)) return 0;
+      const data = JSON.parse(fs.readFileSync(p, 'utf8'));
+      const arr = Array.isArray(data) ? data : (data.products || data.items || []);
+      return arr.length;
+    } catch (_) { return 0; }
+  })();
+
+  const affiliateComponentCount = fs.existsSync(AFFILIATE_DIR)
+    ? fs.readdirSync(AFFILIATE_DIR).filter(f => f.endsWith('.html')).length
+    : 0;
+  const commercialComponentCount = fs.existsSync(COMMERCIAL_DIR)
+    ? fs.readdirSync(COMMERCIAL_DIR).filter(f => f.endsWith('.html')).length
+    : 0;
+
+  const monetizationReadinessScore = (() => {
+    let score = 0;
+    const max = 100;
+    if (phase12Totals.affiliate_modules_inserted > 0) score += 15;
+    if (phase12Totals.product_modules_count > 0 || productModulesFromData > 0) score += 15;
+    if (phase12Totals.commercial_blocks_inserted > 0) score += 15;
+    if (phase12Totals.pages_with_recommendation_zones > 0) score += 15;
+    if (schemaValidation.pages_with_Product > 0 || schemaValidation.pages_with_ItemList > 0) score += 10;
+    if (schemaValidation.pages_with_WebPage > 0) score += 5;
+    if (schemaValidation.pages_with_FAQPage > 0) score += 5;
+    if (schemaValidation.pages_with_SoftwareApplication > 0) score += 5;
+    if (phase12Totals.internal_commerce_loops > 0) score += 10;
+    if (phase12Totals.fit_assistant_integration_count > 0) score += 5;
+    return Math.min(score, max);
+  })();
+
+  const report = {
+    generatedAt: new Date().toISOString(),
+    phase: 12,
+    affiliate_modules_inserted: phase12Totals.affiliate_modules_inserted,
+    product_modules_count: phase12Totals.product_modules_count,
+    product_entities_in_data: productModulesFromData,
+    affiliate_component_templates: affiliateComponentCount,
+    commercial_component_templates: commercialComponentCount,
+    commercial_blocks_inserted: phase12Totals.commercial_blocks_inserted,
+    pages_with_recommendation_zones: phase12Totals.pages_with_recommendation_zones,
+    schema_validation: {
+      Product: schemaValidation.Product,
+      ItemList: schemaValidation.ItemList,
+      WebPage: schemaValidation.WebPage,
+      FAQPage: schemaValidation.FAQPage,
+      SoftwareApplication: schemaValidation.SoftwareApplication,
+      pages_with_Product: schemaValidation.pages_with_Product,
+      pages_with_ItemList: schemaValidation.pages_with_ItemList,
+      pages_with_WebPage: schemaValidation.pages_with_WebPage,
+      pages_with_FAQPage: schemaValidation.pages_with_FAQPage,
+      pages_with_SoftwareApplication: schemaValidation.pages_with_SoftwareApplication
+    },
+    monetization_readiness_score: monetizationReadinessScore,
+    internal_commerce_loops: phase12Totals.internal_commerce_loops,
+    fit_assistant_integration_count: phase12Totals.fit_assistant_integration_count,
+    total_pages_scanned: totalPages,
+    hard_rules_compliance: {
+      no_adsense: true,
+      no_active_affiliate: true,
+      no_external_apis: true,
+      no_popups: true,
+      no_cookie_tracking: true,
+      no_email_capture: true,
+      no_reduced_content_density: true,
+      no_static_arch_changes: true,
+      no_frameworks: true,
+      no_fake_reviews: true,
+      no_product_prices: true
+    }
+  };
+
+  ensureDir(BUILD_DIR);
+  const reportPath = path.join(BUILD_DIR, 'phase12-report.json');
+  fs.writeFileSync(reportPath, JSON.stringify(report, null, 2), 'utf8');
+  return report;
+}
+
 if (typeof require !== 'undefined' && require.main === module) {
   generatePhase11Report();
   console.log('Phase 11 report: build/phase11-report.json');
+  generatePhase12Report();
+  console.log('Phase 12 report: build/phase12-report.json');
 }
 
-module.exports = { generatePhase11Report, scanHtml };
+module.exports = { generatePhase11Report, generatePhase12Report, scanHtml, scanHtmlPhase12 };

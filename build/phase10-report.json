@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-02-08T03:29:19.385Z",
+  "generatedAt": "2026-02-08T15:25:53.141Z",
   "total_page_count": 122,
   "pages_per_route_type": {
     "programmatic": 79,
@@ -11,7 +11,7 @@
     "tool": 1,
     "hubs": 8
   },
-  "average_internal_links": 114.9,
+  "average_internal_links": 124.9,
   "orphan_detection": {
     "orphans": [],
     "count": 0

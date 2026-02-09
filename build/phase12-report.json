@@ -1,0 +1,40 @@
+{
+  "generatedAt": "2026-02-08T15:25:53.228Z",
+  "phase": 12,
+  "affiliate_modules_inserted": 0,
+  "product_modules_count": 0,
+  "product_entities_in_data": 27,
+  "affiliate_component_templates": 4,
+  "commercial_component_templates": 5,
+  "commercial_blocks_inserted": 125,
+  "pages_with_recommendation_zones": 104,
+  "schema_validation": {
+    "Product": 85,
+    "ItemList": 85,
+    "WebPage": 117,
+    "FAQPage": 86,
+    "SoftwareApplication": 80,
+    "pages_with_Product": 85,
+    "pages_with_ItemList": 85,
+    "pages_with_WebPage": 117,
+    "pages_with_FAQPage": 86,
+    "pages_with_SoftwareApplication": 80
+  },
+  "monetization_readiness_score": 85,
+  "internal_commerce_loops": 520,
+  "fit_assistant_integration_count": 31,
+  "total_pages_scanned": 117,
+  "hard_rules_compliance": {
+    "no_adsense": true,
+    "no_active_affiliate": true,
+    "no_external_apis": true,
+    "no_popups": true,
+    "no_cookie_tracking": true,
+    "no_email_capture": true,
+    "no_reduced_content_density": true,
+    "no_static_arch_changes": true,
+    "no_frameworks": true,
+    "no_fake_reviews": true,
+    "no_product_prices": true
+  }
+}

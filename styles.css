@@ -341,6 +341,27 @@ main {
   border-bottom: 2px solid var(--border-color);
 }
 
+/* UX Trust: publisher-trust section (homepage, converters, hubs) */
+.publisher-trust {
+  background: var(--bg-secondary);
+  border-left: 4px solid var(--primary-color);
+}
+.publisher-trust__intro {
+  margin-bottom: var(--spacing-md);
+}
+.publisher-trust__list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+.publisher-trust__list li {
+  margin-bottom: var(--spacing-sm);
+  padding-left: 0;
+}
+.publisher-trust__list li:last-child {
+  margin-bottom: 0;
+}
+
 /* Phase 11: Monetization modules (trust + dwell time, no ad code) */
 .monetization-modules .monetization-module-wrap {
   margin-bottom: var(--spacing-md);
@@ -359,6 +380,72 @@ main {
   margin-bottom: var(--spacing-xs);
 }
 .monetization-module__inner p {
+  margin-bottom: 0;
+  font-size: 0.95rem;
+}
+
+/* Phase 12: Affiliate product recommendation modules (educational, no buy/affiliate disclosure) */
+.affiliate-module {
+  background: var(--bg-tertiary);
+  border-left: 4px solid var(--primary-color);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-md);
+}
+.affiliate-module__inner {
+  max-width: 100%;
+}
+.affiliate-module__title {
+  font-size: 1.1rem;
+  margin-bottom: var(--spacing-xs);
+}
+.affiliate-module__subtext {
+  font-size: 0.95rem;
+  margin-bottom: var(--spacing-md);
+  color: var(--text-secondary, #555);
+}
+.affiliate-module__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-sm);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+@media (min-width: 520px) {
+  .affiliate-module__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+.affiliate-module__item {
+  font-size: 0.9rem;
+  padding: var(--spacing-xs) 0;
+  border-bottom: 1px solid var(--border-color);
+}
+.affiliate-module__item:last-child {
+  border-bottom: none;
+}
+.affiliate-module__item:empty {
+  display: none;
+}
+
+/* Commercial content blocks (brand/clothing/measurement/high_purchase) */
+.commercial-modules .commercial-module-wrap {
+  margin-bottom: var(--spacing-md);
+}
+.commercial-modules .commercial-module-wrap:last-child {
+  margin-bottom: 0;
+}
+.commercial-module {
+  background: var(--bg-tertiary);
+  border-left: 4px solid var(--primary-color);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-md);
+}
+.commercial-module__title {
+  font-size: 1.1rem;
+  margin-bottom: var(--spacing-xs);
+}
+.commercial-modules .commercial-module__inner p {
   margin-bottom: 0;
   font-size: 0.95rem;
 }
@@ -560,6 +647,31 @@ main {
 .commercial-context {
   margin: var(--spacing-md) 0;
   min-height: 90px;
+  display: block;
+}
+/* Revenue UX layout engine: structural sections for future ad placement, affiliate overlays, RPM optimization */
+.product-context {
+  margin: var(--spacing-md) 0;
+  padding: var(--spacing-sm) 0;
+  min-height: 1px;
+  display: block;
+}
+.fit-warning {
+  margin: var(--spacing-md) 0;
+  padding: var(--spacing-sm) 0;
+  min-height: 1px;
+  display: block;
+}
+.comparison-zone {
+  margin: var(--spacing-md) 0;
+  padding: var(--spacing-sm) 0;
+  min-height: 1px;
+  display: block;
+}
+.recommendation-zone {
+  margin: var(--spacing-md) 0;
+  padding: var(--spacing-sm) 0;
+  min-height: 1px;
   display: block;
 }
 

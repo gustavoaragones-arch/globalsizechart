@@ -13,6 +13,21 @@ const DATA_DIR = path.join(ROOT, 'data');
 const TEMPLATES_DIR = path.join(ROOT, 'programmatic', 'templates');
 const OUTPUT_DIR = path.join(ROOT, 'programmatic-pages');
 const BASE_URL = 'https://globalsizechart.com';
+const ORGANIZATION_ID = `${BASE_URL}/#organization`;
+const WEBSITE_ID = `${BASE_URL}/#website`;
+
+function getOrganizationSchema() {
+  return { '@context': 'https://schema.org', '@type': 'Organization', '@id': ORGANIZATION_ID, name: 'GlobalSizeChart.com', url: BASE_URL, logo: `${BASE_URL}/logo.png`, email: 'contact@globalsizechart.com' };
+}
+function getWebSiteSchema() {
+  return { '@context': 'https://schema.org', '@type': 'WebSite', '@id': WEBSITE_ID, name: 'GlobalSizeChart.com', url: BASE_URL, publisher: { '@id': ORGANIZATION_ID } };
+}
+function getWebPageSchema(opts) {
+  return { '@context': 'https://schema.org', '@type': 'WebPage', name: opts.name || 'GlobalSizeChart.com', description: opts.description, url: opts.url || BASE_URL, publisher: { '@id': ORGANIZATION_ID }, isPartOf: { '@id': WEBSITE_ID } };
+}
+function getBreadcrumbJsonLd(items) {
+  return { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: items.map((item, i) => ({ '@type': 'ListItem', position: i + 1, name: item.name, item: item.url })) };
+}
 
 const REGION_LABELS = {
   US: 'United States (US)',
@@ -202,6 +217,11 @@ function generatePage(route, template, shoeData, allRoutes) {
   const metaDescription = `Convert ${fromLabel} ${route.size} to ${toLabel} shoe size instantly. ${toSize != null ? `Approximate equivalent: ${toLabel} ${toSize}. ` : ''}Includes fit tips and measurement guide.`;
   const keywords = `${fromLabel} ${route.size} to ${toLabel}, ${fromLabel} to ${toLabel} shoe size, convert ${fromLabel} ${route.size}, shoe size conversion`;
 
+  const breadcrumbItems = [
+    { name: 'Home', url: `${BASE_URL}/` },
+    { name: 'Shoe Converter', url: `${BASE_URL}/shoe-size-converter.html` },
+    { name: `${fromLabel} ${route.size} to ${toLabel}`, url: canonicalUrl }
+  ];
   const replacements = {
     '{{PAGE_TITLE}}': pageTitle,
     '{{META_DESCRIPTION}}': metaDescription.replace(/"/g, '&quot;'),
@@ -209,6 +229,11 @@ function generatePage(route, template, shoeData, allRoutes) {
     '{{KEYWORDS}}': keywords,
     '{{H1_TITLE}}': h1Title,
     '{{INTRO_TEXT}}': introText,
+    '{{ORGANIZATION_JSON_LD}}': JSON.stringify(getOrganizationSchema()),
+    '{{WEBSITE_JSON_LD}}': JSON.stringify(getWebSiteSchema()),
+    '{{WEBPAGE_JSON_LD}}': JSON.stringify(getWebPageSchema({ name: pageTitle, description: metaDescription, url: canonicalUrl })),
+    '{{BREADCRUMB_JSON_LD}}': JSON.stringify(getBreadcrumbJsonLd(breadcrumbItems)),
+    '{{BREADCRUMB_HTML}}': '',
     '{{GENDER_OPTIONS}}': buildGenderOptions(route.gender),
     '{{FROM_REGION_OPTIONS}}': buildFromRegionOptions(route.from_region),
     '{{SIZE_VALUE}}': String(route.size),
@@ -216,7 +241,19 @@ function generatePage(route, template, shoeData, allRoutes) {
     '{{MEASUREMENT_GUIDE_SNIPPET}}': MEASUREMENT_SNIPPET,
     '{{FAQ_CONTENT}}': buildFaqContent(route, toSize, fromLabel, toLabel),
     '{{FAQ_JSON_LD}}': buildFaqJsonLd(route, toSize, fromLabel, toLabel),
-    '{{INTERNAL_LINKS}}': buildInternalLinks(route, allRoutes)
+    '{{ENHANCED_SERP_SCHEMAS}}': '',
+    '{{SIZING_KNOWLEDGE_SECTION}}': '',
+    '{{RELATED_SIZE_GRID}}': '',
+    '{{INTERNAL_LINK_GRAPH}}': '',
+    '{{CRAWL_DISCOVERY_LINKS}}': '',
+    '{{DISCOVERY_GRID_LINKS}}': '',
+    '{{INTERNAL_LINKS}}': buildInternalLinks(route, allRoutes),
+    '{{DATA_INTENT}}': '',
+    '{{CONVERSION_LOOP_MODULES}}': '',
+    '{{BEHAVIORAL_RECOMMENDATIONS}}': '',
+    '{{HIGH_RPM_CONTENT_MODULES}}': '',
+    '{{SESSION_DEPTH_MODULES}}': '',
+    '{{COMMERCIAL_CONTENT_BLOCKS}}': ''
   };
 
   let html = template;

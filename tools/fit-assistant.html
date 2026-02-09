@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+  <meta name="description" content="Fit Assistant: get recommended shoe and clothing sizes from foot length and measurements. Choose region, brand, and fit preference. Local logic only—no tracking.">
+  <link rel="canonical" href="https://globalsizechart.com/tools/fit-assistant.html">
+  <title>Fit Assistant | GlobalSizeChart.com</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .tool-section { margin: 1.5rem 0; padding: 1rem; border: 1px solid #e0e0e0; border-radius: 8px; background: #fafafa; }
+    .tool-section h2 { margin-top: 0; }
+    .tool-row { margin: 0.5rem 0; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .tool-row label { min-width: 110px; }
+    .tool-row input, .tool-row select { padding: 0.35rem 0.5rem; }
+    .fit-output { margin: 1rem 0; }
+    .fit-output h3 { margin: 0.75rem 0 0.25rem; font-size: 1rem; }
+    .fit-output ul { margin: 0.25rem 0; padding-left: 1.25rem; }
+    .recommendation-box { background: #e8f4f8; border: 1px solid #0a7ea4; border-radius: 8px; padding: 1rem; margin: 1rem 0; }
+    .recommendation-box h3 { margin-top: 0; }
+    .advice-box { background: #f5f5f5; border-left: 4px solid #0a7ea4; padding: 0.75rem 1rem; margin: 0.5rem 0; font-size: 0.95rem; }
+    .related-links { list-style: none; padding-left: 0; }
+    .related-links li { margin: 0.35rem 0; }
+    .related-links a { color: #0a7ea4; }
+    .faq-item { margin: 0.75rem 0; }
+    .faq-item summary { cursor: pointer; font-weight: bold; }
+    #fit-result { display: none; }
+    #fit-result.visible { display: block; }
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Fit Assistant","applicationCategory":"WebApplication","description":"Get recommended shoe and clothing sizes from foot length and garment measurements. Choose region, brand, and fit preference (tight/regular/loose). Local logic only—no external APIs.","url":"https://globalsizechart.com/tools/fit-assistant.html","featureList":["Foot length to shoe size","Garment measurements to clothing size","Region and brand selection","Fit preference (tight/regular/loose)","Fit warnings and alternative sizes","Related converters and measurement advice"],"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"How to use the Fit Assistant","description":"Enter your foot length and optional garment measurements, select region and fit preference, then get recommended sizes and fit warnings.","step":[{"@type":"HowToStep","position":1,"name":"Enter foot length","text":"Enter your foot length in cm (heel to longest toe). Measure in the evening; use the larger foot if they differ."},{"@type":"HowToStep","position":2,"name":"Add garment measurements (optional)","text":"Enter chest, waist, or hips in cm and select category (tops, pants, dresses) for clothing size."},{"@type":"HowToStep","position":3,"name":"Select region and fit preference","text":"Choose your target region (US, UK, EU, etc.), optional brand, and whether you prefer tight, regular, or loose fit."},{"@type":"HowToStep","position":4,"name":"Review results","text":"Check recommended sizes, fit warnings, alternative sizes, and related converter links. Always verify with the brand size chart."}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How does the Fit Assistant work?","acceptedAnswer":{"@type":"Answer","text":"The Fit Assistant uses only local, deterministic rules. It matches your foot length and measurements to standard size charts, applies your fit preference (tight/regular/loose), and adds brand-based fit notes. No data is sent to any server."}},{"@type":"Question","name":"Why does it suggest alternative sizes?","acceptedAnswer":{"@type":"Answer","text":"If you prefer a tighter or looser fit, the tool suggests half a size up or down. You can also see alternatives for regular fit to compare."}},{"@type":"Question","name":"Are recommendations accurate for every brand?","acceptedAnswer":{"@type":"Answer","text":"Recommendations are based on standard conversion charts. Brands vary; the fit warnings reflect common patterns (e.g. runs small). Always check the brand's own size guide for the specific product."}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Fit Assistant","description":"Get recommended shoe and clothing sizes from foot length and measurements. Region, brand, fit preference. Local logic only.","url":"https://globalsizechart.com/tools/fit-assistant.html","publisher":{"@type":"Organization","name":"GlobalSizeChart.com","url":"https://globalsizechart.com"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://globalsizechart.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://globalsizechart.com/measurement-tools.html"},{"@type":"ListItem","position":3,"name":"Fit Assistant","item":"https://globalsizechart.com/tools/fit-assistant.html"}]}</script>
+</head>
+<body data-intent="measurement_confusion">
+  <header>
+    <div class="header-content">
+      <a href="../index.html" class="logo">GlobalSizeChart.com</a>
+      <nav>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../shoe-size-converter.html">Shoe Sizes</a></li>
+          <li><a href="../clothing-size-converter.html">Clothing Sizes</a></li>
+          <li><a href="../shoe-sizing-guides.html">Sizing Guides</a></li>
+          <li><a href="../legal/about.html">About</a></li>
+          <li><a href="../legal/contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main class="main-content" style="max-width: 900px; margin: 0 auto; padding: 1rem;">
+    <h1>Fit Assistant</h1>
+    <p>Get recommended shoe and clothing sizes from your measurements. Choose your region, optional brand, and fit preference (tight / regular / loose). All logic runs locally—no data is sent to any server.</p>
+
+    <div id="data-message" class="advice-box" style="display: none;" aria-live="polite"></div>
+
+    <form id="fit-form" class="tool-section" aria-label="Fit assistant inputs">
+      <h2>Your measurements</h2>
+      <div class="tool-row">
+        <label for="foot-cm">Foot length (cm)</label>
+        <input type="number" id="foot-cm" step="0.1" min="15" max="35" placeholder="e.g. 26" aria-label="Foot length in cm">
+        <span>cm</span>
+      </div>
+      <div class="tool-row">
+        <label for="chest-cm">Chest (cm)</label>
+        <input type="number" id="chest-cm" step="1" min="0" placeholder="—" aria-label="Chest in cm">
+        <span>cm</span>
+      </div>
+      <div class="tool-row">
+        <label for="waist-cm">Waist (cm)</label>
+        <input type="number" id="waist-cm" step="1" min="0" placeholder="—" aria-label="Waist in cm">
+        <span>cm</span>
+      </div>
+      <div class="tool-row">
+        <label for="hips-cm">Hips (cm)</label>
+        <input type="number" id="hips-cm" step="1" min="0" placeholder="—" aria-label="Hips in cm">
+        <span>cm</span>
+      </div>
+      <div class="tool-row">
+        <label for="gender">Gender</label>
+        <select id="gender" aria-label="Gender for size charts">
+          <option value="men">Men</option>
+          <option value="women">Women</option>
+          <option value="kids">Kids</option>
+        </select>
+      </div>
+      <div class="tool-row">
+        <label for="garment-category">Garment type</label>
+        <select id="garment-category" aria-label="Clothing category">
+          <option value="">—</option>
+          <option value="tops">Tops / Shirts</option>
+          <option value="pants">Pants</option>
+          <option value="dresses">Dresses</option>
+        </select>
+      </div>
+      <div class="tool-row">
+        <label for="region">Region</label>
+        <select id="region" aria-label="Target region">
+          <option value="US">US</option>
+          <option value="UK">UK</option>
+          <option value="EU">EU</option>
+          <option value="JP">Japan</option>
+          <option value="CN">China</option>
+        </select>
+      </div>
+      <div class="tool-row">
+        <label for="brand">Brand (optional)</label>
+        <select id="brand" aria-label="Brand for fit notes">
+          <option value="">—</option>
+          <option value="Nike">Nike</option>
+          <option value="Adidas">Adidas</option>
+          <option value="Puma">Puma</option>
+          <option value="New Balance">New Balance</option>
+          <option value="Zara">Zara</option>
+          <option value="H&M">H&amp;M</option>
+          <option value="Shein">Shein</option>
+          <option value="Uniqlo">Uniqlo</option>
+          <option value="ASOS">ASOS</option>
+          <option value="Levi's">Levi's</option>
+        </select>
+      </div>
+      <div class="tool-row">
+        <label for="fit-preference">Fit preference</label>
+        <select id="fit-preference" aria-label="Fit preference">
+          <option value="regular">Regular</option>
+          <option value="tight">Tight</option>
+          <option value="loose">Loose</option>
+        </select>
+      </div>
+      <div class="tool-row">
+        <button type="submit" id="submit-btn">Get recommendation</button>
+      </div>
+    </form>
+
+    <div id="fit-result" class="recommendation-box" aria-live="polite">
+      <h3>Recommended sizes</h3>
+      <div id="out-recommended" class="fit-output"></div>
+      <h3>Fit warnings</h3>
+      <div id="out-warnings" class="fit-output"></div>
+      <h3>Alternative sizes</h3>
+      <div id="out-alternatives" class="fit-output"></div>
+      <h3>Related converters</h3>
+      <div id="out-related" class="fit-output"></div>
+      <h3>Measurement advice</h3>
+      <div id="out-advice" class="fit-output"></div>
+    </div>
+
+    <section class="tool-section">
+      <h2>FAQ</h2>
+      <details class="faq-item">
+        <summary>How does the Fit Assistant work?</summary>
+        <p>The Fit Assistant uses only local, deterministic rules. It matches your foot length and measurements to standard size charts, applies your fit preference (tight/regular/loose), and adds brand-based fit notes. No data is sent to any server.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Why does it suggest alternative sizes?</summary>
+        <p>If you prefer a tighter or looser fit, the tool suggests half a size up or down. You can also see alternatives for regular fit to compare.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Are recommendations accurate for every brand?</summary>
+        <p>Recommendations are based on standard conversion charts. Brands vary; the fit warnings reflect common patterns (e.g. runs small). Always check the brand's own size guide for the specific product.</p>
+      </details>
+    </section>
+
+    <section class="tool-section">
+      <h2>Related tools</h2>
+      <ul>
+        <li><a href="measurement-assistant.html">Measurement Assistant</a></li>
+        <li><a href="../shoe-size-converter.html">Shoe Size Converter</a></li>
+        <li><a href="../clothing-size-converter.html">Clothing Size Converter</a></li>
+        <li><a href="../measurement-tools.html">Measurement Tools</a></li>
+      </ul>
+    </section>
+  </main>
+  <footer>
+    <div class="footer-content">
+      <p>&copy; 2026 GlobalSizeChart.com. Recommendations are approximate; check brand size charts.</p>
+    </div>
+  </footer>
+  <script src="../scripts/fit-assistant.js"></script>
+  <script>
+(function() {
+  var form = document.getElementById('fit-form');
+  var resultEl = document.getElementById('fit-result');
+  var dataMsg = document.getElementById('data-message');
+  var outRecommended = document.getElementById('out-recommended');
+  var outWarnings = document.getElementById('out-warnings');
+  var outAlternatives = document.getElementById('out-alternatives');
+  var outRelated = document.getElementById('out-related');
+  var outAdvice = document.getElementById('out-advice');
+
+  var fitData = { shoeSizes: null, clothingSizes: null };
+
+  function showDataMessage(msg, isError) {
+    dataMsg.textContent = msg;
+    dataMsg.style.display = msg ? 'block' : 'none';
+    if (isError) dataMsg.setAttribute('role', 'alert');
+  }
+
+  function loadData() {
+    var base = document.querySelector('base') ? document.querySelector('base').href.replace(/\/[^/]*$/, '') : '';
+    if (!base) {
+      var path = window.location.pathname || '';
+      base = path.split('/').slice(0, -2).join('/') || '..';
+    }
+    var dataBase = base ? base + '/data/' : '../data/';
+    Promise.all([
+      fetch(dataBase + 'shoe_sizes.json').then(function(r) { return r.ok ? r.json() : null; }),
+      fetch(dataBase + 'clothing_sizes.json').then(function(r) { return r.ok ? r.json() : null; })
+    ]).then(function(arr) {
+      fitData.shoeSizes = arr[0];
+      fitData.clothingSizes = arr[1];
+      if (!fitData.shoeSizes) showDataMessage('Size data could not be loaded. Serve this page from a local or hosted server to load data.', true);
+      else showDataMessage('');
+    }).catch(function() {
+      showDataMessage('Size data could not be loaded. Serve this page from a local or hosted server to load data.', true);
+    });
+  }
+  loadData();
+
+  function renderResult(output) {
+    var rec = output.recommendedSizes;
+    var html = '';
+    if (rec.shoes) {
+      html += '<p><strong>Shoes:</strong> US ' + rec.shoes.us + ', UK ' + rec.shoes.uk + ', EU ' + rec.shoes.eu + ' (foot length ' + rec.shoes.cm + ' cm)</p>';
+    }
+    if (rec.clothing) {
+      html += '<p><strong>Clothing (' + rec.clothing.category + '):</strong> US ' + rec.clothing.us + ', UK ' + rec.clothing.uk + ', EU ' + rec.clothing.eu + '</p>';
+    }
+    if (!html) html = '<p>Enter at least foot length (cm) or garment measurements with a category to see recommendations.</p>';
+    outRecommended.innerHTML = html;
+
+    if (output.fitWarnings && output.fitWarnings.length) {
+      outWarnings.innerHTML = '<ul><li>' + output.fitWarnings.map(function(w) { return escapeHtml(w); }).join('</li><li>') + '</li></ul>';
+    } else {
+      outWarnings.innerHTML = '<p>None.</p>';
+    }
+
+    if (output.alternativeSizes && output.alternativeSizes.length) {
+      outAlternatives.innerHTML = '<ul>' + output.alternativeSizes.map(function(a) {
+        var s = a.sizes;
+        return '<li>' + escapeHtml(a.label) + ': US ' + s.us + ', UK ' + s.uk + ', EU ' + s.eu + '</li>';
+      }).join('') + '</ul>';
+    } else {
+      outAlternatives.innerHTML = '<p>None for your current inputs.</p>';
+    }
+
+    if (output.relatedConverters && output.relatedConverters.length) {
+      outRelated.innerHTML = '<ul class="related-links">' + output.relatedConverters.map(function(l) {
+        return '<li><a href="' + escapeHtml(l.url) + '">' + escapeHtml(l.label) + '</a></li>';
+      }).join('') + '</ul>';
+    } else {
+      outRelated.innerHTML = '<p>—</p>';
+    }
+
+    if (output.measurementAdvice && output.measurementAdvice.length) {
+      outAdvice.innerHTML = '<ul><li>' + output.measurementAdvice.map(function(m) { return escapeHtml(m); }).join('</li><li>') + '</li></ul>';
+    } else {
+      outAdvice.innerHTML = '<p>—</p>';
+    }
+
+    resultEl.classList.add('visible');
+    resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function escapeHtml(s) {
+    if (!s) return '';
+    var div = document.createElement('div');
+    div.textContent = s;
+    return div.innerHTML;
+  }
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (!fitData.shoeSizes && !fitData.clothingSizes) {
+      showDataMessage('Size data not loaded. Serve this page from a server to load data.', true);
+      return;
+    }
+    var inputs = {
+      footLengthCm: document.getElementById('foot-cm').value.trim(),
+      gender: document.getElementById('gender').value,
+      garmentCategory: document.getElementById('garment-category').value || null,
+      chestCm: document.getElementById('chest-cm').value.trim(),
+      waistCm: document.getElementById('waist-cm').value.trim(),
+      hipsCm: document.getElementById('hips-cm').value.trim(),
+      region: document.getElementById('region').value,
+      brand: document.getElementById('brand').value.trim(),
+      fitPreference: document.getElementById('fit-preference').value
+    };
+    var output = window.FitAssistant.run(inputs, fitData, { basePath: '../programmatic-pages' });
+    renderResult(output);
+  });
+})();
+  </script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-02-08T03:29:19.448Z",
+  "generatedAt": "2026-02-08T15:25:53.189Z",
   "phase": 11,
   "monetization_modules_inserted": 25,
   "session_depth_count": 208,
@@ -18,8 +18,8 @@
     "pages_with_all_slots": 104
   },
   "internal_link_increase": {
-    "average_per_page": 108.8,
-    "total": 13494
+    "average_per_page": 118,
+    "total": 14633
   },
   "schema_validation": {
     "FAQPage": 88,
