@@ -2315,6 +2315,7 @@ function generateClothingProgrammaticPages(clothingRoutes, clothingData, semanti
         </div>
       </div>
       <div class="footer-bottom">
+        <p class="micro-disclaimer">GlobalSizeChart provides size conversion guidance based on standardized length charts. Fit may vary due to width, foot shape, and brand design.</p>
         <p>&copy; 2024 GlobalSizeChart.com. All rights reserved.</p>
       </div>
     </div>
@@ -2515,6 +2516,7 @@ function generateBrandConverters(brandRoutes, semanticRoutes) {
         </div>
       </div>
       <div class="footer-bottom">
+        <p class="micro-disclaimer">GlobalSizeChart provides size conversion guidance based on standardized length charts. Fit may vary due to width, foot shape, and brand design.</p>
         <p>&copy; 2024 GlobalSizeChart.com. All rights reserved.</p>
       </div>
     </div>
@@ -2808,6 +2810,7 @@ function generateCMConverters(measurementRoutes, shoeData, clothingData, semanti
         </div>
       </div>
       <div class="footer-bottom">
+        <p class="micro-disclaimer">GlobalSizeChart provides size conversion guidance based on standardized length charts. Fit may vary due to width, foot shape, and brand design.</p>
         <p>&copy; ${new Date().getFullYear()} GlobalSizeChart.com. Conversions are approximate; check brand size charts.</p>
       </div>
     </div>
@@ -3396,6 +3399,7 @@ function generateMeasurementTools(shoeData, clothingData) {
         </div>
       </div>
       <div class="footer-bottom">
+        <p class="micro-disclaimer">GlobalSizeChart provides size conversion guidance based on standardized length charts. Fit may vary due to width, foot shape, and brand design.</p>
         <p>&copy; ${new Date().getFullYear()} GlobalSizeChart.com. Recommendations are approximate; check brand size charts.</p>
       </div>
     </div>
@@ -3656,6 +3660,7 @@ function buildProgrammaticIndexPage(routes) {
         </div>
       </div>
       <div class="footer-bottom">
+        <p class="micro-disclaimer">GlobalSizeChart provides size conversion guidance based on standardized length charts. Fit may vary due to width, foot shape, and brand design.</p>
         <p>&copy; 2024 GlobalSizeChart.com. All rights reserved.</p>
       </div>
     </div>
@@ -3818,6 +3823,7 @@ function generateShoeSizingGuidesPage(semanticRoutes) {
         </div>
       </div>
       <div class="footer-bottom">
+        <p class="micro-disclaimer">GlobalSizeChart provides size conversion guidance based on standardized length charts. Fit may vary due to width, foot shape, and brand design.</p>
         <p>&copy; 2024 GlobalSizeChart.com. All rights reserved.</p>
       </div>
     </div>
@@ -3983,6 +3989,7 @@ function generateProgrammaticHub(allRoutes) {
         </div>
       </div>
       <div class="footer-bottom">
+        <p class="micro-disclaimer">GlobalSizeChart provides size conversion guidance based on standardized length charts. Fit may vary due to width, foot shape, and brand design.</p>
         <p>&copy; 2024 GlobalSizeChart.com. All rights reserved.</p>
       </div>
     </div>
@@ -4139,6 +4146,7 @@ function buildHubPage(opts) {
         </div>
       </div>
       <div class="footer-bottom">
+        <p class="micro-disclaimer">GlobalSizeChart provides size conversion guidance based on standardized length charts. Fit may vary due to width, foot shape, and brand design.</p>
         <p>&copy; ${new Date().getFullYear()} GlobalSizeChart.com. All rights reserved.</p>
       </div>
     </div>
@@ -4170,12 +4178,26 @@ function generateClothingSizePagesHub(clothingGenerated = [], clothingRoutes = [
   });
 }
 
+const BRAND_AUTHORITY_SIZE_GUIDES = [
+  { href: 'brands/nike-size-guide.html', text: 'Nike Size Guide' },
+  { href: 'brands/adidas-size-guide.html', text: 'Adidas Size Guide' },
+  { href: 'brands/zara-size-guide.html', text: 'Zara Size Guide' },
+  { href: 'brands/hm-size-guide.html', text: 'H&M Size Guide' },
+  { href: 'brands/new-balance-size-guide.html', text: 'New Balance Size Guide' },
+  { href: 'brands/puma-size-guide.html', text: 'Puma Size Guide' },
+  { href: 'brands/reebok-size-guide.html', text: 'Reebok Size Guide' },
+  { href: 'brands/vans-size-guide.html', text: 'Vans Size Guide' },
+  { href: 'brands/converse-size-guide.html', text: 'Converse Size Guide' },
+  { href: 'brands/asics-size-guide.html', text: 'ASICS Size Guide' }
+];
+
 function generateBrandSizeGuidesHub(brandGenerated = [], brandRoutes = []) {
   const slugToBrand = new Map((brandRoutes || []).map(r => [r.slug + '.html', r.brand || r.slug]));
-  const links = (brandGenerated || []).map(f => ({
+  const linksFromConverters = (brandGenerated || []).map(f => ({
     href: 'brands/' + f,
     text: slugToBrand.get(f) || f.replace('.html', '').replace(/-/g, ' ')
   }));
+  const links = [...BRAND_AUTHORITY_SIZE_GUIDES, ...linksFromConverters];
   return buildHubPage({
     slug: 'brand-size-guides',
     title: 'Brand Size Guides',
@@ -4649,6 +4671,7 @@ function generateSemanticClusterPages(semanticRoutes, programmaticRoutes, author
         </div>
       </div>
       <div class="footer-bottom">
+        <p class="micro-disclaimer">GlobalSizeChart provides size conversion guidance based on standardized length charts. Fit may vary due to width, foot shape, and brand design.</p>
         <p>&copy; 2024 GlobalSizeChart.com. All rights reserved.</p>
       </div>
     </div>

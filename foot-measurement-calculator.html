@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+  <meta name="description" content="Free foot measurement calculator: enter your foot length in cm or inches and get your shoe size in US, UK, EU, and Japan. Interactive tool with instant results.">
+  <link rel="canonical" href="https://globalsizechart.com/foot-measurement-calculator.html">
+  <title>Foot Measurement Calculator | Shoe Size from Foot Length | GlobalSizeChart.com</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .tool-section { margin: 1.5rem 0; padding: 1.25rem; border: 1px solid #e0e0e0; border-radius: 8px; background: #fafafa; }
+    .tool-section h2 { margin-top: 0; }
+    .tool-row { margin: 0.5rem 0; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .tool-row label { min-width: 100px; }
+    .tool-row input, .tool-row select { padding: 0.4rem 0.6rem; font-size: 1rem; }
+    .result-box { background: #e8f4f8; border: 2px solid #0a7ea4; border-radius: 8px; padding: 1rem 1.25rem; margin: 1rem 0; font-weight: 500; }
+    .result-box .result-value { font-size: 1.1rem; color: #0a5f7a; }
+    .visual-guide { max-width: 280px; margin: 1rem 0; }
+    .visual-guide svg { width: 100%; height: auto; }
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","@id":"https://globalsizechart.com/#organization","name":"GlobalSizeChart.com","url":"https://globalsizechart.com"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://globalsizechart.com/"},{"@type":"ListItem","position":2,"name":"Measurement Tools","item":"https://globalsizechart.com/measurement-tools.html"},{"@type":"ListItem","position":3,"name":"Foot Measurement Calculator","item":"https://globalsizechart.com/foot-measurement-calculator.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Foot Measurement Calculator","applicationCategory":"WebApplication","description":"Enter foot length in cm or inches to get shoe size in US, UK, EU, Japan.","url":"https://globalsizechart.com/foot-measurement-calculator.html","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+</head>
+<body data-intent="measurement_confusion">
+  <header>
+    <div class="header-content">
+      <a href="index.html" class="logo">GlobalSizeChart.com</a>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="shoe-size-converter.html">Shoe Converter</a></li>
+          <li><a href="clothing-size-converter.html">Clothing Converter</a></li>
+          <li><a href="measurement-tools.html">Measurement Tools</a></li>
+          <li><a href="shoe-sizing-guides.html">Guides</a></li>
+          <li><a href="legal/about.html">About</a></li>
+          <li><a href="legal/contact.html">Contact</a></li>
+          <li><a href="legal/privacy.html">Privacy</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main class="container" style="max-width: 720px;">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> &gt; <a href="measurement-tools.html">Measurement Tools</a> &gt; <span>Foot Measurement Calculator</span></nav>
+    <section class="content-section">
+      <h1>Foot Measurement Calculator</h1>
+      <p class="mb-lg">Enter your foot length (heel to longest toe) in centimeters or inches. Get your recommended shoe size in US, UK, EU, and Japan. Measure in the evening and use the larger foot if they differ.</p>
+    </section>
+    <div class="tool-section">
+      <div class="visual-guide" aria-hidden="true">
+        <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="100" cy="55" rx="42" ry="28" fill="none" stroke="#333" stroke-width="2"/>
+          <line x1="58" y1="55" x2="142" y2="55" stroke="#0a7ea4" stroke-width="2" stroke-dasharray="4 2"/>
+          <text x="100" y="88" text-anchor="middle" font-size="11" fill="#555">Measure heel to longest toe</text>
+        </svg>
+      </div>
+      <div class="tool-row">
+        <label for="foot-cm">Foot length (cm)</label>
+        <input type="number" id="foot-cm" step="0.1" min="15" max="35" placeholder="e.g. 26" aria-label="Foot length in cm">
+        <span>cm</span>
+      </div>
+      <div class="tool-row">
+        <label for="foot-in">Foot length (inches)</label>
+        <input type="number" id="foot-in" step="0.01" min="5" max="14" placeholder="e.g. 10.2" aria-label="Foot length in inches">
+        <span>in</span>
+      </div>
+      <div class="tool-row">
+        <label for="foot-gender">Category</label>
+        <select id="foot-gender" aria-label="Men, women, or kids">
+          <option value="men">Men</option>
+          <option value="women">Women</option>
+          <option value="kids">Kids</option>
+        </select>
+      </div>
+      <div class="result-box" id="result-box" aria-live="polite">
+        <strong>Your shoe size:</strong>
+        <div class="result-value" id="result-text">Enter your foot length above.</div>
+      </div>
+    </div>
+    <section class="content-section">
+      <h2>How to measure</h2>
+      <p>Place a piece of paper against a wall on a hard floor. Stand with your heel touching the wall and mark the tip of your longest toe. Measure from wall to mark in cm. See our <a href="how-to-measure-feet.html">How to Measure Your Feet</a> guide and <a href="printable/foot-measuring-sheet.html">Printable Foot Measuring Sheet</a>.</p>
+    </section>
+    <section class="content-section">
+      <h2>Related tools</h2>
+      <ul>
+        <li><a href="shoe-size-converter.html">Shoe Size Converter</a></li>
+        <li><a href="cm-to-us-shoe-size.html">CM to US Shoe Size</a></li>
+        <li><a href="tools/measurement-assistant.html">Measurement Assistant</a></li>
+        <li><a href="measurement-tools.html">Measurement Tools</a></li>
+      </ul>
+    </section>
+  </main>
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Converters</h3>
+          <ul>
+            <li><a href="shoe-size-converter.html">Shoe Size Converter</a></li>
+            <li><a href="clothing-size-converter.html">Clothing Size Converter</a></li>
+            <li><a href="cm-to-us-shoe-size.html">CM to US Shoe Size</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Information</h3>
+          <ul>
+            <li><a href="legal/privacy.html">Privacy</a></li>
+            <li><a href="legal/contact.html">Contact</a></li>
+            <li><a href="legal/about.html">About</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom"><p>&copy; 2026 GlobalSizeChart.com. All rights reserved.</p></div>
+    </div>
+  </footer>
+  <script>
+(function() {
+  var INCH_TO_CM = 2.54;
+  var shoeData = {
+    men: [{us:6,uk:5,eu:39,jp:25,cm:24},{us:6.5,uk:5.5,eu:39.5,jp:25.5,cm:24.5},{us:7,uk:6,eu:40,jp:26,cm:25},{us:7.5,uk:6.5,eu:40.5,jp:26.5,cm:25.5},{us:8,uk:7,eu:41,jp:27,cm:26},{us:8.5,uk:7.5,eu:41.5,jp:27.5,cm:26.5},{us:9,uk:8,eu:42,jp:28,cm:27},{us:9.5,uk:8.5,eu:42.5,jp:28.5,cm:27.5},{us:10,uk:9,eu:43,jp:29,cm:28},{us:10.5,uk:9.5,eu:43.5,jp:29.5,cm:28.5},{us:11,uk:10,eu:44,jp:30,cm:29},{us:11.5,uk:10.5,eu:44.5,jp:30.5,cm:29.5},{us:12,uk:11,eu:45,jp:31,cm:30},{us:13,uk:12,eu:46,jp:32,cm:31},{us:14,uk:13,eu:47,jp:33,cm:32}],
+    women: [{us:4,uk:2,eu:35,jp:22,cm:21},{us:5,uk:3,eu:36,jp:23,cm:22},{us:6,uk:4,eu:37,jp:24,cm:23},{us:7,uk:5,eu:38,jp:25,cm:24},{us:8,uk:6,eu:39,jp:26,cm:25},{us:9,uk:7,eu:40,jp:27,cm:26},{us:10,uk:8,eu:41,jp:28,cm:27},{us:11,uk:9,eu:42,jp:29,cm:28},{us:12,uk:10,eu:43,jp:30,cm:29}],
+    kids: [{us:10,uk:9,eu:27,jp:17,cm:16.5},{us:11,uk:10,eu:29,jp:18,cm:17.5},{us:12,uk:11,eu:31,jp:19,cm:18.5},{us:13,uk:12,eu:32,jp:20,cm:19.5},{us:1,uk:0.5,eu:33.5,jp:21,cm:20.5},{us:2,uk:1.5,eu:34.5,jp:22,cm:21.5},{us:3,uk:2.5,eu:35.5,jp:23,cm:22.5},{us:4,uk:3.5,eu:36.5,jp:24,cm:23.5},{us:5,uk:4.5,eu:37.5,jp:25,cm:24.5}]
+  };
+  var footCm = document.getElementById('foot-cm');
+  var footIn = document.getElementById('foot-in');
+  var footGender = document.getElementById('foot-gender');
+  var resultText = document.getElementById('result-text');
+  function cmToIn(cm) { return cm === '' || isNaN(cm) ? '' : (Number(cm) / INCH_TO_CM).toFixed(2); }
+  function inToCm(inVal) { return inVal === '' || isNaN(inVal) ? '' : (Number(inVal) * INCH_TO_CM).toFixed(1); }
+  function findSize(cmVal, gender) {
+    var arr = shoeData[gender];
+    if (!arr || cmVal === '' || isNaN(cmVal)) return null;
+    var val = Number(cmVal), best = null, bestDiff = Infinity;
+    for (var i = 0; i < arr.length; i++) {
+      var d = Math.abs(arr[i].cm - val);
+      if (d < bestDiff) { bestDiff = d; best = arr[i]; }
+    }
+    return best;
+  }
+  function update() {
+    var cm = footCm.value.trim();
+    var inVal = footIn.value.trim();
+    if (this === footCm && cm !== '') footIn.value = cmToIn(cm);
+    else if (this === footIn && inVal !== '') footCm.value = inToCm(inVal);
+    cm = footCm.value.trim();
+    var row = findSize(cm, footGender.value);
+    if (!row) {
+      resultText.textContent = cm ? 'Enter a length between about 15–35 cm (or 6–14 in).' : 'Enter your foot length above.';
+      return;
+    }
+    var us = row.us, uk = row.uk, eu = row.eu, jp = row.jp;
+    resultText.textContent = 'US ' + us + ' · UK ' + uk + ' · EU ' + eu + ' · Japan ' + jp;
+  }
+  footCm.addEventListener('input', update);
+  footIn.addEventListener('input', update);
+  footGender.addEventListener('change', update);
+  update();
+})();
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>

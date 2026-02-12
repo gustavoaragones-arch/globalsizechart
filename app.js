@@ -529,6 +529,14 @@ function handleConversion(form) {
   } else {
     console.error('Results container not found');
   }
+
+  // Phase 13.5: show fit notice only for shoe conversions when results are shown
+  const fitNotice = formSection?.querySelector('.fit-notice');
+  if (fitNotice) {
+    const isShoeConversion = category === 'shoes' || !category;
+    const hasResults = results && Object.keys(results).length > 0;
+    fitNotice.style.display = isShoeConversion && hasResults ? 'block' : 'none';
+  }
 }
 
 function displayResults(results, bestMatchRegion, isShoe = true, resultsContainer = null) {

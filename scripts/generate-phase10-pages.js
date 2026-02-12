@@ -340,6 +340,13 @@ function main() {
     authorityGraph
   };
 
+  // Phase 13: Brand Size Database — authority pages under /brands/*-size-guide.html
+  const brandSizeDb = require(path.join(ROOT, 'generators', 'generate-brand-size-database.js'));
+  if (typeof brandSizeDb.run === 'function') brandSizeDb.run();
+
+  // Measurement Authority Layer — how-to-measure-feet, how-to-measure-in-cm, foot-width-guide, shoe-fit-guide
+  require(path.join(ROOT, 'generators', 'generate-measurement-authority.js'));
+
   const generator = require('./generate-programmatic-pages.js');
   const result = generator.runPhase10Generator(config);
 

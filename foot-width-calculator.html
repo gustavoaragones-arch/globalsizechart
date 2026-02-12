@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+  <meta name="description" content="Free foot width calculator: enter foot length and width or circumference to find if you need narrow, standard, or wide shoes. Get US width (D, 2E, etc.) and fit tips.">
+  <link rel="canonical" href="https://globalsizechart.com/foot-width-calculator.html">
+  <title>Foot Width Calculator | Narrow vs Wide Shoes | GlobalSizeChart.com</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .tool-section { margin: 1.5rem 0; padding: 1.25rem; border: 1px solid #e0e0e0; border-radius: 8px; background: #fafafa; }
+    .tool-section h2 { margin-top: 0; }
+    .tool-row { margin: 0.5rem 0; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .tool-row label { min-width: 140px; }
+    .tool-row input, .tool-row select { padding: 0.4rem 0.6rem; font-size: 1rem; }
+    .result-box { background: #f5f0ff; border: 2px solid #5a4a8a; border-radius: 8px; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .result-box .result-value { font-size: 1.1rem; color: #3d2d6a; font-weight: 600; }
+    .result-box .result-extra { margin-top: 0.5rem; font-size: 0.95rem; color: #444; }
+    .visual-guide { max-width: 280px; margin: 1rem 0; }
+    .visual-guide svg { width: 100%; height: auto; }
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","@id":"https://globalsizechart.com/#organization","name":"GlobalSizeChart.com","url":"https://globalsizechart.com"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://globalsizechart.com/"},{"@type":"ListItem","position":2,"name":"Measurement Tools","item":"https://globalsizechart.com/measurement-tools.html"},{"@type":"ListItem","position":3,"name":"Foot Width Calculator","item":"https://globalsizechart.com/foot-width-calculator.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Foot Width Calculator","applicationCategory":"WebApplication","description":"Enter foot length and width or circumference to find narrow, standard, or wide fit and US width.","url":"https://globalsizechart.com/foot-width-calculator.html","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+</head>
+<body data-intent="measurement_confusion">
+  <header>
+    <div class="header-content">
+      <a href="index.html" class="logo">GlobalSizeChart.com</a>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="shoe-size-converter.html">Shoe Converter</a></li>
+          <li><a href="clothing-size-converter.html">Clothing Converter</a></li>
+          <li><a href="measurement-tools.html">Measurement Tools</a></li>
+          <li><a href="shoe-sizing-guides.html">Guides</a></li>
+          <li><a href="legal/about.html">About</a></li>
+          <li><a href="legal/contact.html">Contact</a></li>
+          <li><a href="legal/privacy.html">Privacy</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main class="container" style="max-width: 720px;">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> &gt; <a href="measurement-tools.html">Measurement Tools</a> &gt; <span>Foot Width Calculator</span></nav>
+    <section class="content-section">
+      <h1>Foot Width Calculator</h1>
+      <p class="mb-lg">Enter your foot length and the circumference around the widest part of your foot (ball). We'll tell you if you're likely narrow, standard, or wide and suggest US width (e.g. D, 2E). Brands vary—use this as a starting point.</p>
+    </section>
+    <div class="tool-section">
+      <div class="visual-guide" aria-hidden="true">
+        <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="100" cy="55" rx="42" ry="28" fill="none" stroke="#333" stroke-width="2"/>
+          <line x1="85" y1="35" x2="115" y2="75" stroke="#5a4a8a" stroke-width="2" stroke-dasharray="4 2"/>
+          <text x="100" y="88" text-anchor="middle" font-size="11" fill="#555">Measure circumference at widest part (ball)</text>
+        </svg>
+      </div>
+      <div class="tool-row">
+        <label for="length-cm">Foot length (cm)</label>
+        <input type="number" id="length-cm" step="0.1" min="20" max="35" placeholder="e.g. 26" aria-label="Foot length in cm">
+        <span>cm</span>
+      </div>
+      <div class="tool-row">
+        <label for="circ-cm">Circumference at ball (cm)</label>
+        <input type="number" id="circ-cm" step="0.1" min="18" max="32" placeholder="e.g. 24" aria-label="Circumference at ball in cm">
+        <span>cm</span>
+      </div>
+      <div class="tool-row">
+        <label for="width-gender">Category</label>
+        <select id="width-gender" aria-label="Men or women">
+          <option value="men">Men</option>
+          <option value="women">Women</option>
+        </select>
+      </div>
+      <div class="result-box" id="result-box" aria-live="polite">
+        <strong>Width result:</strong>
+        <div class="result-value" id="result-text">Enter length and circumference above.</div>
+        <div class="result-extra" id="result-extra"></div>
+      </div>
+    </div>
+    <section class="content-section">
+      <h2>How to measure width</h2>
+      <p>Measure around the <strong>widest part</strong> of your foot (usually across the ball, behind the toes) with a flexible tape. Stand with weight even. If you don't have a tape, wrap a string and measure it against a ruler. See our <a href="foot-width-guide.html">Foot Width Guide</a> for more.</p>
+    </section>
+    <section class="content-section">
+      <h2>Related tools</h2>
+      <ul>
+        <li><a href="foot-measurement-calculator.html">Foot Measurement Calculator</a></li>
+        <li><a href="foot-width-guide.html">Foot Width Guide</a></li>
+        <li><a href="shoe-fit-guide.html">Shoe Fit Guide</a></li>
+        <li><a href="shoe-size-converter.html">Shoe Size Converter</a></li>
+        <li><a href="measurement-tools.html">Measurement Tools</a></li>
+      </ul>
+    </section>
+  </main>
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Converters</h3>
+          <ul>
+            <li><a href="shoe-size-converter.html">Shoe Size Converter</a></li>
+            <li><a href="clothing-size-converter.html">Clothing Size Converter</a></li>
+            <li><a href="cm-to-us-shoe-size.html">CM to US Shoe Size</a></li>
+            <li><a href="understanding-shoe-width.html">Understanding Shoe Width</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Information</h3>
+          <ul>
+            <li><a href="legal/privacy.html">Privacy</a></li>
+            <li><a href="legal/contact.html">Contact</a></li>
+            <li><a href="legal/about.html">About</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom"><p>&copy; 2026 GlobalSizeChart.com. All rights reserved.</p></div>
+    </div>
+  </footer>
+  <script>
+(function() {
+  var lengthCm = document.getElementById('length-cm');
+  var circCm = document.getElementById('circ-cm');
+  var widthGender = document.getElementById('width-gender');
+  var resultText = document.getElementById('result-text');
+  var resultExtra = document.getElementById('result-extra');
+  function update() {
+    var len = lengthCm.value.trim();
+    var circ = circCm.value.trim();
+    if (len === '' || circ === '' || isNaN(len) || isNaN(circ)) {
+      resultText.textContent = len || circ ? 'Enter both length and circumference.' : 'Enter length and circumference above.';
+      resultExtra.textContent = '';
+      return;
+    }
+    var L = Number(len), C = Number(circ);
+    var ratio = C / L;
+    var isMen = widthGender.value === 'men';
+    var narrowRatio = isMen ? 0.88 : 0.86;
+    var wideRatio = isMen ? 0.96 : 0.94;
+    var label, usWidth, tip;
+    if (ratio < narrowRatio) {
+      label = 'Narrow';
+      usWidth = isMen ? 'B or C' : 'A or AA';
+      tip = 'Many brands offer narrow widths. Look for "Narrow" or "N" options.';
+    } else if (ratio > wideRatio) {
+      label = 'Wide';
+      usWidth = isMen ? 'E, 2E, or 4E' : 'D, E, or EE';
+      tip = 'Choose wide-width styles when available (e.g. New Balance, ASICS). Consider going up half a size if wide isn\'t available.';
+    } else {
+      label = 'Standard (medium)';
+      usWidth = isMen ? 'D' : 'B';
+      tip = 'Standard (medium) width fits most people. If shoes feel tight across the ball, try a wide.';
+    }
+    resultText.textContent = label + ' — US width: ' + usWidth;
+    resultExtra.textContent = tip;
+  }
+  lengthCm.addEventListener('input', update);
+  circCm.addEventListener('input', update);
+  widthGender.addEventListener('change', update);
+  update();
+})();
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
