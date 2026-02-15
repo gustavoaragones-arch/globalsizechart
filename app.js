@@ -238,29 +238,34 @@ function initializeCategoryToggle() {
       const form = select.closest('form');
       const clothingCategoryGroup = form?.querySelector('#clothingCategoryGroup');
       const fromRegionSelect = form?.querySelector('[name="fromRegion"]');
+      const sizeInput = form?.querySelector('[name="size"]');
       
       if (select.value === 'clothing') {
         if (clothingCategoryGroup) {
           clothingCategoryGroup.style.display = 'flex';
         }
-        // Remove CM option for clothing
         if (fromRegionSelect) {
           const cmOption = fromRegionSelect.querySelector('option[value="CM"]');
           if (cmOption) cmOption.style.display = 'none';
+        }
+        if (sizeInput && sizeInput.dataset.placeholderClothing) {
+          sizeInput.placeholder = sizeInput.dataset.placeholderClothing;
         }
       } else {
         if (clothingCategoryGroup) {
           clothingCategoryGroup.style.display = 'none';
         }
-        // Show CM option for shoes
         if (fromRegionSelect) {
           const cmOption = fromRegionSelect.querySelector('option[value="CM"]');
           if (cmOption) cmOption.style.display = 'block';
         }
+        if (sizeInput && sizeInput.dataset.placeholderShoe) {
+          sizeInput.placeholder = sizeInput.dataset.placeholderShoe;
+        }
       }
+      if (typeof updateConvertButtonState === 'function') updateConvertButtonState(form);
     });
     
-    // Trigger on load to set initial state
     if (select.value === 'clothing') {
       select.dispatchEvent(new Event('change'));
     }
@@ -449,8 +454,56 @@ function getAllClothingConversions(size, fromRegion, gender, category) {
 }
 
 // ============================================
+// Validation (Phase 13.5 - strict numeric shoe, no auto-correct)
+// ============================================
+
+/**
+ * Strict numeric shoe size validation. Allows whole numbers and decimals only.
+ * No letters, words, symbols, trim, or auto-clean.
+ * @param {string} value - Raw input value (do not trim)
+ * @returns {boolean}
+ */
+function validateShoeSize(value) {
+  if (value === null || value === undefined) return false;
+  if (!/^\d+(\.\d+)?$/.test(value)) return false;
+  return true;
+}
+
+// ============================================
 // UI Functions
 // ============================================
+
+const SHOE_SIZE_ERROR_MSG = 'Please enter a valid numeric shoe size (e.g., 9, 9.5, 42).';
+
+/**
+ * Validate clothing size: XS, S, M, L, XL, XXL, XXXL or numeric only (e.g. 32, 40).
+ * Disallows words like "medium", "small", "size 10", mixed text.
+ * @param {string} value - Raw input (will be trimmed and uppercased for letter check)
+ * @returns {boolean}
+ */
+function validateClothingSize(value) {
+  if (value === null || value === undefined) return false;
+  const normalized = value.trim().toUpperCase();
+  const letterPattern = /^(XS|S|M|L|XL|XXL|XXXL)$/;
+  const numberPattern = /^\d+$/;
+  if (letterPattern.test(normalized) || numberPattern.test(normalized)) return true;
+  return false;
+}
+
+const CLOTHING_SIZE_ERROR_MSG = 'Use standard sizes only (XS–XXXL or numeric values like 32, 40).';
+
+/**
+ * Enable convert button only when size input is valid (shoe: numeric; clothing: XS–XXXL or numeric).
+ */
+function updateConvertButtonState(form) {
+  const category = form.querySelector('[name="category"]')?.value;
+  const sizeInput = form.querySelector('[name="size"]');
+  const sizeRaw = sizeInput?.value;
+  const isClothing = category === 'clothing';
+  const valid = isClothing ? validateClothingSize(sizeRaw) : validateShoeSize(sizeRaw);
+  const submitBtn = form.querySelector('button[type="submit"]');
+  if (submitBtn) submitBtn.disabled = !valid;
+}
 
 function initializeConverters() {
   const forms = document.querySelectorAll('.converter-form');
@@ -459,6 +512,43 @@ function initializeConverters() {
       e.preventDefault();
       handleConversion(form);
     });
+
+    const sizeInput = form.querySelector('[name="size"]');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+
+    // Clear shoe size error on input/change (no auto-convert for shoe form when invalid)
+    const shoeErrorEl = form.querySelector('#shoe-size-error');
+    if (sizeInput && shoeErrorEl) {
+      const clearError = () => {
+        shoeErrorEl.style.display = 'none';
+        shoeErrorEl.textContent = '';
+      };
+      sizeInput.addEventListener('input', clearError);
+      sizeInput.addEventListener('change', clearError);
+    }
+    // Clear clothing size error on input
+    const clothingErrorEl = form.querySelector('#clothing-size-error');
+    if (sizeInput && clothingErrorEl) {
+      const clearClothingError = () => {
+        clothingErrorEl.style.display = 'none';
+        clothingErrorEl.textContent = '';
+      };
+      sizeInput.addEventListener('input', clearClothingError);
+      sizeInput.addEventListener('change', clearClothingError);
+    }
+
+    const syncButtonState = () => updateConvertButtonState(form);
+    if (sizeInput) {
+      sizeInput.addEventListener('input', syncButtonState);
+      sizeInput.addEventListener('change', syncButtonState);
+    }
+    const categorySelect = form.querySelector('[name="category"]');
+    if (categorySelect) {
+      categorySelect.addEventListener('change', syncButtonState);
+    }
+
+    updateConvertButtonState(form);
 
     // Auto-convert on input change
     const inputs = form.querySelectorAll('select, input');
@@ -482,12 +572,54 @@ function handleConversion(form) {
   const category = form.querySelector('[name="category"]')?.value;
   const fromRegion = form.querySelector('[name="fromRegion"]')?.value;
   const toRegion = form.querySelector('[name="toRegion"]')?.value;
-  const size = form.querySelector('[name="size"]')?.value?.trim();
+  const sizeInput = form.querySelector('[name="size"]');
+  const sizeRaw = sizeInput?.value;
+  const size = category === 'clothing' ? sizeRaw?.trim() : sizeRaw;
   const gender = form.querySelector('[name="gender"]')?.value;
   const clothingCategory = form.querySelector('[name="clothingCategory"]')?.value;
 
-  if (!size || !fromRegion || !gender) {
-    console.warn('Missing required fields:', { size, fromRegion, gender });
+  if (!fromRegion || !gender) {
+    console.warn('Missing required fields:', { size: sizeRaw, fromRegion, gender });
+    return;
+  }
+
+  if (category === 'shoes' || !category) {
+    // Strict numeric validation for shoes (Phase 13.5): no letters, words, symbols; no auto-clean/trim
+    if (!validateShoeSize(sizeRaw)) {
+      const formSection = form.closest('.converter-card');
+      const shoeErrorEl = formSection?.querySelector('#shoe-size-error') || form.querySelector('#shoe-size-error');
+      if (shoeErrorEl) {
+        shoeErrorEl.textContent = SHOE_SIZE_ERROR_MSG;
+        shoeErrorEl.style.display = 'block';
+      }
+      return;
+    }
+    const shoeErrorEl = form.querySelector('#shoe-size-error');
+    if (shoeErrorEl) {
+      shoeErrorEl.style.display = 'none';
+      shoeErrorEl.textContent = '';
+    }
+  }
+
+  if (category === 'clothing') {
+    if (!validateClothingSize(sizeRaw)) {
+      const formSection = form.closest('.converter-card');
+      const clothingErrorEl = formSection?.querySelector('#clothing-size-error') || form.querySelector('#clothing-size-error');
+      if (clothingErrorEl) {
+        clothingErrorEl.textContent = CLOTHING_SIZE_ERROR_MSG;
+        clothingErrorEl.style.display = 'block';
+      }
+      return;
+    }
+    const clothingErrorEl = form.querySelector('#clothing-size-error');
+    if (clothingErrorEl) {
+      clothingErrorEl.style.display = 'none';
+      clothingErrorEl.textContent = '';
+    }
+  }
+
+  if (!size) {
+    console.warn('Missing size');
     return;
   }
 

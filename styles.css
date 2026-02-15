@@ -232,6 +232,13 @@ main {
   box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
 }
 
+/* Phase 13.5: inline validation error (no auto-correct) */
+.converter-error {
+  margin-top: var(--spacing-xs);
+  font-size: 0.9rem;
+  color: var(--error-color);
+}
+
 .btn {
   padding: var(--spacing-sm) var(--spacing-lg);
   background: var(--primary-color);

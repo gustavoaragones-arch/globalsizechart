@@ -147,8 +147,9 @@
           </div>
           
           <div class="form-group">
-            <label for="size">Size</label>
-            <input type="text" name="size" id="size" placeholder="Enter size (e.g., M, 32, 10)" required>
+            <label for="clothing-size-input">Size</label>
+            <input type="text" name="size" id="clothing-size-input" maxlength="5" placeholder="Enter standard size (XS–XXXL or 32–48)" required>
+            <p class="converter-error" id="clothing-size-error" role="alert" aria-live="polite" style="display: none;"></p>
           </div>
           
           <input type="hidden" name="category" value="clothing">
