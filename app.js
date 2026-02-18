@@ -469,11 +469,52 @@ function validateShoeSize(value) {
   return true;
 }
 
+/**
+ * Task C: Validate size is within allowed range for category, gender, region.
+ * Used for shoes only. No fallback conversion for invalid ranges.
+ * @param {string} category - 'shoes'
+ * @param {string} gender - 'men' | 'women' | 'kids'
+ * @param {string} region - 'US' | 'UK' | 'EU' | 'JP' | 'CM'
+ * @param {number} size - Parsed numeric size
+ * @returns {boolean}
+ */
+function validateSize(category, gender, region, size) {
+  const ranges = {
+    shoes: {
+      men: {
+        US: [3, 18],
+        UK: [2, 17],
+        EU: [35, 52],
+        JP: [21, 32],
+        CM: [21, 32]
+      },
+      women: {
+        US: [4, 16],
+        UK: [2, 14],
+        EU: [34, 46],
+        JP: [21, 30],
+        CM: [21, 30]
+      },
+      kids: {
+        US: [1, 13],
+        EU: [16, 35],
+        CM: [9, 22]
+      }
+    }
+  };
+
+  const regionRanges = ranges[category] && ranges[category][gender] && ranges[category][gender][region];
+  if (!regionRanges) return false;
+  const [min, max] = regionRanges;
+  return size >= min && size <= max;
+}
+
 // ============================================
 // UI Functions
 // ============================================
 
 const SHOE_SIZE_ERROR_MSG = 'Please enter a valid numeric shoe size (e.g., 9, 9.5, 42).';
+const SHOE_SIZE_RANGE_ERROR_MSG = 'Please enter a valid size for the selected region.';
 
 /**
  * Validate clothing size: XS, S, M, L, XL, XXL, XXXL or numeric only (e.g. 32, 40).
@@ -493,14 +534,27 @@ function validateClothingSize(value) {
 const CLOTHING_SIZE_ERROR_MSG = 'Use standard sizes only (XS–XXXL or numeric values like 32, 40).';
 
 /**
- * Enable convert button only when size input is valid (shoe: numeric; clothing: XS–XXXL or numeric).
+ * Enable convert button only when size input is valid.
+ * Shoes: numeric format + within range for current gender/region. Clothing: XS–XXXL or numeric.
  */
 function updateConvertButtonState(form) {
   const category = form.querySelector('[name="category"]')?.value;
   const sizeInput = form.querySelector('[name="size"]');
   const sizeRaw = sizeInput?.value;
+  const fromRegion = form.querySelector('[name="fromRegion"]')?.value;
+  const gender = form.querySelector('[name="gender"]')?.value;
   const isClothing = category === 'clothing';
-  const valid = isClothing ? validateClothingSize(sizeRaw) : validateShoeSize(sizeRaw);
+  let valid = false;
+  if (isClothing) {
+    valid = validateClothingSize(sizeRaw);
+  } else {
+    if (!validateShoeSize(sizeRaw)) valid = false;
+    else {
+      const num = parseFloat(sizeRaw);
+      if (num < 0 || num > 60) valid = false;
+      else valid = validateSize('shoes', gender, fromRegion, num);
+    }
+  }
   const submitBtn = form.querySelector('button[type="submit"]');
   if (submitBtn) submitBtn.disabled = !valid;
 }
@@ -584,12 +638,30 @@ function handleConversion(form) {
   }
 
   if (category === 'shoes' || !category) {
-    // Strict numeric validation for shoes (Phase 13.5): no letters, words, symbols; no auto-clean/trim
     if (!validateShoeSize(sizeRaw)) {
       const formSection = form.closest('.converter-card');
       const shoeErrorEl = formSection?.querySelector('#shoe-size-error') || form.querySelector('#shoe-size-error');
       if (shoeErrorEl) {
         shoeErrorEl.textContent = SHOE_SIZE_ERROR_MSG;
+        shoeErrorEl.style.display = 'block';
+      }
+      return;
+    }
+    const sizeNum = parseFloat(sizeRaw);
+    if (sizeNum < 0 || sizeNum > 60) {
+      const formSection = form.closest('.converter-card');
+      const shoeErrorEl = formSection?.querySelector('#shoe-size-error') || form.querySelector('#shoe-size-error');
+      if (shoeErrorEl) {
+        shoeErrorEl.textContent = SHOE_SIZE_RANGE_ERROR_MSG;
+        shoeErrorEl.style.display = 'block';
+      }
+      return;
+    }
+    if (!validateSize('shoes', gender, fromRegion, sizeNum)) {
+      const formSection = form.closest('.converter-card');
+      const shoeErrorEl = formSection?.querySelector('#shoe-size-error') || form.querySelector('#shoe-size-error');
+      if (shoeErrorEl) {
+        shoeErrorEl.textContent = SHOE_SIZE_RANGE_ERROR_MSG;
         shoeErrorEl.style.display = 'block';
       }
       return;

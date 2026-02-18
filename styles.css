@@ -50,19 +50,28 @@ body {
 }
 
 /* ============================================
-   Typography
+   Typography (Task B: consistent vertical rhythm site-wide)
    ============================================ */
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
-  line-height: 1.2;
-  margin-bottom: var(--spacing-md);
   color: var(--text-primary);
+}
+
+h1, h2, h3, h4 {
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+h5, h6 {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
 }
 
 h1 {
   font-size: 2.5rem;
-  margin-bottom: var(--spacing-lg);
 }
 
 h2 {
@@ -73,8 +82,21 @@ h3 {
   font-size: 1.5rem;
 }
 
+main > h1:first-child,
+main > h2:first-child {
+  margin-top: 1.5rem;
+}
+
 p {
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: 1.2rem;
+}
+
+ul, ol {
+  margin-bottom: 1.5rem;
+}
+
+section {
+  margin-bottom: 3rem;
 }
 
 a {
@@ -104,7 +126,7 @@ a:hover {
 }
 
 /* ============================================
-   Header & Navigation
+   Header & Navigation (Task A: logo positioning, no collision)
    ============================================ */
 
 header {
@@ -116,29 +138,38 @@ header {
   border-bottom: 1px solid var(--border-color);
 }
 
+.header-container,
 .header-content {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-md) var(--spacing-md);
+  justify-content: space-between;
+  padding: 0 1.5rem;
   max-width: 1200px;
   margin: 0 auto;
+  min-height: 3.5rem;
 }
 
+.site-logo,
 .logo {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  margin-right: 2rem;
   color: var(--primary-color);
 }
 
-nav ul {
+.nav-menu,
+header nav ul {
   display: flex;
-  list-style: none;
-  gap: var(--spacing-lg);
+  gap: 1.5rem;
   flex-wrap: wrap;
+  list-style: none;
 }
 
-nav a {
+.nav-menu a,
+header nav a {
+  white-space: nowrap;
   color: var(--text-secondary);
   font-weight: 500;
   padding: var(--spacing-xs) 0;
@@ -146,9 +177,24 @@ nav a {
   transition: all 0.2s ease;
 }
 
-nav a:hover {
+.nav-menu a:hover,
+header nav a:hover {
   color: var(--primary-color);
   border-bottom-color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+  .header-container,
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem 1.5rem;
+  }
+
+  .nav-menu,
+  header nav ul {
+    margin-top: 0.75rem;
+  }
 }
 
 /* ============================================
@@ -233,6 +279,12 @@ main {
 }
 
 /* Phase 13.5: inline validation error (no auto-correct) */
+.size-input-helper {
+  margin-top: 0.35rem;
+  font-size: 0.8125rem;
+  color: var(--text-light, #8a9ba8);
+}
+
 .converter-error {
   margin-top: var(--spacing-xs);
   font-size: 0.9rem;
@@ -431,6 +483,25 @@ main {
 
 .fit-notice a {
   color: var(--primary-color, #2563eb);
+}
+
+/* Phase 13.5: UX authority — subtle trust bar under converter results */
+.converter-trust-bar {
+  margin: 1rem 0 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e8ecf1;
+  font-size: 0.8125rem;
+  color: #5c6370;
+  line-height: 1.45;
+}
+
+.converter-trust-bar a {
+  color: var(--primary-color, #2563eb);
+  text-decoration: none;
+}
+
+.converter-trust-bar a:hover {
+  text-decoration: underline;
 }
 
 /* Phase 11: Monetization modules (trust + dwell time, no ad code) */
