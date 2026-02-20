@@ -126,7 +126,7 @@ a:hover {
 }
 
 /* ============================================
-   Header & Navigation (Task A: logo positioning, no collision)
+   Header & Navigation: full-width nav, logo in corner, menu grouped right
    ============================================ */
 
 header {
@@ -138,27 +138,32 @@ header {
   border-bottom: 1px solid var(--border-color);
 }
 
-.header-container,
-.header-content {
+/* Full-width nav: no content-wrap, logo in corner, site-nav-menu on right */
+.site-nav {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 0 1.5rem;
-  max-width: 1200px;
-  margin: 0 auto;
   min-height: 3.5rem;
+  width: 100%;
 }
 
-.site-logo,
-.logo {
+.site-nav .logo {
   font-size: 1.4rem;
   font-weight: 700;
   text-decoration: none;
   white-space: nowrap;
-  margin-right: 2rem;
+  margin-right: auto;
   color: var(--primary-color);
 }
 
+/* Nav links grouped on the right */
+.site-nav-menu {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.site-nav-menu nav ul,
 .nav-menu,
 header nav ul {
   display: flex;
@@ -167,6 +172,7 @@ header nav ul {
   list-style: none;
 }
 
+.site-nav-menu nav a,
 .nav-menu a,
 header nav a {
   white-space: nowrap;
@@ -177,6 +183,7 @@ header nav a {
   transition: all 0.2s ease;
 }
 
+.site-nav-menu nav a:hover,
 .nav-menu a:hover,
 header nav a:hover {
   color: var(--primary-color);
@@ -184,16 +191,20 @@ header nav a:hover {
 }
 
 @media (max-width: 768px) {
-  .header-container,
-  .header-content {
+  .site-nav {
     flex-direction: column;
     align-items: flex-start;
     padding: 1rem 1.5rem;
   }
 
-  .nav-menu,
-  header nav ul {
+  .site-nav-menu {
+    margin-left: 0;
     margin-top: 0.75rem;
+  }
+
+  .site-nav-menu nav ul,
+  header nav ul {
+    margin-top: 0;
   }
 }
 
@@ -1258,7 +1269,7 @@ footer {
     grid-template-columns: 1fr;
   }
 
-  .header-content {
+  .site-nav {
     flex-direction: column;
     gap: var(--spacing-md);
   }
