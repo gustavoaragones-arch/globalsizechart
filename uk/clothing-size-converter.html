@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Convert UK clothing sizes to US, EU, Japan and China for tops, pants and dresses. UK size conversion for British sizing baselines.">
+  <link rel="canonical" href="https://globalsizechart.com/uk/clothing-size-converter.html">
+  <title>UK Clothing Size Converter - US, EU, JP, CN | Global Size Chart</title>
+  <link rel="stylesheet" href="../styles.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebPage","name":"UK Clothing Size Converter","description":"Convert UK clothing sizes to US, EU, Japan and China for tops, pants and dresses.","url":"https://globalsizechart.com/uk/clothing-size-converter.html","publisher":{"@id":"https://globalsizechart.com/#organization"}}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://globalsizechart.com/"},{"@type":"ListItem","position":2,"name":"UK","item":"https://globalsizechart.com/uk/"},{"@type":"ListItem","position":3,"name":"Clothing Converter","item":"https://globalsizechart.com/uk/clothing-size-converter.html"}]}
+  </script>
+</head>
+<body>
+  <header class="site-nav">
+    <a href="../index.html" class="logo">GlobalSizeChart.com</a>
+    <div class="site-nav-menu">
+      <nav>
+        <ul>
+          <li><a href="index.html">UK Home</a></li>
+          <li><a href="shoe-size-converter.html">Shoe Converter</a></li>
+          <li><a href="clothing-size-converter.html">Clothing Converter</a></li>
+          <li><a href="../index.html">Main Site</a></li>
+          <li><a href="../measurement-tools.html">Measurement Tools</a></li>
+          <li><a href="../shoe-sizing-guides.html">Guides</a></li>
+          <li><a href="../legal/about.html">About</a></li>
+          <li><a href="../legal/contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <section class="converter-card">
+        <h1>UK Clothing Size Converter</h1>
+        <p class="mb-lg">Convert UK clothing sizes to US, EU, Japan, and China for tops, pants, and dresses. Get accurate conversions with centimeter measurements.</p>
+
+        <form class="converter-form" id="clothingConverter">
+          <div class="form-group">
+            <label for="gender">Gender</label>
+            <select name="gender" id="gender" required>
+              <option value="men">Men</option>
+              <option value="women">Women</option>
+              <option value="kids">Kids</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="clothingCategory">Category</label>
+            <select name="clothingCategory" id="clothingCategory" required>
+              <option value="tops">Tops</option>
+              <option value="pants">Pants</option>
+              <option value="dresses">Dresses</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="fromRegion">From Region</label>
+            <select name="fromRegion" id="fromRegion" required>
+              <option value="US">United States (US)</option>
+              <option value="UK" selected>United Kingdom (UK)</option>
+              <option value="EU">European Union (EU)</option>
+              <option value="JP">Japan (JP)</option>
+              <option value="CN">China (CN)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="clothing-size-input">Size</label>
+            <input type="text" name="size" id="clothing-size-input" maxlength="5" placeholder="Enter standard size (XS–XXXL or 32–48)" required>
+            <p class="converter-error" id="clothing-size-error" role="alert" aria-live="polite" style="display: none;"></p>
+          </div>
+          <input type="hidden" name="category" value="clothing">
+          <button type="submit" class="btn">Convert Clothing Size</button>
+        </form>
+
+        <div class="results">
+          <h3>Converted Sizes</h3>
+          <div class="results-grid"></div>
+          <p class="converter-trust-bar">This tool converts standardized size systems. Fit may vary by brand, width, and foot shape. <a href="../shoe-width-guide.html">Shoe width guide →</a></p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <h2>Related Converters</h2>
+        <ul>
+          <li><a href="shoe-size-converter.html">Shoe Size Converter</a></li>
+          <li><a href="../uk-to-us-size.html">UK to US Size Converter</a></li>
+          <li><a href="../us-to-eu-size.html">US to EU Size Converter</a></li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Converters</h3>
+          <ul>
+            <li><a href="shoe-size-converter.html">Shoe Size Converter</a></li>
+            <li><a href="clothing-size-converter.html">Clothing Size Converter</a></li>
+            <li><a href="../uk-to-us-size.html">UK to US Size</a></li>
+            <li><a href="../us-to-eu-size.html">US to EU Size</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Regions</h3>
+          <ul>
+            <li><a href="../us/">US</a></li>
+            <li><a href="../uk/">UK</a></li>
+            <li><a href="../eu/">EU</a></li>
+            <li><a href="../ca/">Canada</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 GlobalSizeChart.com. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../app.js"></script>
+</body>
+</html>

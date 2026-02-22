@@ -194,6 +194,23 @@ async function loadData() {
   }
 }
 
+// Phase 14A: Set default "From Region" based on page path
+function applyRegionalDefault() {
+  const path = window.location.pathname;
+  let defaultRegion = null;
+  if (path.startsWith('/us/')) defaultRegion = 'US';
+  else if (path.startsWith('/uk/')) defaultRegion = 'UK';
+  else if (path.startsWith('/eu/')) defaultRegion = 'EU';
+  else if (path.startsWith('/ca/')) defaultRegion = 'US'; // Canada mirrors US
+  if (!defaultRegion) return;
+  document.querySelectorAll('[name="fromRegion"]').forEach(select => {
+    const opt = select.querySelector(`option[value="${defaultRegion}"]`);
+    if (opt) {
+      opt.selected = true;
+    }
+  });
+}
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', async () => {
   // Show loading state
@@ -211,6 +228,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   await loadData();
+
+  // Phase 14A: Default "From Region" by page path
+  applyRegionalDefault();
 
   // Enable forms after data loads
   forms.forEach(form => {

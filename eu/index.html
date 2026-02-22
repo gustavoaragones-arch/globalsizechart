@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Convert EU shoe sizes and clothing measurements across international systems with centimeter precision.">
+  <meta name="keywords" content="EU size converter, shoe size converter, clothing size converter, EU to US, EU to UK, European sizing">
+  <meta name="author" content="GlobalSizeChart.com">
+  <link rel="canonical" href="https://globalsizechart.com/eu/">
+  <link rel="alternate" hreflang="en-us" href="https://globalsizechart.com/us/" />
+  <link rel="alternate" hreflang="en-gb" href="https://globalsizechart.com/uk/" />
+  <link rel="alternate" hreflang="en-ca" href="https://globalsizechart.com/ca/" />
+  <link rel="alternate" hreflang="x-default" href="https://globalsizechart.com/" />
+  <title>EU Shoe & Clothing Size Converters | Global Size Chart</title>
+  <link rel="stylesheet" href="../styles.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebPage","name":"EU Shoe & Clothing Size Converters","description":"Convert EU shoe sizes and clothing measurements across international systems with centimeter precision.","url":"https://globalsizechart.com/eu/","publisher":{"@id":"https://globalsizechart.com/#organization"},"isPartOf":{"@id":"https://globalsizechart.com/#website"}}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://globalsizechart.com/"},{"@type":"ListItem","position":2,"name":"EU","item":"https://globalsizechart.com/eu/"}]}
+  </script>
+</head>
+<body>
+  <header class="site-nav">
+    <a href="../index.html" class="logo">GlobalSizeChart.com</a>
+    <div class="site-nav-menu">
+      <nav>
+        <ul>
+          <li><a href="index.html">EU Home</a></li>
+          <li><a href="shoe-size-converter.html">Shoe Converter</a></li>
+          <li><a href="clothing-size-converter.html">Clothing Converter</a></li>
+          <li><a href="../index.html">Main Site</a></li>
+          <li><a href="../measurement-tools.html">Measurement Tools</a></li>
+          <li><a href="../shoe-sizing-guides.html">Guides</a></li>
+          <li><a href="../legal/about.html">About</a></li>
+          <li><a href="../legal/contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>EU Size Conversion Tools</h1>
+        <p>European sizing is primarily based on centimeter foot length and differs structurally from UK and US numbering systems.</p>
+      </div>
+    </section>
+
+    <div class="ad-container ad-top"><!-- ADSENSE TOP BANNER --></div>
+
+    <div class="container">
+      <section class="converter-card">
+        <h2>Size Converter</h2>
+        <form class="converter-form" id="mainConverter">
+          <div class="form-group">
+            <label for="category">Category</label>
+            <select name="category" id="category" required>
+              <option value="shoes">Shoes</option>
+              <option value="clothing">Clothing</option>
+            </select>
+          </div>
+          <div class="form-group" id="clothingCategoryGroup" style="display: none;">
+            <label for="clothingCategory">Clothing Type</label>
+            <select name="clothingCategory" id="clothingCategory">
+              <option value="tops">Tops</option>
+              <option value="pants">Pants</option>
+              <option value="dresses">Dresses</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="gender">Gender</label>
+            <select name="gender" id="gender" required>
+              <option value="men">Men</option>
+              <option value="women">Women</option>
+              <option value="kids">Kids</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="fromRegion">From Region</label>
+            <select name="fromRegion" id="fromRegion" required>
+              <option value="US">United States (US)</option>
+              <option value="UK">United Kingdom (UK)</option>
+              <option value="EU" selected>European Union (EU)</option>
+              <option value="JP">Japan (JP)</option>
+              <option value="CN">China (CN)</option>
+              <option value="CM">Centimeters (CM)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="size">Size</label>
+            <input type="text" name="size" id="size" data-placeholder-shoe="Enter numeric size (e.g. 9 or 42)" data-placeholder-clothing="Enter standard size (XS–XXXL or 32–48)" placeholder="Enter numeric size (e.g. 42 or 38)" required>
+          </div>
+          <button type="submit" class="btn">Convert Size</button>
+        </form>
+        <div class="results">
+          <h3>Converted Sizes</h3>
+          <div class="results-grid"></div>
+          <p class="converter-trust-bar">This tool converts standardized size systems. Fit may vary by brand, width, and foot shape. <a href="../shoe-width-guide.html">Shoe width guide →</a></p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <h2>Quick Converters</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+          <div style="padding: 1.5rem; background: var(--bg-secondary); border-radius: var(--radius-md);">
+            <h3><a href="shoe-size-converter.html">Shoe Size Converter</a></h3>
+            <p>Convert EU shoe sizes to US, UK, Japan, China, and CM.</p>
+          </div>
+          <div style="padding: 1.5rem; background: var(--bg-secondary); border-radius: var(--radius-md);">
+            <h3><a href="clothing-size-converter.html">Clothing Size Converter</a></h3>
+            <p>Convert EU clothing sizes across all regions.</p>
+          </div>
+          <div style="padding: 1.5rem; background: var(--bg-secondary); border-radius: var(--radius-md);">
+            <h3><a href="../us-to-eu-size.html">US to EU Size</a></h3>
+            <p>Convert US sizes to European Union sizes.</p>
+          </div>
+          <div style="padding: 1.5rem; background: var(--bg-secondary); border-radius: var(--radius-md);">
+            <h3><a href="../uk-to-us-size.html">UK to US Size</a></h3>
+            <p>Convert UK sizes to US for international shopping.</p>
+          </div>
+          <div style="padding: 1.5rem; background: var(--bg-secondary); border-radius: var(--radius-md);">
+            <h3><a href="../cm-to-us-shoe-size.html">CM to Shoe Size</a></h3>
+            <p>Convert foot measurements in centimeters to shoe sizes.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Converters</h3>
+          <ul>
+            <li><a href="shoe-size-converter.html">Shoe Size Converter</a></li>
+            <li><a href="clothing-size-converter.html">Clothing Size Converter</a></li>
+            <li><a href="../us-to-eu-size.html">US to EU Size</a></li>
+            <li><a href="../uk-to-us-size.html">UK to US Size</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Regions</h3>
+          <ul>
+            <li><a href="../us/">US</a></li>
+            <li><a href="../uk/">UK</a></li>
+            <li><a href="../eu/">EU</a></li>
+            <li><a href="../ca/">Canada</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Global Resources</h3>
+          <ul>
+            <li><a href="../shoe-size-converter.html">Global Shoe Converter</a></li>
+            <li><a href="../measurement-tools.html">Measurement Guides</a></li>
+            <li><a href="../brand-sizing-guide.html">Brand Sizing Guides</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Information</h3>
+          <ul>
+            <li><a href="../legal/privacy.html">Privacy</a></li>
+            <li><a href="../legal/terms.html">Terms</a></li>
+            <li><a href="../legal/contact.html">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 GlobalSizeChart.com. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../app.js"></script>
+</body>
+</html>
