@@ -126,8 +126,16 @@ a:hover {
 }
 
 /* ============================================
-   Header & Navigation: full-width nav, logo in corner, menu grouped right
+   Header & Navigation: two-tier layout (primary + secondary nav)
    ============================================ */
+
+body {
+  margin: 0;
+}
+
+main {
+  padding-top: 2rem;
+}
 
 header {
   background: var(--bg-primary);
@@ -138,29 +146,82 @@ header {
   border-bottom: 1px solid var(--border-color);
 }
 
-/* Full-width nav: no content-wrap, logo in corner, site-nav-menu on right */
-.site-nav {
-  display: flex;
-  align-items: center;
-  padding: 0 1.5rem;
-  min-height: 3.5rem;
-  width: 100%;
+.site-header {
+  background: #ffffff;
+  border-bottom: 1px solid #e6e6e6;
+  padding: 1.25rem 0 0.75rem 0;
 }
 
-.site-nav .logo {
-  font-size: 1.4rem;
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.site-logo {
+  font-size: 1.5rem;
   font-weight: 700;
-  text-decoration: none;
   white-space: nowrap;
-  margin-right: auto;
+  margin-right: 2rem;
+  text-decoration: none;
   color: var(--primary-color);
 }
 
-/* Nav links grouped on the right */
-.site-nav-menu {
+.primary-nav,
+.secondary-nav {
   display: flex;
-  align-items: center;
-  margin-left: auto;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.primary-nav a {
+  font-weight: 600;
+}
+
+.primary-nav a,
+.secondary-nav a {
+  white-space: nowrap;
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: var(--spacing-xs) 0;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.primary-nav a:hover,
+.secondary-nav a:hover {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
+
+.secondary-nav {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+/* Legacy .site-nav: map to new structure for backward compatibility during migration */
+.site-nav {
+  padding: 1.25rem 1.5rem 0.75rem;
+}
+
+.site-nav .logo,
+.site-nav .site-logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--primary-color);
 }
 
 .site-nav-menu nav ul,
@@ -190,6 +251,21 @@ header nav a:hover {
   border-bottom-color: var(--primary-color);
 }
 
+@media (max-width: 992px) {
+  .header-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .primary-nav {
+    margin-top: 0.75rem;
+  }
+
+  .secondary-nav {
+    margin-top: 1rem;
+  }
+}
+
 @media (max-width: 768px) {
   .site-nav {
     flex-direction: column;
@@ -214,7 +290,8 @@ header nav a:hover {
 
 main {
   min-height: calc(100vh - 200px);
-  padding: var(--spacing-xl) 0;
+  padding-top: 2rem;
+  padding-bottom: var(--spacing-xl);
 }
 
 .hero {
