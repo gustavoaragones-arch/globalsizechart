@@ -149,7 +149,7 @@ header {
 .site-header {
   background: #ffffff;
   border-bottom: 1px solid #e6e6e6;
-  padding: 1.25rem 0 0.75rem 0;
+  padding: 1.25rem 0 1rem 0;
 }
 
 .header-inner {
@@ -159,28 +159,41 @@ header {
 }
 
 .header-top {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
+  min-height: 60px;
 }
 
 .site-logo {
+  position: absolute;
+  left: 0;
   font-size: 1.5rem;
   font-weight: 700;
   white-space: nowrap;
-  margin-right: 2rem;
   text-decoration: none;
   color: var(--primary-color);
 }
 
-.primary-nav,
-.secondary-nav {
+.primary-nav {
+  margin: 0 auto;
   display: flex;
+  gap: 1.5rem;
+  justify-content: center;
   flex-wrap: wrap;
-  gap: 1.25rem;
   list-style: none;
-  margin: 0;
+  padding: 0;
+}
+
+.secondary-nav {
+  margin: 0.75rem auto 0 auto;
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+  font-size: 0.9rem;
+  opacity: 0.85;
+  flex-wrap: wrap;
+  list-style: none;
   padding: 0;
 }
 
@@ -202,12 +215,6 @@ header {
 .secondary-nav a:hover {
   color: var(--primary-color);
   border-bottom-color: var(--primary-color);
-}
-
-.secondary-nav {
-  margin-top: 0.75rem;
-  font-size: 0.9rem;
-  opacity: 0.85;
 }
 
 /* Legacy .site-nav: map to new structure for backward compatibility during migration */
@@ -315,6 +322,18 @@ main {
   color: var(--text-secondary);
   max-width: 600px;
   margin: 0 auto;
+}
+
+.trust-bar {
+  text-align: center;
+  font-size: 0.95rem;
+  opacity: 0.8;
+  margin-top: 1.5rem;
+}
+
+.trust-bar p {
+  margin: 0;
+  color: var(--text-secondary);
 }
 
 /* ============================================
@@ -1178,6 +1197,42 @@ footer {
 
 .footer-section a:hover {
   color: white;
+}
+
+.footer-accuracy {
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.95rem;
+}
+
+.footer-accuracy h3 {
+  margin-bottom: var(--spacing-sm);
+  font-size: 1rem;
+}
+
+.footer-accuracy ul {
+  list-style: disc;
+  margin: 0 0 var(--spacing-sm) 1.25rem;
+  padding: 0;
+}
+
+.footer-accuracy p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+.ownership-block {
+  text-align: center;
+  font-size: 0.9rem;
+  opacity: 0.75;
+  margin-top: 1.5rem;
+}
+
+.ownership-block p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .footer-bottom {

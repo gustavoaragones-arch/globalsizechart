@@ -24,15 +24,18 @@
   
   <link rel="stylesheet" href="styles.css">
   
-  <!-- Schema: Organization, WebSite, WebPage, BreadcrumbList -->
+  <!-- Schema: Organization (Albor Digital), WebSite, WebPage, BreadcrumbList -->
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Organization","@id":"https://globalsizechart.com/#organization","name":"GlobalSizeChart.com","url":"https://globalsizechart.com","logo":"https://globalsizechart.com/logo.png","email":"contact@globalsizechart.com"}
+  {"@context":"https://schema.org","@type":"Organization","@id":"https://globalsizechart.com/#organization","name":"Global Size Chart","url":"https://globalsizechart.com","description":"International shoe and clothing size conversion tools based on standardized measurement systems.","logo":"https://globalsizechart.com/logo.png","email":"contact@globalsizechart.com","foundingDate":"2026","parentOrganization":{"@id":"https://globalsizechart.com/#publisher"}}
   </script>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"WebSite","@id":"https://globalsizechart.com/#website","name":"GlobalSizeChart.com","url":"https://globalsizechart.com","publisher":{"@id":"https://globalsizechart.com/#organization"}}
+  {"@context":"https://schema.org","@type":"Organization","@id":"https://globalsizechart.com/#publisher","name":"Albor Digital LLC","url":"https://albor.digital","address":{"@type":"PostalAddress","addressRegion":"Wyoming","addressCountry":"US"},"sameAs":["https://www.linkedin.com/in/albor-digital-l-46264393/"]}
   </script>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"WebPage","name":"Global Size Chart - Free International Size Converter","description":"Convert shoe and clothing sizes between US, UK, EU, Japan, China, and CM measurements. Free international size conversion tool with accurate charts.","url":"https://globalsizechart.com/","publisher":{"@id":"https://globalsizechart.com/#organization"},"isPartOf":{"@id":"https://globalsizechart.com/#website"}}
+  {"@context":"https://schema.org","@type":"WebSite","@id":"https://globalsizechart.com/#website","name":"Global Size Chart","url":"https://globalsizechart.com","publisher":{"@type":"Organization","name":"Albor Digital LLC","url":"https://albor.digital","address":{"@type":"PostalAddress","addressRegion":"Wyoming","addressCountry":"US"}}}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebPage","name":"Global Size Chart - Free International Size Converter","description":"Convert shoe and clothing sizes between US, UK, EU, Japan, China, and CM measurements. Free international size conversion tool with accurate charts.","url":"https://globalsizechart.com/","publisher":{"@id":"https://globalsizechart.com/#publisher"},"isPartOf":{"@id":"https://globalsizechart.com/#website"}}
   </script>
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://globalsizechart.com/"}]}
@@ -135,6 +138,10 @@
         <h1>Global Size Chart</h1>
         <p>Convert shoe and clothing sizes between US, UK, EU, Japan, China, and CM measurements. Free, accurate, and easy to use.</p>
       </div>
+    </section>
+
+    <section class="trust-bar">
+      <p>Built on standardized international sizing frameworks. Conversions are measurement-based and structured for accuracy.</p>
     </section>
 
     <div class="ad-container ad-top">
@@ -461,6 +468,8 @@
         <div class="footer-section">
           <h3>Information</h3>
           <ul>
+            <li><a href="about-this-product.html">About This Product</a></li>
+            <li><a href="sizing-methodology.html">Sizing Methodology</a></li>
             <li><a href="legal/privacy.html">Privacy</a></li>
             <li><a href="legal/terms.html">Terms</a></li>
             <li><a href="legal/disclaimer.html">Disclaimer</a></li>
@@ -483,14 +492,28 @@
         <div class="footer-section">
           <h3>Resources</h3>
           <ul>
+            <li><a href="measurement-standards.html">Measurement Standards</a></li>
             <li><a href="programmatic-index.html">Programmatic Index</a></li>
             <li><a href="#how-to-measure">How to Measure</a></li>
             <li><a href="#regional-differences">Regional Differences</a></li>
           </ul>
         </div>
       </div>
+      <section class="footer-accuracy content-section">
+        <h3>How We Ensure Accuracy</h3>
+        <ul>
+          <li>Structured centimeter baseline mapping</li>
+          <li>Cross-system validation</li>
+          <li>Width differentiation (US-specific)</li>
+          <li>Regular review of brand chart updates</li>
+        </ul>
+        <p>No exaggeration. No claims of certification. Just competence.</p>
+      </section>
+      <section class="ownership-block">
+        <p>GlobalSizeChart is a product of Albor Digital LLC, an independent product studio based in Wyoming, USA.</p>
+      </section>
       <div class="footer-bottom">
-        <p>&copy; 2024 GlobalSizeChart.com. All rights reserved.</p>
+        <p>&copy; 2026 Albor Digital LLC. GlobalSizeChart.com.<br>All rights reserved.</p>
       </div>
     </div>
   </footer>
