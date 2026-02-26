@@ -322,14 +322,13 @@ function applyRegionalDefault() {
   });
 }
 
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', async () => {
+// Converter initialization: run only after DOM is ready. Form submit prevents default.
+function runConverterInit() {
   // Show loading state
   const forms = document.querySelectorAll('.converter-form');
   forms.forEach(form => {
     const submitBtn = form.querySelector('button[type="submit"]');
     if (submitBtn) {
-      // Store original text
       if (!submitBtn.getAttribute('data-original-text')) {
         submitBtn.setAttribute('data-original-text', submitBtn.textContent);
       }
@@ -338,41 +337,43 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  await loadData();
-  buildSizeDatabase();
+  loadData().then(() => {
+    buildSizeDatabase();
+    applyRegionalDefault();
 
-  // Phase 14A: Default "From Region" by page path
-  applyRegionalDefault();
+    forms.forEach(form => {
+      const submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = submitBtn.getAttribute('data-original-text') || 'Convert Size';
+      }
+    });
 
-  // Enable forms after data loads
-  forms.forEach(form => {
-    const submitBtn = form.querySelector('button[type="submit"]');
-    if (submitBtn) {
-      submitBtn.disabled = false;
-      const originalText = submitBtn.getAttribute('data-original-text') || 'Convert Size';
-      submitBtn.textContent = originalText;
-    }
-  });
+    initializeConverters();
+    initializeCollapsibles();
+    initializeCategoryToggle();
 
-  initializeConverters();
-  initializeCollapsibles();
-  initializeCategoryToggle();
-
-  // Populate size dropdowns from dataset only. On region/category/gender change: clear size, rebuild list.
-  document.querySelectorAll('.converter-form').forEach(form => {
-    populateSizeOptions(form);
-    const refreshSizeDropdown = () => {
-      const sizeSelect = form.querySelector('#sizeSelect');
-      if (sizeSelect) sizeSelect.value = '';
+    document.querySelectorAll('.converter-form').forEach(form => {
       populateSizeOptions(form);
-      if (typeof updateConvertButtonState === 'function') updateConvertButtonState(form);
-    };
-    form.querySelector('[name="category"]')?.addEventListener('change', refreshSizeDropdown);
-    form.querySelector('[name="gender"]')?.addEventListener('change', refreshSizeDropdown);
-    form.querySelector('[name="fromRegion"]')?.addEventListener('change', refreshSizeDropdown);
-    form.querySelector('[name="clothingCategory"]')?.addEventListener('change', refreshSizeDropdown);
+      const refreshSizeDropdown = () => {
+        const sizeSelect = form.querySelector('#sizeSelect');
+        if (sizeSelect) sizeSelect.value = '';
+        populateSizeOptions(form);
+        if (typeof updateConvertButtonState === 'function') updateConvertButtonState(form);
+      };
+      form.querySelector('[name="category"]')?.addEventListener('change', refreshSizeDropdown);
+      form.querySelector('[name="gender"]')?.addEventListener('change', refreshSizeDropdown);
+      form.querySelector('[name="fromRegion"]')?.addEventListener('change', refreshSizeDropdown);
+      form.querySelector('[name="clothingCategory"]')?.addEventListener('change', refreshSizeDropdown);
+    });
   });
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', runConverterInit);
+} else {
+  runConverterInit();
+}
 
 // ============================================
 // Category Toggle (Shoes/Clothing)
