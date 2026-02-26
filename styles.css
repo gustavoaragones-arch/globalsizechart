@@ -1153,13 +1153,20 @@ footer {
   margin-top: var(--spacing-lg);
   padding-top: var(--spacing-lg);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.92);
   font-size: 0.95rem;
+}
+
+/* Avoid content-section light box so text stays legible on footer dark background */
+footer .footer-accuracy.content-section {
+  background: transparent;
+  box-shadow: none;
 }
 
 .footer-accuracy h3 {
   margin-bottom: var(--spacing-sm);
   font-size: 1rem;
+  color: #fff;
 }
 
 .footer-accuracy ul {
@@ -1168,9 +1175,14 @@ footer {
   padding: 0;
 }
 
+.footer-accuracy ul li {
+  color: rgba(255, 255, 255, 0.92);
+}
+
 .footer-accuracy p {
   margin: 0;
-  opacity: 0.9;
+  opacity: 0.95;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .ownership-block {
