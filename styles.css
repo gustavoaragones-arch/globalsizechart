@@ -126,7 +126,7 @@ a:hover {
 }
 
 /* ============================================
-   Header & Navigation: two-tier layout (primary + secondary nav)
+   Header & Navigation: clean two-tier layout
    ============================================ */
 
 body {
@@ -138,37 +138,32 @@ main {
 }
 
 header {
-  background: var(--bg-primary);
-  box-shadow: var(--shadow-sm);
   position: sticky;
   top: 0;
   z-index: 1000;
-  border-bottom: 1px solid var(--border-color);
 }
 
 .site-header {
   background: #ffffff;
-  border-bottom: 1px solid #e6e6e6;
-  padding: 1.25rem 0 1rem 0;
+  border-bottom: 1px solid #eaeaea;
+  padding: 1rem 0 0.5rem 0;
 }
 
-.header-inner {
+.header-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1.5rem;
 }
 
-.header-top {
-  position: relative;
+.header-row-primary {
   display: flex;
   align-items: center;
-  min-height: 60px;
+  justify-content: space-between;
+  gap: 2rem;
 }
 
 .site-logo {
-  position: absolute;
-  left: 0;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 700;
   white-space: nowrap;
   text-decoration: none;
@@ -176,118 +171,77 @@ header {
 }
 
 .primary-nav {
-  margin: 0 auto;
   display: flex;
   gap: 1.5rem;
-  justify-content: center;
-  flex-wrap: wrap;
-  list-style: none;
-  padding: 0;
-}
-
-.secondary-nav {
-  margin: 0.75rem auto 0 auto;
-  display: flex;
-  justify-content: center;
-  gap: 1.25rem;
-  font-size: 0.9rem;
-  opacity: 0.85;
-  flex-wrap: wrap;
-  list-style: none;
-  padding: 0;
+  flex-wrap: nowrap;
 }
 
 .primary-nav a {
   font-weight: 600;
+  white-space: nowrap;
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: var(--spacing-xs) 0;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
 }
 
-.primary-nav a,
+.primary-nav a:hover {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
+
+.secondary-nav {
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 1.25rem;
+  font-size: 0.9rem;
+  opacity: 0.75;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.secondary-nav::-webkit-scrollbar {
+  display: none;
+}
+
 .secondary-nav a {
   white-space: nowrap;
   color: var(--text-secondary);
   text-decoration: none;
   padding: var(--spacing-xs) 0;
   border-bottom: 2px solid transparent;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, border-color 0.2s ease;
 }
 
-.primary-nav a:hover,
 .secondary-nav a:hover {
   color: var(--primary-color);
   border-bottom-color: var(--primary-color);
 }
 
-/* Legacy .site-nav: map to new structure for backward compatibility during migration */
-.site-nav {
-  padding: 1.25rem 1.5rem 0.75rem;
+/* Legacy: old header class names (map to new layout) */
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
 }
 
-.site-nav .logo,
-.site-nav .site-logo {
-  font-size: 1.5rem;
-  font-weight: 700;
-  white-space: nowrap;
-  text-decoration: none;
-  color: var(--primary-color);
-}
-
-.site-nav-menu nav ul,
-.nav-menu,
-header nav ul {
+.header-top {
   display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-  list-style: none;
-}
-
-.site-nav-menu nav a,
-.nav-menu a,
-header nav a {
-  white-space: nowrap;
-  color: var(--text-secondary);
-  font-weight: 500;
-  padding: var(--spacing-xs) 0;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s ease;
-}
-
-.site-nav-menu nav a:hover,
-.nav-menu a:hover,
-header nav a:hover {
-  color: var(--primary-color);
-  border-bottom-color: var(--primary-color);
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
 }
 
 @media (max-width: 992px) {
+  .header-row-primary,
   .header-top {
     flex-direction: column;
     align-items: flex-start;
   }
 
   .primary-nav {
-    margin-top: 0.75rem;
-  }
-
-  .secondary-nav {
-    margin-top: 1rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .site-nav {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 1rem 1.5rem;
-  }
-
-  .site-nav-menu {
-    margin-left: 0;
-    margin-top: 0.75rem;
-  }
-
-  .site-nav-menu nav ul,
-  header nav ul {
-    margin-top: 0;
+    flex-wrap: wrap;
   }
 }
 
@@ -324,16 +278,12 @@ main {
   margin: 0 auto;
 }
 
-.trust-bar {
-  text-align: center;
-  font-size: 0.95rem;
-  opacity: 0.8;
-  margin-top: 1.5rem;
-}
-
-.trust-bar p {
-  margin: 0;
+.hero-trust {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  opacity: 0.7;
   color: var(--text-secondary);
+  margin-bottom: 0;
 }
 
 /* ============================================
