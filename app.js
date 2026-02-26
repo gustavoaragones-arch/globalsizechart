@@ -151,6 +151,117 @@ let shoeData = {};
 let clothingData = {};
 let regionsData = {};
 let dataLoaded = false;
+// Dataset-driven: shoes[gender][region].sizes = [ { value, cm } ]. No synthetic increments.
+let sizeDatabase = { shoes: {}, clothing: {} };
+
+/**
+ * Build size database from row data only. No arithmetic generation, no step loops.
+ * Shoes: each region gets explicit { value, cm } from rows (CM is universal anchor).
+ * Clothing: explicit value lists from rows (letter or numeric from dataset).
+ */
+function buildSizeDatabase() {
+  const db = { shoes: {}, clothing: {} };
+  const regionKeys = ['us', 'uk', 'eu', 'jp', 'cn', 'cm'];
+  ['men', 'women', 'kids'].forEach(gender => {
+    if (!shoeData[gender]) return;
+    db.shoes[gender] = {};
+    regionKeys.forEach(rk => {
+      const key = rk.toUpperCase();
+      // Only sizes that exist in the dataset; each has explicit cm from the row
+      const sizes = shoeData[gender]
+        .map(row => ({ value: row[rk], cm: row.cm }))
+        .filter(s => s.value != null && s.cm != null);
+      // Dedupe by value (keep first cm)
+      const seen = new Set();
+      const unique = sizes.filter(s => {
+        const v = s.value;
+        if (seen.has(v)) return false;
+        seen.add(v);
+        return true;
+      });
+      unique.sort((a, b) => {
+        const na = Number(a.value), nb = Number(b.value);
+        if (!isNaN(na) && !isNaN(nb)) return na - nb;
+        return String(a.value).localeCompare(String(b.value));
+      });
+      db.shoes[gender][key] = { regionCode: key, sizes: unique };
+    });
+  });
+  // Scaffold for future brand override layer (Phase C). Not used yet.
+  db.brands = {
+    Nike: { shoes: { men: { US: { overrides: {} }, EU: { overrides: {} } }, women: { US: { overrides: {} }, EU: { overrides: {} } } } },
+    Adidas: { shoes: { men: { US: { overrides: {} }, EU: { overrides: {} } }, women: { US: { overrides: {} }, EU: { overrides: {} } } } }
+  };
+  ['men', 'women', 'kids'].forEach(gender => {
+    if (!clothingData[gender]) return;
+    db.clothing[gender] = {};
+    ['tops', 'pants', 'dresses'].forEach(cat => {
+      if (!clothingData[gender][cat]) return;
+      db.clothing[gender][cat] = {};
+      ['us', 'uk', 'eu', 'jp', 'cn'].forEach(rk => {
+        const key = rk.toUpperCase();
+        const vals = [...new Set(clothingData[gender][cat].map(e => e[rk]).filter(v => v != null))];
+        db.clothing[gender][cat][key] = vals.map(v => ({ value: v, label: String(v) })).sort((a, b) => {
+          const na = Number(a.value), nb = Number(b.value);
+          if (!isNaN(na) && !isNaN(nb)) return na - nb;
+          return String(a.value).localeCompare(String(b.value));
+        });
+      });
+    });
+  });
+  sizeDatabase = db;
+}
+
+/**
+ * Returns sizes for the given context. Shoes: list of { value, cm } from dataset only.
+ * Clothing: list of { value, label } from dataset only. No synthetic generation.
+ */
+function getAvailableSizes(category, gender, region, clothingCategory) {
+  if (category === 'shoes' || !category) {
+    const r = String(region || '').toLowerCase();
+    const g = sizeDatabase.shoes[gender];
+    if (!g || !g[r]) return [];
+    const regionData = g[r];
+    return regionData.sizes ? regionData.sizes : [];
+  }
+  if (category === 'clothing') {
+    const g = sizeDatabase.clothing[gender];
+    if (!g) return [];
+    const cat = g[clothingCategory || 'tops'];
+    if (!cat) return [];
+    const list = cat[region];
+    return Array.isArray(list) ? list : [];
+  }
+  return [];
+}
+
+/**
+ * Populate size dropdown from dataset only. No .step, no arithmetic, no loops.
+ * Always clears selection (placeholder) so we never retain old size across context change.
+ */
+function populateSizeOptions(form) {
+  const sizeSelect = form.querySelector('#sizeSelect');
+  if (!sizeSelect) return;
+  const category = form.querySelector('[name="category"]')?.value || 'shoes';
+  const gender = form.querySelector('[name="gender"]')?.value || 'men';
+  const region = form.querySelector('[name="fromRegion"]')?.value || 'US';
+  const clothingCategory = form.querySelector('[name="clothingCategory"]')?.value || 'tops';
+  sizeSelect.innerHTML = '';
+  const placeholder = document.createElement('option');
+  placeholder.value = '';
+  placeholder.textContent = 'Select size';
+  placeholder.disabled = true;
+  placeholder.selected = true;
+  sizeSelect.appendChild(placeholder);
+  const sizes = getAvailableSizes(category, gender, region, category === 'clothing' ? clothingCategory : undefined);
+  sizes.forEach(s => {
+    const option = document.createElement('option');
+    option.value = s.value;
+    option.textContent = s.label != null ? s.label : String(s.value);
+    sizeSelect.appendChild(option);
+  });
+  sizeSelect.selectedIndex = 0;
+}
 
 // Load JSON data - use embedded data as primary, fetch as fallback for updates
 async function loadData() {
@@ -228,6 +339,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   await loadData();
+  buildSizeDatabase();
 
   // Phase 14A: Default "From Region" by page path
   applyRegionalDefault();
@@ -245,6 +357,21 @@ document.addEventListener('DOMContentLoaded', async () => {
   initializeConverters();
   initializeCollapsibles();
   initializeCategoryToggle();
+
+  // Populate size dropdowns from dataset only. On region/category/gender change: clear size, rebuild list.
+  document.querySelectorAll('.converter-form').forEach(form => {
+    populateSizeOptions(form);
+    const refreshSizeDropdown = () => {
+      const sizeSelect = form.querySelector('#sizeSelect');
+      if (sizeSelect) sizeSelect.value = '';
+      populateSizeOptions(form);
+      if (typeof updateConvertButtonState === 'function') updateConvertButtonState(form);
+    };
+    form.querySelector('[name="category"]')?.addEventListener('change', refreshSizeDropdown);
+    form.querySelector('[name="gender"]')?.addEventListener('change', refreshSizeDropdown);
+    form.querySelector('[name="fromRegion"]')?.addEventListener('change', refreshSizeDropdown);
+    form.querySelector('[name="clothingCategory"]')?.addEventListener('change', refreshSizeDropdown);
+  });
 });
 
 // ============================================
@@ -258,7 +385,6 @@ function initializeCategoryToggle() {
       const form = select.closest('form');
       const clothingCategoryGroup = form?.querySelector('#clothingCategoryGroup');
       const fromRegionSelect = form?.querySelector('[name="fromRegion"]');
-      const sizeInput = form?.querySelector('[name="size"]');
       
       if (select.value === 'clothing') {
         if (clothingCategoryGroup) {
@@ -268,9 +394,6 @@ function initializeCategoryToggle() {
           const cmOption = fromRegionSelect.querySelector('option[value="CM"]');
           if (cmOption) cmOption.style.display = 'none';
         }
-        if (sizeInput && sizeInput.dataset.placeholderClothing) {
-          sizeInput.placeholder = sizeInput.dataset.placeholderClothing;
-        }
       } else {
         if (clothingCategoryGroup) {
           clothingCategoryGroup.style.display = 'none';
@@ -279,10 +402,9 @@ function initializeCategoryToggle() {
           const cmOption = fromRegionSelect.querySelector('option[value="CM"]');
           if (cmOption) cmOption.style.display = 'block';
         }
-        if (sizeInput && sizeInput.dataset.placeholderShoe) {
-          sizeInput.placeholder = sizeInput.dataset.placeholderShoe;
-        }
       }
+      const sizeSelect = form?.querySelector('#sizeSelect');
+      if (sizeSelect && typeof populateSizeOptions === 'function') populateSizeOptions(form);
       if (typeof updateConvertButtonState === 'function') updateConvertButtonState(form);
     });
     
@@ -293,41 +415,55 @@ function initializeCategoryToggle() {
 }
 
 // ============================================
-// Shoe Size Conversion
+// Shoe Size Conversion — CM-Anchor Engine
 // ============================================
 
-function convertShoeSize(size, fromRegion, toRegion, gender) {
-  if (!shoeData[gender] || !size) return null;
+/**
+ * Convert one size: fromRegion selected value → CM baseline → closest size in toRegion.
+ * EU half-size precision, UK baseline respect, US half-step consistency, JP exact CM match.
+ * No direct region-to-region table guess. Future: apply brand overrides to cm before lookup.
+ */
+function convertSize(category, gender, fromRegion, toRegion, selectedValue) {
+  if (category !== 'shoes') return null;
+  fromRegion = String(fromRegion || '').toLowerCase();
+  toRegion = String(toRegion || '').toLowerCase();
 
-  const genderData = shoeData[gender];
-  
-  // Find the entry with the matching size in the source region
-  let sourceEntry = null;
-  for (const entry of genderData) {
-    if (entry[fromRegion.toLowerCase()] === parseFloat(size)) {
-      sourceEntry = entry;
-      break;
-    }
+  let cmValue;
+  if (fromRegion === 'cm') {
+    cmValue = parseFloat(selectedValue);
+    if (isNaN(cmValue)) return null;
+    if (toRegion === 'cm') return cmValue;
+  } else {
+    const fromData = sizeDatabase.shoes?.[gender]?.[fromRegion];
+    if (!fromData?.sizes?.length) return null;
+    const selected = fromData.sizes.find(s => s.value == selectedValue);
+    if (!selected) return null;
+    cmValue = selected.cm;
+    if (fromRegion === toRegion) return selected.value;
   }
 
-  if (!sourceEntry) return null;
+  if (toRegion === 'cm') return cmValue;
 
-  // Return the size in the target region
-  const targetKey = toRegion.toLowerCase();
-  return sourceEntry[targetKey] !== undefined ? sourceEntry[targetKey] : null;
+  const toData = sizeDatabase.shoes?.[gender]?.[toRegion];
+  if (!toData?.sizes?.length) return null;
+  const toSizes = toData.sizes;
+  const closest = toSizes.reduce((prev, curr) =>
+    Math.abs(curr.cm - cmValue) < Math.abs(prev.cm - cmValue) ? curr : prev
+  );
+  return closest.value;
+}
+
+function convertShoeSize(size, fromRegion, toRegion, gender) {
+  return convertSize('shoes', gender, fromRegion, toRegion, size);
 }
 
 function convertShoeFromCM(cm, gender) {
   if (!shoeData[gender] || !cm) return null;
-
   const genderData = shoeData[gender];
-  
-  // Find closest match by CM
   let closest = null;
   let minDiff = Infinity;
-
   for (const entry of genderData) {
-    if (entry.cm) {
+    if (entry.cm != null) {
       const diff = Math.abs(entry.cm - parseFloat(cm));
       if (diff < minDiff) {
         minDiff = diff;
@@ -335,61 +471,25 @@ function convertShoeFromCM(cm, gender) {
       }
     }
   }
-
   return closest;
 }
 
+/**
+ * All shoe conversions via CM anchor: selected value → cm → closest per region.
+ * Region-specific database; no numeric stepping; half-size precise.
+ */
 function getAllShoeConversions(size, fromRegion, gender) {
-  if (!shoeData[gender]) return {};
+  const regionCodes = ['us', 'uk', 'eu', 'jp', 'cn', 'cm'];
+  const result = {};
+  const fromNorm = String(fromRegion || '').toLowerCase();
+  const hasUs = convertSize('shoes', gender, fromRegion, 'us', size) != null;
+  if (!hasUs && fromNorm !== 'cm') return {};
 
-  const genderData = shoeData[gender];
-  let sourceEntry = null;
-  const sizeNum = parseFloat(size);
-  const regionKey = fromRegion.toLowerCase();
-
-  // Find source entry - try exact match first, then closest match
-  for (const entry of genderData) {
-    const entryValue = entry[regionKey];
-    if (entryValue !== undefined && entryValue !== null) {
-      // Handle both numeric and string comparisons
-      if (entryValue === sizeNum || entryValue === size || 
-          parseFloat(entryValue) === sizeNum || String(entryValue).toLowerCase() === String(size).toLowerCase()) {
-        sourceEntry = entry;
-        break;
-      }
-    }
-  }
-
-  // If no exact match, try closest numeric match
-  if (!sourceEntry && !isNaN(sizeNum)) {
-    let closest = null;
-    let minDiff = Infinity;
-    for (const entry of genderData) {
-      const entryValue = entry[regionKey];
-      if (entryValue !== undefined && entryValue !== null) {
-        const entryNum = parseFloat(entryValue);
-        if (!isNaN(entryNum)) {
-          const diff = Math.abs(entryNum - sizeNum);
-          if (diff < minDiff) {
-            minDiff = diff;
-            closest = entry;
-          }
-        }
-      }
-    }
-    sourceEntry = closest;
-  }
-
-  if (!sourceEntry) return {};
-
-  return {
-    us: sourceEntry.us,
-    uk: sourceEntry.uk,
-    eu: sourceEntry.eu,
-    jp: sourceEntry.jp,
-    cn: sourceEntry.cn,
-    cm: sourceEntry.cm
-  };
+  regionCodes.forEach(toRegion => {
+    const val = convertSize('shoes', gender, fromRegion, toRegion, size);
+    if (val != null) result[toRegion] = val;
+  });
+  return result;
 }
 
 // ============================================
@@ -554,25 +654,29 @@ function validateClothingSize(value) {
 const CLOTHING_SIZE_ERROR_MSG = 'Use standard sizes only (XS–XXXL or numeric values like 32, 40).';
 
 /**
- * Enable convert button only when size input is valid.
- * Shoes: numeric format + within range for current gender/region. Clothing: XS–XXXL or numeric.
+ * Enable convert button when a size is selected (dropdown) or valid input (legacy input).
  */
 function updateConvertButtonState(form) {
-  const category = form.querySelector('[name="category"]')?.value;
+  const sizeSelect = form.querySelector('#sizeSelect');
   const sizeInput = form.querySelector('[name="size"]');
-  const sizeRaw = sizeInput?.value;
-  const fromRegion = form.querySelector('[name="fromRegion"]')?.value;
-  const gender = form.querySelector('[name="gender"]')?.value;
-  const isClothing = category === 'clothing';
+  const sizeRaw = sizeSelect ? sizeSelect.value : sizeInput?.value;
   let valid = false;
-  if (isClothing) {
-    valid = validateClothingSize(sizeRaw);
+  if (sizeSelect) {
+    valid = sizeRaw !== '' && sizeRaw != null;
   } else {
-    if (!validateShoeSize(sizeRaw)) valid = false;
-    else {
-      const num = parseFloat(sizeRaw);
-      if (num < 0 || num > 60) valid = false;
-      else valid = validateSize('shoes', gender, fromRegion, num);
+    const category = form.querySelector('[name="category"]')?.value;
+    const fromRegion = form.querySelector('[name="fromRegion"]')?.value;
+    const gender = form.querySelector('[name="gender"]')?.value;
+    const isClothing = category === 'clothing';
+    if (isClothing) {
+      valid = validateClothingSize(sizeRaw);
+    } else {
+      if (!validateShoeSize(sizeRaw)) valid = false;
+      else {
+        const num = parseFloat(sizeRaw);
+        if (num < 0 || num > 60) valid = false;
+        else valid = validateSize('shoes', gender, fromRegion, num);
+      }
     }
   }
   const submitBtn = form.querySelector('button[type="submit"]');
@@ -587,35 +691,35 @@ function initializeConverters() {
       handleConversion(form);
     });
 
+    const sizeSelect = form.querySelector('#sizeSelect');
     const sizeInput = form.querySelector('[name="size"]');
+    const sizeEl = sizeSelect || sizeInput;
     const submitBtn = form.querySelector('button[type="submit"]');
     if (submitBtn) submitBtn.disabled = true;
 
-    // Clear shoe size error on input/change (no auto-convert for shoe form when invalid)
     const shoeErrorEl = form.querySelector('#shoe-size-error');
-    if (sizeInput && shoeErrorEl) {
+    if (sizeEl && shoeErrorEl) {
       const clearError = () => {
         shoeErrorEl.style.display = 'none';
         shoeErrorEl.textContent = '';
       };
-      sizeInput.addEventListener('input', clearError);
-      sizeInput.addEventListener('change', clearError);
+      sizeEl.addEventListener('input', clearError);
+      sizeEl.addEventListener('change', clearError);
     }
-    // Clear clothing size error on input
     const clothingErrorEl = form.querySelector('#clothing-size-error');
-    if (sizeInput && clothingErrorEl) {
+    if (sizeEl && clothingErrorEl) {
       const clearClothingError = () => {
         clothingErrorEl.style.display = 'none';
         clothingErrorEl.textContent = '';
       };
-      sizeInput.addEventListener('input', clearClothingError);
-      sizeInput.addEventListener('change', clearClothingError);
+      sizeEl.addEventListener('input', clearClothingError);
+      sizeEl.addEventListener('change', clearClothingError);
     }
 
     const syncButtonState = () => updateConvertButtonState(form);
-    if (sizeInput) {
-      sizeInput.addEventListener('input', syncButtonState);
-      sizeInput.addEventListener('change', syncButtonState);
+    if (sizeEl) {
+      sizeEl.addEventListener('input', syncButtonState);
+      sizeEl.addEventListener('change', syncButtonState);
     }
     const categorySelect = form.querySelector('[name="category"]');
     if (categorySelect) {
@@ -646,8 +750,10 @@ function handleConversion(form) {
   const category = form.querySelector('[name="category"]')?.value;
   const fromRegion = form.querySelector('[name="fromRegion"]')?.value;
   const toRegion = form.querySelector('[name="toRegion"]')?.value;
+  const sizeSelect = form.querySelector('#sizeSelect');
   const sizeInput = form.querySelector('[name="size"]');
-  const sizeRaw = sizeInput?.value;
+  const sizeEl = sizeSelect || sizeInput;
+  const sizeRaw = sizeEl?.value;
   const size = category === 'clothing' ? sizeRaw?.trim() : sizeRaw;
   const gender = form.querySelector('[name="gender"]')?.value;
   const clothingCategory = form.querySelector('[name="clothingCategory"]')?.value;
@@ -721,22 +827,7 @@ function handleConversion(form) {
   let bestMatchRegion = toRegion || fromRegion;
 
   if (category === 'shoes' || !category) {
-    // Shoe conversion
-    if (fromRegion === 'CM') {
-      const closest = convertShoeFromCM(size, gender);
-      if (closest) {
-        results = {
-          us: closest.us,
-          uk: closest.uk,
-          eu: closest.eu,
-          jp: closest.jp,
-          cn: closest.cn,
-          cm: closest.cm
-        };
-      }
-    } else {
-      results = getAllShoeConversions(size, fromRegion, gender);
-    }
+    results = getAllShoeConversions(size, fromRegion, gender);
   } else if (category === 'clothing') {
     // Clothing conversion
     results = getAllClothingConversions(size, fromRegion, gender, clothingCategory || 'tops');
