@@ -184,7 +184,7 @@ function buildSizeDatabase() {
         if (!isNaN(na) && !isNaN(nb)) return na - nb;
         return String(a.value).localeCompare(String(b.value));
       });
-      db.shoes[gender][key] = { regionCode: key, sizes: unique };
+      db.shoes[gender][rk] = { regionCode: key, sizes: unique };
     });
   });
   // Scaffold for future brand override layer (Phase C). Not used yet.
