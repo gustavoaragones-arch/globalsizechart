@@ -479,6 +479,30 @@ main {
 .conversion-examples th {
   background: var(--bg-secondary, #f5f5f5);
 }
+
+.table-responsive {
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+.size-chart-table {
+  width: 100%;
+  min-width: 280px;
+  border-collapse: collapse;
+}
+.size-chart-table th,
+.size-chart-table td {
+  border: 1px solid var(--border-color, #ddd);
+  padding: 0.5rem 0.75rem;
+  text-align: center;
+}
+.size-chart-table th {
+  background: var(--bg-secondary, #f5f5f5);
+  font-weight: 600;
+}
+.size-chart-table tbody tr:nth-child(even) {
+  background: var(--bg-secondary, #fafafa);
+}
+
 .measurement-diagram {
   margin: 1.5rem 0;
   text-align: center;
