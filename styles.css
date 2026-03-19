@@ -1422,6 +1422,107 @@ footer .footer-accuracy.content-section {
 }
 
 /* ============================================
+   AEO / AI-readable content layer
+   ============================================ */
+
+.faq-block h2 {
+  margin-bottom: var(--spacing-md);
+  font-size: 1.5rem;
+  color: var(--text-primary);
+}
+
+.aeo-ai-layer {
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--border-color);
+}
+
+.ai-answer {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  border-left: 4px solid var(--primary-color);
+}
+
+.ai-answer h2 {
+  font-size: 1.35rem;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-primary);
+}
+
+.ai-answer p {
+  color: var(--text-secondary);
+  line-height: 1.75;
+  font-size: 1.05rem;
+}
+
+.why-sizes-vary p {
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.author-box {
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  margin-top: var(--spacing-lg);
+  font-size: 0.95rem;
+}
+
+.author-box p {
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.author-box p:last-child {
+  margin-bottom: 0;
+}
+
+.aeo-see-also p,
+.aeo-see-also ul {
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.aeo-see-also a {
+  font-weight: 500;
+}
+
+.aeo-comparison-table {
+  width: 100%;
+  max-width: 420px;
+  border-collapse: collapse;
+  margin: var(--spacing-md) 0;
+}
+
+.aeo-comparison-table th,
+.aeo-comparison-table td {
+  border: 1px solid var(--border-color);
+  padding: 0.5rem 0.75rem;
+  text-align: center;
+}
+
+.aeo-comparison-table th {
+  background: var(--bg-secondary);
+  font-weight: 600;
+}
+
+.internal-link-boost {
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.internal-link-boost p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ============================================
    Print Styles
    ============================================ */
 

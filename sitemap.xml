@@ -3,12 +3,32 @@
 
 <sitemap>
  <loc>https://globalsizechart.com/sitemaps/sitemap-core.xml</loc>
- <lastmod>2026-02-12</lastmod>
+ <lastmod>2026-03-19</lastmod>
 </sitemap>
 
 <sitemap>
- <loc>https://globalsizechart.com/sitemaps/sitemap-programmatic.xml</loc>
- <lastmod>2026-02-12</lastmod>
+ <loc>https://globalsizechart.com/sitemaps/sitemap-programmatic-1.xml</loc>
+ <lastmod>2026-03-19</lastmod>
+</sitemap>
+
+<sitemap>
+ <loc>https://globalsizechart.com/sitemaps/sitemap-programmatic-ai.xml</loc>
+ <lastmod>2026-03-19</lastmod>
+</sitemap>
+
+<sitemap>
+ <loc>https://globalsizechart.com/sitemaps/sitemap-measurement.xml</loc>
+ <lastmod>2026-03-19</lastmod>
+</sitemap>
+
+<sitemap>
+ <loc>https://globalsizechart.com/sitemaps/sitemap-brands.xml</loc>
+ <lastmod>2026-03-19</lastmod>
+</sitemap>
+
+<sitemap>
+ <loc>https://globalsizechart.com/sitemaps/sitemap-guides.xml</loc>
+ <lastmod>2026-03-19</lastmod>
 </sitemap>
 
 </sitemapindex>

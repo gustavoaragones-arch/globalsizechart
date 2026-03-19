@@ -1,0 +1,16 @@
+{
+  "name": "globalsizechart",
+  "version": "1.0.0",
+  "description": "International shoe and clothing size conversion tools",
+  "scripts": {
+    "build:sitemaps": "node scripts/generate-sitemaps.js",
+    "inject:aeo": "node scripts/inject-aeo-layer.js",
+    "build:ai": "node scripts/ai-citation-engine.js",
+    "ai:patterns": "node scripts/extract-query-patterns.js",
+    "ai:score": "node scripts/ai-signal-scoring.js",
+    "ai:faqs": "node scripts/generate-faqs.js",
+    "ai:optimize": "node scripts/optimize-answers.js",
+    "ai:links": "node scripts/internal-link-optimizer.js",
+    "ai:pages": "node scripts/generate-ai-pages.js"
+  }
+}
