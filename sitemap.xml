@@ -2,33 +2,23 @@
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <sitemap>
- <loc>https://globalsizechart.com/sitemaps/sitemap-core.xml</loc>
- <lastmod>2026-03-19</lastmod>
+ <loc>https://globalsizechart.com/sitemaps/sitemap-high.xml</loc>
+ <lastmod>2026-03-22</lastmod>
 </sitemap>
 
 <sitemap>
- <loc>https://globalsizechart.com/sitemaps/sitemap-programmatic-1.xml</loc>
- <lastmod>2026-03-19</lastmod>
+ <loc>https://globalsizechart.com/sitemaps/sitemap-medium.xml</loc>
+ <lastmod>2026-03-22</lastmod>
 </sitemap>
 
 <sitemap>
- <loc>https://globalsizechart.com/sitemaps/sitemap-programmatic-ai.xml</loc>
- <lastmod>2026-03-19</lastmod>
+ <loc>https://globalsizechart.com/sitemaps/sitemap-low.xml</loc>
+ <lastmod>2026-03-22</lastmod>
 </sitemap>
 
 <sitemap>
- <loc>https://globalsizechart.com/sitemaps/sitemap-measurement.xml</loc>
- <lastmod>2026-03-19</lastmod>
-</sitemap>
-
-<sitemap>
- <loc>https://globalsizechart.com/sitemaps/sitemap-brands.xml</loc>
- <lastmod>2026-03-19</lastmod>
-</sitemap>
-
-<sitemap>
- <loc>https://globalsizechart.com/sitemaps/sitemap-guides.xml</loc>
- <lastmod>2026-03-19</lastmod>
+ <loc>https://globalsizechart.com/sitemaps/indexing-feed.xml</loc>
+ <lastmod>2026-03-22</lastmod>
 </sitemap>
 
 </sitemapindex>

@@ -1,67 +1,62 @@
 #!/usr/bin/env node
 /**
- * Dynamic Sitemap Generator for globalsizechart.com
+ * Dynamic Sitemap Generator — Phase 21: priority tiers (high / medium / low)
  *
- * Scans the project for HTML files, groups them by category, and generates
- * sitemap XML files with automatic splitting at 50,000 URLs per file (Google limit).
- * Uses file modification time for lastmod. No priority or changefreq (ignored by Google).
- * Scans the full site root (includes /knowledge/, /guides/, /semantic/, etc.); skips /components/.
+ * Scans HTML files, assigns tier via crawl-priority-map.js, emits:
+ *   - changefreq + lastmod (high = today for freshness)
+ *   - sitemap-high.xml, sitemap-medium.xml, sitemap-low.xml (+ splits at 50k URLs)
+ *   - sitemaps/indexing-feed.xml (URLs touched in last 7 days)
+ *   - sitemap/index.html (human + AI navigation)
  *
  * Usage: node scripts/generate-sitemaps.js
  * Deploy: npm run build:sitemaps
- *
- * Output:
- *   /sitemap.xml (index)
- *   /sitemaps/sitemap-core.xml (or -1, -2 if >50k)
- *   /sitemaps/sitemap-programmatic-1.xml, -2.xml, ...
- *   /sitemaps/sitemap-brands.xml
- *   /sitemaps/sitemap-guides.xml
- *   /sitemaps/sitemap-measurement.xml
  */
 
 const fs = require('fs');
 const path = require('path');
 
+const { relPathToUrlPath } = require('./lib/ai-engine-utils');
+const {
+  getPriorityTier,
+  getChangeFreq,
+  getLastmodForTier,
+  shouldNoindexLongtail,
+} = require('./crawl-priority-map');
+
 const ROOT = path.resolve(__dirname, '..');
 const SITEMAPS_DIR = path.join(ROOT, 'sitemaps');
+const SITEMAP_HTML_DIR = path.join(ROOT, 'sitemap');
 const BASE_URL = 'https://globalsizechart.com';
 const MAX_URLS_PER_SITEMAP = 50000;
+const INDEXING_FEED_DAYS = 7;
 
 const IGNORE_DIRS = new Set(['node_modules', '.git', 'scripts', 'sitemaps', 'components']);
-
-/** Map path prefix to category. Order matters: more specific first. */
-function getCategory(relPath) {
-  const normalized = relPath.replace(/\\/g, '/');
-  if (normalized.startsWith('programmatic-pages/ai-generated/')) return 'programmaticAi';
-  if (normalized.startsWith('programmatic-pages/')) return 'programmatic';
-  if (normalized.startsWith('measurement/') || normalized.startsWith('tools/')) return 'measurement';
-  if (normalized.startsWith('brands/')) return 'brands';
-  if (normalized.startsWith('semantic/') || normalized.startsWith('printable/')) return 'guides';
-  return 'core';
-}
 
 /** Convert file path to full URL. index.html → directory URL with trailing slash. */
 function pathToUrl(relPath) {
   const normalized = relPath.replace(/\\/g, '/');
-  if (normalized === 'index.html') return BASE_URL + '/';
-  if (normalized.endsWith('/index.html')) return BASE_URL + '/' + normalized.slice(0, -11) + '/';
-  return BASE_URL + '/' + normalized;
+  if (normalized === 'index.html') return `${BASE_URL}/`;
+  if (normalized.endsWith('/index.html')) {
+    return `${BASE_URL}/${normalized.slice(0, -11)}/`;
+  }
+  return `${BASE_URL}/${normalized}`;
 }
 
-/** Format mtime as YYYY-MM-DD */
-function formatLastmod(mtime) {
-  const d = new Date(mtime);
-  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+function formatLastmod(mtimeMs) {
+  const d = new Date(mtimeMs);
+  return (
+    d.getFullYear() +
+    '-' +
+    String(d.getMonth() + 1).padStart(2, '0') +
+    '-' +
+    String(d.getDate()).padStart(2, '0')
+  );
 }
 
-/**
- * Recursively walk directory and yield { relPath, mtime } for each .html file.
- * Skips IGNORE_DIRS. Streams one file at a time to avoid holding all in memory.
- */
 function* walkHtml(dir, prefix = '') {
   const entries = fs.readdirSync(path.join(ROOT, dir), { withFileTypes: true });
   for (const ent of entries) {
-    const rel = prefix ? prefix + '/' + ent.name : ent.name;
+    const rel = prefix ? `${prefix}/${ent.name}` : ent.name;
     if (ent.isDirectory()) {
       if (IGNORE_DIRS.has(ent.name)) continue;
       yield* walkHtml(path.join(dir, ent.name), rel);
@@ -73,24 +68,15 @@ function* walkHtml(dir, prefix = '') {
       } catch {
         mtime = Date.now();
       }
-      yield { relPath: rel, mtime };
+      yield { relPath: rel.replace(/\\/g, '/'), mtime };
     }
   }
 }
 
-/**
- * Writes URL entries to sitemap file(s), splitting at MAX_URLS_PER_SITEMAP.
- * Uses sync writes so index is generated only after all sitemaps are closed.
- * One file at a time per category to avoid holding all URLs in memory.
- */
 class SitemapWriter {
-  /**
-   * @param {string} category
-   * @param {{ fileBase?: string }} [opts] - if fileBase set, first file is fileBase.xml, then fileBase-2.xml
-   */
-  constructor(category, opts = {}) {
-    this.category = category;
-    this.fileBase = opts.fileBase || null;
+  constructor(tier, opts = {}) {
+    this.tier = tier;
+    this.fileBase = opts.fileBase || `sitemap-${tier}`;
     this.fileIndex = 0;
     this.count = 0;
     this.currentPath = null;
@@ -102,17 +88,14 @@ class SitemapWriter {
       fs.appendFileSync(this.currentPath, '</urlset>\n');
     }
     this.fileIndex++;
-    let baseName;
-    if (this.fileBase) {
-      baseName = this.fileIndex === 1 ? `${this.fileBase}.xml` : `${this.fileBase}-${this.fileIndex}.xml`;
-    } else if (this.fileIndex === 1 && this.category !== 'programmatic') {
-      baseName = `sitemap-${this.category}.xml`;
-    } else {
-      baseName = `sitemap-${this.category}-${this.fileIndex}.xml`;
-    }
+    const baseName =
+      this.fileIndex === 1
+        ? `${this.fileBase}.xml`
+        : `${this.fileBase}-${this.fileIndex}.xml`;
     this.currentPath = path.join(SITEMAPS_DIR, baseName);
     this.generatedFiles.push(baseName);
-    const header = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+    const header =
+      '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
     fs.writeFileSync(this.currentPath, header);
     this.count = 0;
   }
@@ -121,9 +104,27 @@ class SitemapWriter {
     if (this.count >= MAX_URLS_PER_SITEMAP || (this.currentPath === null && this.fileIndex === 0)) {
       this._openNext();
     }
+    const urlPath = relPathToUrlPath(relPath);
+    const tier = getPriorityTier(urlPath);
+    if (tier !== this.tier) {
+      throw new Error(`SitemapWriter tier mismatch for ${relPath}`);
+    }
+    const lastmodMs = getLastmodForTier(tier, mtime);
     const url = pathToUrl(relPath);
-    const lastmod = formatLastmod(mtime);
-    const line = '<url>\n <loc>' + escapeXml(url) + '</loc>\n <lastmod>' + lastmod + '</lastmod>\n</url>\n';
+    const lastmod = formatLastmod(lastmodMs);
+    const changefreq = getChangeFreq(tier);
+    const line =
+      '<url>\n' +
+      ' <loc>' +
+      escapeXml(url) +
+      '</loc>\n' +
+      ' <lastmod>' +
+      lastmod +
+      '</lastmod>\n' +
+      ' <changefreq>' +
+      changefreq +
+      '</changefreq>\n' +
+      '</url>\n';
     fs.appendFileSync(this.currentPath, line);
     this.count++;
   }
@@ -138,12 +139,127 @@ class SitemapWriter {
 }
 
 function escapeXml(s) {
-  return s
+  return String(s)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&apos;');
+}
+
+function writeIndexingFeed(entries, nowMs) {
+  const cutoff = nowMs - INDEXING_FEED_DAYS * 24 * 60 * 60 * 1000;
+  const recent = entries
+    .filter((e) => e.mtime >= cutoff)
+    .sort((a, b) => b.mtime - a.mtime);
+  const outPath = path.join(SITEMAPS_DIR, 'indexing-feed.xml');
+  let body =
+    '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+  for (const { relPath, mtime } of recent) {
+    const url = pathToUrl(relPath);
+    const lastmod = formatLastmod(mtime);
+    body +=
+      '<url>\n <loc>' +
+      escapeXml(url) +
+      '</loc>\n <lastmod>' +
+      lastmod +
+      '</lastmod>\n <changefreq>daily</changefreq>\n</url>\n';
+  }
+  body += '</urlset>\n';
+  fs.writeFileSync(outPath, body);
+  return recent.length;
+}
+
+function writeHtmlSitemap(entries, nowMs) {
+  if (!fs.existsSync(SITEMAP_HTML_DIR)) {
+    fs.mkdirSync(SITEMAP_HTML_DIR, { recursive: true });
+  }
+  const cutoff = nowMs - INDEXING_FEED_DAYS * 24 * 60 * 60 * 1000;
+  const recent = entries
+    .filter((e) => e.mtime >= cutoff)
+    .sort((a, b) => b.mtime - a.mtime)
+    .slice(0, 80);
+
+  const newPagesLi = recent
+    .map((e) => {
+      const href = pathToUrl(e.relPath);
+      const label = e.relPath.replace(/\.html$/, '').replace(/\//g, ' · ');
+      return `          <li><a href="${escapeXml(href)}">${escapeXml(label)}</a> <span class="sitemap-new-date">(${formatLastmod(e.mtime)})</span></li>`;
+    })
+    .join('\n');
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+  <meta name="description" content="Browse top size conversions, tools, and recently updated pages on Global Size Chart.">
+  <title>Site map — Global Size Chart</title>
+  <link rel="canonical" href="${BASE_URL}/sitemap/">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-container">
+      <div class="header-row-primary">
+        <a href="/" class="site-logo">GlobalSizeChart.com</a>
+        <nav class="primary-nav">
+          <a href="/">Home</a>
+          <a href="/shoe-size-converter.html">Shoe Converter</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+  <main class="container" style="padding: 2rem 1rem; max-width: 900px;">
+    <h1>Site map</h1>
+    <p class="text-secondary">High-intent hubs and recently updated pages (helps discovery and crawl prioritization).</p>
+
+    <section class="content-section" aria-labelledby="top-conv">
+      <h2 id="top-conv">Top conversions</h2>
+      <ul class="sitemap-hub-list">
+        <li><a href="/shoe-size-converter.html">Shoe size converter</a></li>
+        <li><a href="/us-to-eu-size.html">US to EU size</a></li>
+        <li><a href="/cm-to-us-shoe-size.html">CM to US shoe size</a></li>
+        <li><a href="/uk-to-us-size.html">UK to US size</a></li>
+        <li><a href="/clothing-size-converter.html">Clothing size converter</a></li>
+      </ul>
+    </section>
+
+    <section class="content-section" aria-labelledby="popular-tools">
+      <h2 id="popular-tools">Popular size tools</h2>
+      <ul class="sitemap-hub-list">
+        <li><a href="/shoe-size-conversions/">Shoe size conversions hub</a></li>
+        <li><a href="/shoe-size-conversion-chart/">Shoe size conversion chart</a></li>
+        <li><a href="/measurement-tools.html">Measurement tools</a></li>
+        <li><a href="/knowledge/">Knowledge hub</a></li>
+        <li><a href="/guides/">Guides</a></li>
+        <li><a href="/brand-sizing-guide.html">Brand sizing guide</a></li>
+      </ul>
+    </section>
+
+    <section class="content-section" aria-labelledby="new-pages">
+      <h2 id="new-pages">New &amp; recently updated (last ${INDEXING_FEED_DAYS} days)</h2>
+      <ul class="sitemap-new-list">
+${newPagesLi || '          <li><em>No recent file updates in this window (run deploy after changes).</em></li>'}
+      </ul>
+    </section>
+
+    <section class="content-section">
+      <h2>Machine-readable sitemaps</h2>
+      <ul>
+        <li><a href="/sitemap.xml">Sitemap index</a> (priority tiers: high / medium / low)</li>
+        <li><a href="/sitemaps/indexing-feed.xml">Indexing feed</a> (recent URLs)</li>
+      </ul>
+    </section>
+  </main>
+  <footer class="footer" style="padding: 2rem; text-align: center;">
+    <p><a href="/">← Back to home</a></p>
+  </footer>
+</body>
+</html>
+`;
+  fs.writeFileSync(path.join(SITEMAP_HTML_DIR, 'index.html'), html, 'utf8');
 }
 
 function main() {
@@ -157,49 +273,72 @@ function main() {
     }
   }
 
-  const writers = {
-    core: new SitemapWriter('core'),
-    programmatic: new SitemapWriter('programmatic'),
-    programmaticAi: new SitemapWriter('programmaticAi', { fileBase: 'sitemap-programmatic-ai' }),
-    measurement: new SitemapWriter('measurement'),
-    brands: new SitemapWriter('brands'),
-    guides: new SitemapWriter('guides'),
-  };
-  const categories = ['core', 'programmatic', 'programmaticAi', 'measurement', 'brands', 'guides'];
+  const entries = [];
+  for (const item of walkHtml('.')) {
+    entries.push(item);
+  }
 
+  const sitemapEntries = entries.filter((e) => !shouldNoindexLongtail(relPathToUrlPath(e.relPath)));
+
+  const writers = {
+    high: new SitemapWriter('high', { fileBase: 'sitemap-high' }),
+    medium: new SitemapWriter('medium', { fileBase: 'sitemap-medium' }),
+    low: new SitemapWriter('low', { fileBase: 'sitemap-low' }),
+  };
+
+  const nowMs = Date.now();
   let total = 0;
-  for (const { relPath, mtime } of walkHtml('.')) {
-    const category = getCategory(relPath);
-    writers[category].addUrl(relPath, mtime);
+  for (const { relPath, mtime } of sitemapEntries) {
+    const urlPath = relPathToUrlPath(relPath);
+    const tier = getPriorityTier(urlPath);
+    writers[tier].addUrl(relPath, mtime);
     total++;
   }
 
   const allGenerated = [];
-  const today = formatLastmod(Date.now());
+  const today = formatLastmod(nowMs);
 
-  for (const cat of categories) {
-    const files = writers[cat].close();
+  for (const tier of ['high', 'medium', 'low']) {
+    const files = writers[tier].close();
     for (const f of files) {
       allGenerated.push({ file: f, lastmod: today });
     }
   }
+
+  const feedCount = writeIndexingFeed(
+    entries.filter((e) => !shouldNoindexLongtail(relPathToUrlPath(e.relPath))),
+    nowMs
+  );
+  allGenerated.push({ file: 'indexing-feed.xml', lastmod: today });
+
+  writeHtmlSitemap(entries, nowMs);
 
   const indexPath = path.join(ROOT, 'sitemap.xml');
   const indexStream = fs.createWriteStream(indexPath, { flags: 'w' });
   indexStream.write('<?xml version="1.0" encoding="UTF-8"?>\n');
   indexStream.write('<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n\n');
   for (const { file, lastmod } of allGenerated) {
-    const loc = BASE_URL + '/sitemaps/' + file;
-    indexStream.write('<sitemap>\n <loc>' + escapeXml(loc) + '</loc>\n <lastmod>' + lastmod + '</lastmod>\n</sitemap>\n\n');
+    const loc = `${BASE_URL}/sitemaps/${file}`;
+    indexStream.write(
+      '<sitemap>\n <loc>' + escapeXml(loc) + '</loc>\n <lastmod>' + lastmod + '</lastmod>\n</sitemap>\n\n'
+    );
   }
   indexStream.write('</sitemapindex>\n');
   indexStream.end();
 
-  console.log('Generated sitemaps: %d URLs, %d files', total, allGenerated.length);
+  const excluded = entries.length - sitemapEntries.length;
+  console.log(
+    'Generated sitemaps: %d URLs, %d sitemap files + indexing-feed + sitemap/index.html (excluded %d noindex long-tail)',
+    total,
+    allGenerated.length,
+    excluded
+  );
   for (const { file } of allGenerated) {
     console.log('  - sitemaps/' + file);
   }
   console.log('  - sitemap.xml (index)');
+  console.log('  - sitemap/index.html (HTML site map)');
+  console.log('  indexing-feed: %d URLs (last %d days)', feedCount, INDEXING_FEED_DAYS);
 }
 
 main();

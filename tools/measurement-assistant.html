@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="GlobalSizeChart Research Team" data-author-entity="1">
+
+  <meta http-equiv="Cache-Control" content="public, max-age=86400" data-cache-meta="1">
   <meta name="robots" content="index, follow">
   <meta name="description" content="Interactive foot and clothing measurement calculator with inch/cm converter, size recommendations, and visual guides.">
   <link rel="canonical" href="https://globalsizechart.com/tools/measurement-assistant.html">
@@ -30,6 +33,20 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Measurement Assistant","applicationCategory":"WebApplication","description":"Interactive foot and clothing measurement calculator with inch/cm converter, size recommendations, and visual guides.","url":"https://globalsizechart.com/tools/measurement-assistant.html","featureList":"Foot measurement calculator, clothing measurement assistant, unit converter (inch/cm), dynamic size recommendation, interactive visual guides","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"How to use the Measurement Assistant","description":"Enter your measurements in cm or inches to get shoe and clothing size recommendations.","step":[{"@type":"HowToStep","position":1,"name":"Use unit converter","text":"Convert between inches and centimeters if needed (1 inch = 2.54 cm)."},{"@type":"HowToStep","position":2,"name":"Foot measurement","text":"Enter your foot length in cm or inches and select gender to see US, UK, EU shoe size."},{"@type":"HowToStep","position":3,"name":"Clothing measurements","text":"Enter chest, waist, and hips in cm or inches; select gender and category for size recommendation."},{"@type":"HowToStep","position":4,"name":"Review recommendation","text":"Check the dynamic size recommendation summary. Always verify with the brand size chart."}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I measure my foot for shoe size?","acceptedAnswer":{"@type":"Answer","text":"Measure from the back of your heel to the tip of your longest toe on a flat surface, with your weight on that foot. Use the larger foot if they differ."}},{"@type":"Question","name":"How do I measure chest for clothing?","acceptedAnswer":{"@type":"Answer","text":"Measure around the fullest part of your chest, under your arms and across the shoulder blades. Keep the tape horizontal and snug but not tight."}},{"@type":"Question","name":"Are these size recommendations accurate?","acceptedAnswer":{"@type":"Answer","text":"Recommendations are based on standard size charts. Brands vary; always check the retailer's size guide for the specific item."}}]}</script>
+
+  <script type="application/ld+json" data-authority-org-global="1">
+  {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "GlobalSizeChart",
+  "url": "https://globalsizechart.com",
+  "logo": "https://globalsizechart.com/logo.png",
+  "sameAs": [
+    "https://www.reddit.com/user/REPLACE_WITH_YOUR_REDDIT_USERNAME",
+    "https://www.quora.com/profile/REPLACE_WITH_YOUR_QUORA_PROFILE"
+  ]
+}
+  </script>
 </head>
 <body data-intent="measurement_confusion">
   <header class="site-header">
@@ -52,8 +69,32 @@
     </div>
   </header>
   <main class="main-content" style="max-width: 900px; margin: 0 auto; padding: 1rem;">
+  <section class="crawl-priority-links crawl-priority-links--main" data-crawl-priority-links="main" aria-label="Popular conversions">
+    <h2>Popular conversions</h2>
+    <ul>
+    <li><a href="../shoe-size-converter.html">Shoe Size Converter</a></li>
+    <li><a href="../us-to-eu-size.html">US to EU Size</a></li>
+    <li><a href="../cm-to-us-shoe-size.html">CM to US Shoe Size</a></li>
+    <li><a href="../shoe-size-conversions/index.html">Shoe size conversions</a></li>
+    </ul>
+  </section>
     <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="../index.html">Home</a> &gt; <a href="../measurement-tools.html">Measurement Tools</a> &gt; <span>Measurement Assistant</span></nav>
     <h1>Measurement Assistant</h1>
+
+        <section class="ai-answer-block" data-ai-answer-block="1" data-ai-answer="1" aria-label="Quick answer">
+          <p><strong>Quick answer:</strong></p>
+          <p>Interactive foot and clothing measurement calculator with inch/cm converter, size recommendations, and visual guides.</p>
+          <p class="ai-answer-see-also"><strong>See also:</strong> <a href="../cm-to-us-shoe-size.html">CM to US converter</a> · <a href="../shoe-size-converter.html">Shoe size converter</a> · <a href="../measurement-standards.html">Measurement standards</a></p>
+        </section>
+  <section class="ai-faq-block" data-ai-faq-block="1" aria-label="Common questions">
+    <h2>Common questions</h2>
+    <h3>How should I use this converter?</h3>
+    <p>Pick your region and size, then read the equivalents. When in doubt, measure in centimeters and compare to the brand chart.</p>
+    <h3>Why do sizes differ between countries?</h3>
+    <p>Each region uses its own scale; mapping through foot length (cm) reduces error.</p>
+    <h3>More on Measurement Assistant</h3>
+    <p>See linked guides on this site for measurement tips and regional differences.</p>
+  </section>
     <p>Use the tools below to convert units, calculate shoe size from foot length, get clothing size recommendations, and see a combined size summary. All recommendations are approximate; always check the brand size chart.</p>
 
     <div class="recommendation-box" id="recommendation-box" aria-live="polite">
@@ -79,7 +120,7 @@
     <section class="tool-section" id="foot-calculator">
       <h2>Foot measurement calculator</h2>
       <div class="visual-guide" aria-hidden="true">
-        <svg viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram showing foot length and measurement reference for shoe size conversion">
           <ellipse cx="60" cy="35" rx="45" ry="18" fill="none" stroke="#333" stroke-width="1.5"/>
           <line x1="15" y1="35" x2="105" y2="35" stroke="#0a7ea4" stroke-width="2" stroke-dasharray="4 2"/>
           <text x="60" y="52" text-anchor="middle" font-size="8" fill="#555">Measure heel to longest toe</text>
@@ -108,7 +149,7 @@
     <section class="tool-section" id="clothing-assistant">
       <h2>Clothing measurement assistant</h2>
       <div class="visual-guide" aria-hidden="true">
-        <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram showing foot length and measurement reference for shoe size conversion">
           <path d="M50 10 L65 25 L65 45 Q65 55 50 58 Q35 55 35 45 L35 25 Z" fill="none" stroke="#333" stroke-width="1.5"/>
           <line x1="50" y1="28" x2="50" y2="42" stroke="#0a7ea4" stroke-width="1.5" stroke-dasharray="3 2"/>
           <text x="50" y="25" text-anchor="middle" font-size="7" fill="#555">chest</text>
@@ -180,6 +221,16 @@
       </ul>
     </section>
   
+      
+      <section class="data-sources content-section" data-data-sources="1" aria-label="Data sources">
+        <h2>Data sources</h2>
+        <ul>
+          <li>ISO and regional footwear sizing references (length-based mapping)</li>
+          <li>Published brand size charts (e.g. Nike, Adidas) for cross-checks—not endorsements</li>
+          <li>International measurement and apparel sizing studies (public summaries)</li>
+        </ul>
+      </section>
+
       <div class="aeo-ai-layer" data-aeo-ai-layer>
       <section class="ai-answer content-section" aria-labelledby="aeo-qa-h2">
         <h2 id="aeo-qa-h2">Quick Answer</h2>
@@ -221,6 +272,7 @@
         <div class="footer-section">
           <h3>Converters</h3>
           <ul>
+            <li><a href="../ai/" data-footer-ai-index="1">All size conversion answers</a></li>
             <li><a href="../shoe-size-converter.html">Shoe Size Converter</a></li>
             <li><a href="../clothing-size-converter.html">Clothing Size Converter</a></li>
             <li><a href="../us-to-eu-size.html">US to EU Size</a></li>
@@ -245,6 +297,16 @@
         <p>&copy; 2026 GlobalSizeChart.com. Recommendations are approximate; check brand size charts.</p>
       </div>
     </div>
+  
+  <section class="crawl-priority-links crawl-priority-links--footer" data-crawl-priority-links="footer" aria-label="Popular conversions">
+    <h2>Popular conversions</h2>
+    <ul>
+    <li><a href="../shoe-size-converter.html">Shoe Size Converter</a></li>
+    <li><a href="../us-to-eu-size.html">US to EU Size</a></li>
+    <li><a href="../cm-to-us-shoe-size.html">CM to US Shoe Size</a></li>
+    <li><a href="../shoe-size-conversions/index.html">Shoe size conversions</a></li>
+    </ul>
+  </section>
   </footer>
   <script>
 (function() {

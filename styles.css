@@ -1522,6 +1522,133 @@ footer .footer-accuracy.content-section {
   line-height: 1.6;
 }
 
+/* Phase 21 — crawl priority links (main + footer) */
+.crawl-priority-links {
+  margin: var(--spacing-md) 0;
+  padding: var(--spacing-md);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.crawl-priority-links--main {
+  margin-top: 0;
+}
+
+.crawl-priority-links--footer {
+  margin-top: var(--spacing-lg);
+  margin-bottom: 0;
+}
+
+.crawl-priority-links h2 {
+  font-size: 1.1rem;
+  margin-bottom: var(--spacing-sm);
+}
+
+.crawl-priority-links ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+}
+
+.crawl-priority-links a {
+  font-weight: 500;
+}
+
+.sitemap-hub-list,
+.sitemap-new-list {
+  line-height: 1.8;
+}
+
+.sitemap-new-date {
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+/* Phase 22 — AI citation (plain HTML, no JS required) */
+.ai-answer-block {
+  margin: var(--spacing-md) 0 var(--spacing-lg);
+  padding: var(--spacing-md);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--primary-color);
+}
+
+.ai-answer-block p {
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-primary);
+  line-height: 1.65;
+}
+
+.ai-answer-see-also {
+  margin-bottom: 0 !important;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.ai-faq-block {
+  margin: var(--spacing-lg) 0;
+  padding: var(--spacing-md);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+.ai-faq-block h2 {
+  font-size: 1.15rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.ai-faq-block h3 {
+  font-size: 1rem;
+  margin: var(--spacing-md) 0 var(--spacing-xs);
+  color: var(--text-primary);
+}
+
+.ai-faq-block p {
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin-bottom: var(--spacing-sm);
+}
+
+.data-sources {
+  margin: var(--spacing-xl) 0 var(--spacing-lg);
+  padding: var(--spacing-md);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+}
+
+.data-sources h2 {
+  font-size: 1.1rem;
+  margin-bottom: var(--spacing-sm);
+}
+
+.data-sources ul {
+  margin-left: 1.25rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.ai-index-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ai-index-list li {
+  margin-bottom: 0.35rem;
+  break-inside: avoid;
+}
+
+@media (min-width: 640px) {
+  .ai-index-list {
+    columns: 2;
+  }
+}
+
 /* ============================================
    Print Styles
    ============================================ */

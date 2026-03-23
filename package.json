@@ -3,7 +3,13 @@
   "version": "1.0.0",
   "description": "International shoe and clothing size conversion tools",
   "scripts": {
-    "build:sitemaps": "node scripts/generate-sitemaps.js",
+    "build:sitemaps": "node scripts/generate-sitemaps.js && node scripts/internal-link-injector.js",
+    "crawl:inject": "node scripts/internal-link-injector.js",
+    "crawl:noindex": "node scripts/inject-noindex-longtail.js",
+    "build:cache-headers": "node scripts/add-cache-headers.js",
+    "optimize:assets": "node scripts/optimize-assets.js",
+    "build:cf": "node scripts/add-cache-headers.js && node scripts/optimize-assets.js",
+    "verify:cache": "node scripts/check-cache.js",
     "inject:aeo": "node scripts/inject-aeo-layer.js",
     "build:ai": "node scripts/ai-citation-engine.js",
     "ai:patterns": "node scripts/extract-query-patterns.js",
@@ -11,6 +17,14 @@
     "ai:faqs": "node scripts/generate-faqs.js",
     "ai:optimize": "node scripts/optimize-answers.js",
     "ai:links": "node scripts/internal-link-optimizer.js",
-    "ai:pages": "node scripts/generate-ai-pages.js"
+    "ai:pages": "node scripts/generate-ai-pages.js",
+    "ai:answer": "node scripts/ai-answer-injector.js",
+    "ai:index": "node scripts/generate-ai-index.js",
+    "ai:svg": "node scripts/svg-accessibility.js",
+    "build:ai-citation": "node scripts/ai-answer-injector.js && node scripts/svg-accessibility.js && node scripts/generate-ai-index.js",
+    "authority:seed": "node scripts/generate-authority-answers.js",
+    "authority:inject-org": "node scripts/inject-authority-org-schema.js",
+    "authority:inject-footer": "node scripts/inject-ai-footer-link.js",
+    "build:authority": "node scripts/generate-authority-answers.js && node scripts/inject-authority-org-schema.js && node scripts/inject-ai-footer-link.js"
   }
 }
