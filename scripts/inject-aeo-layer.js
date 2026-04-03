@@ -103,10 +103,6 @@ function buildBodyLayer(prefix, quickAnswer, includeFaqBlock) {
         <h2 id="aeo-why-h2">Why Sizes May Vary</h2>
         <p>Shoe and clothing sizes can vary between brands due to manufacturing differences, materials, and regional sizing standards.</p>
       </section>${faq}
-      <section class="author-box content-section" aria-label="Author">
-        <p><strong>Author:</strong> Albor Digital Team</p>
-        <p>Global Size Chart is operated by Albor Digital, specializing in international sizing systems and conversion tools.</p>
-      </section>
       <section class="aeo-see-also content-section">
         <h2>See also</h2>
         <p>
@@ -178,7 +174,6 @@ function processFile(relPath) {
   let html = fs.readFileSync(full, 'utf8');
   if (SKIP_FILES.has(relPath.replace(/\\/g, '/'))) return { skip: true, reason: 'curated manually' };
   if (html.includes('data-aeo-ai-layer')) return { skip: true, reason: 'already has layer' };
-  if (html.includes('class="author-box"') || html.includes("class='author-box'")) return { skip: true, reason: 'has author-box' };
   if (html.includes('class="ai-answer') || html.includes("class='ai-answer")) return { skip: true, reason: 'has ai-answer' };
 
   const idx = html.lastIndexOf('</main>');

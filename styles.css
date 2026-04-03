@@ -1522,22 +1522,17 @@ footer .footer-accuracy.content-section {
   line-height: 1.6;
 }
 
-/* Phase 21 — crawl priority links (main + footer) */
+/* Phase 21 — crawl priority links (single in-main block) */
 .crawl-priority-links {
-  margin: var(--spacing-md) 0;
+  margin-top: 40px;
   padding: var(--spacing-md);
   background: var(--bg-secondary);
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
 }
 
-.crawl-priority-links--main {
-  margin-top: 0;
-}
-
-.crawl-priority-links--footer {
-  margin-top: var(--spacing-lg);
-  margin-bottom: 0;
+.crawl-priority-links--content {
+  margin-bottom: var(--spacing-md);
 }
 
 .crawl-priority-links h2 {
@@ -1570,11 +1565,11 @@ footer .footer-accuracy.content-section {
 
 /* Phase 22 — AI citation (plain HTML, no JS required) */
 .ai-answer-block {
-  margin: var(--spacing-md) 0 var(--spacing-lg);
-  padding: var(--spacing-md);
-  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
-  border-radius: var(--radius-md);
-  border-left: 4px solid var(--primary-color);
+  margin: 24px 0 32px;
+  padding: 20px;
+  border-left: 4px solid #4f46e5;
+  background: #f9fafb;
+  border-radius: 8px;
 }
 
 .ai-answer-block p {
@@ -1590,7 +1585,7 @@ footer .footer-accuracy.content-section {
 }
 
 .ai-faq-block {
-  margin: var(--spacing-lg) 0;
+  margin-top: 40px;
   padding: var(--spacing-md);
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
@@ -1615,7 +1610,9 @@ footer .footer-accuracy.content-section {
 }
 
 .data-sources {
-  margin: var(--spacing-xl) 0 var(--spacing-lg);
+  margin-top: 40px;
+  font-size: 0.95rem;
+  opacity: 0.85;
   padding: var(--spacing-md);
   background: var(--bg-secondary);
   border-radius: var(--radius-md);
@@ -1630,6 +1627,60 @@ footer .footer-accuracy.content-section {
   margin-left: 1.25rem;
   color: var(--text-secondary);
   line-height: 1.7;
+}
+
+/* Tool-first pages: stacked calculators */
+.tool-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin: 32px 0;
+}
+
+.tool-stack > section {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid #e5e7eb;
+}
+
+.measurement-visual {
+  width: 100%;
+  max-width: 520px;
+  margin: 16px auto 24px;
+  display: block;
+  border-radius: 8px;
+}
+
+.measurement-visual.small {
+  max-width: 420px;
+  opacity: 0.95;
+}
+
+p.image-caption {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  text-align: center;
+  margin: -12px auto 20px;
+  max-width: 520px;
+  line-height: 1.55;
+}
+
+@media (max-width: 640px) {
+  .measurement-visual {
+    max-width: 100%;
+  }
+}
+
+/* Phase 22 tail blocks often sit as direct <main> children after </div.container>; match .container width */
+main > .ai-faq-block,
+main > .data-sources,
+main > .aeo-see-also {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
 }
 
 .ai-index-list {

@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 /**
- * Phase 21 — Crawl priority internal links
- * Injects "Popular conversions" block at top of <main> and before </footer> on all HTML pages.
- * Idempotent via data-crawl-priority-links.
+ * Crawl priority: one "Popular conversions" block after the converter card (in-main only).
+ * Idempotent via data-crawl-priority-links="content".
  *
  * Usage: node scripts/internal-link-injector.js [--dry-run]
  */
 
 const fs = require('fs');
 const path = require('path');
+const cheerio = require('cheerio');
 
 const ROOT = path.resolve(__dirname, '..');
 const IGNORE_DIRS = new Set(['node_modules', '.git', 'scripts', 'sitemaps', 'components']);
@@ -36,7 +36,6 @@ function walkHtmlFiles(dir = '.', prefix = '') {
   return out;
 }
 
-/** Relative href from current HTML file to site-root path like /foo.html or /dir/ */
 function hrefTo(fromRel, toUrlPath) {
   const fromDir = path.dirname(path.join(ROOT, fromRel));
   let toFull;
@@ -55,32 +54,15 @@ function hrefTo(fromRel, toUrlPath) {
   return r;
 }
 
-function injectForFile(rel) {
+function buildContentBlock(rel) {
   const hrefs = TARGETS.map((t) => ({ ...t, href: hrefTo(rel, t.path) }));
-  const mainItems = hrefs
-    .map((t) => `    <li><a href="${t.href}">${t.label}</a></li>`)
-    .join('\n');
-  const footerItems = hrefs
-    .map((t) => `    <li><a href="${t.href}">${t.label}</a></li>`)
-    .join('\n');
-
-  const mainBlock = `
-  <section class="crawl-priority-links crawl-priority-links--main" data-crawl-priority-links="main" aria-label="Popular conversions">
+  const items = hrefs.map((t) => `    <li><a href="${t.href}">${t.label}</a></li>`).join('\n');
+  return `<section class="crawl-priority-links crawl-priority-links--content" data-crawl-priority-links="content" aria-label="Popular conversions">
     <h2>Popular conversions</h2>
     <ul>
-${mainItems}
+${items}
     </ul>
   </section>`;
-
-  const footerBlock = `
-  <section class="crawl-priority-links crawl-priority-links--footer" data-crawl-priority-links="footer" aria-label="Popular conversions">
-    <h2>Popular conversions</h2>
-    <ul>
-${footerItems}
-    </ul>
-  </section>`;
-
-  return { mainBlock, footerBlock };
 }
 
 function main() {
@@ -88,29 +70,35 @@ function main() {
   let n = 0;
   for (const rel of walkHtmlFiles('.')) {
     const abs = path.join(ROOT, rel);
-    let html = fs.readFileSync(abs, 'utf8');
-    if (html.includes('data-crawl-priority-links=')) continue;
+    const raw = fs.readFileSync(abs, 'utf8');
+    if (!raw.includes('<main')) continue;
+    if (raw.includes('data-crawl-priority-links="content"')) continue;
 
-    const { mainBlock, footerBlock } = injectForFile(rel);
+    const $ = cheerio.load(raw, { decodeEntities: false });
+    const $main = $('main').first();
+    if (!$main.length) continue;
 
-    if (!html.includes('<main')) continue;
+    const $card = $main.find('section.converter-card').first();
+    const $form = $main.find('form#mainConverter').first();
+    const $block = $(buildContentBlock(rel));
 
-    if (/<main[^>]*>/i.test(html)) {
-      html = html.replace(/<main([^>]*)>/i, '<main$1>' + mainBlock);
+    if ($card.length) {
+      $card.after($block);
+    } else if ($form.length) {
+      const $sec = $form.closest('section').first();
+      if ($sec.length) {
+        $sec.after($block);
+      } else {
+        $form.after($block);
+      }
     } else {
       continue;
     }
 
-    if (/<\/footer>/i.test(html)) {
-      html = html.replace(/<\/footer>/i, footerBlock + '\n  </footer>');
-    } else {
-      if (!dryRun) {
-        console.warn('internal-link-injector: no </footer> in', rel);
-      }
-    }
-
-    if (!dryRun) fs.writeFileSync(abs, html, 'utf8');
+    const next = $.html();
+    if (next === raw) continue;
     n++;
+    if (!dryRun) fs.writeFileSync(abs, next, 'utf8');
   }
   console.log('internal-link-injector: %d pages updated%s', n, dryRun ? ' (dry-run)' : '');
 }

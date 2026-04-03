@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "International shoe and clothing size conversion tools",
   "scripts": {
+    "dev": "python3 -m http.server 5173",
     "build:sitemaps": "node scripts/generate-sitemaps.js && node scripts/internal-link-injector.js",
     "crawl:inject": "node scripts/internal-link-injector.js",
     "crawl:noindex": "node scripts/inject-noindex-longtail.js",
@@ -22,9 +23,13 @@
     "ai:index": "node scripts/generate-ai-index.js",
     "ai:svg": "node scripts/svg-accessibility.js",
     "build:ai-citation": "node scripts/ai-answer-injector.js && node scripts/svg-accessibility.js && node scripts/generate-ai-index.js",
+    "fix:ai-layout": "node scripts/fix-ai-layout.js",
     "authority:seed": "node scripts/generate-authority-answers.js",
     "authority:inject-org": "node scripts/inject-authority-org-schema.js",
     "authority:inject-footer": "node scripts/inject-ai-footer-link.js",
     "build:authority": "node scripts/generate-authority-answers.js && node scripts/inject-authority-org-schema.js && node scripts/inject-ai-footer-link.js"
+  },
+  "devDependencies": {
+    "cheerio": "^1.2.0"
   }
 }

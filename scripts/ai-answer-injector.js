@@ -8,6 +8,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const cheerio = require('cheerio');
 const { relPathToUrlPath } = require('./lib/ai-engine-utils');
 const { getPriorityTier } = require('./crawl-priority-map');
 const {
@@ -166,6 +167,40 @@ function injectAfterFirstH1InMain(html, insert) {
   return html.slice(0, pos) + '\n' + insert + html.slice(pos);
 }
 
+/** Skip injection when AI blocks are split across multiple direct <main> children (ambiguous layout). */
+function mainChildBranchesWithAi(html) {
+  const $ = cheerio.load(html, { decodeEntities: false });
+  const $main = $('main').first();
+  if (!$main.length) return 0;
+  let branches = 0;
+  $main.children().each((_, el) => {
+    const $c = $(el);
+    if ($c.is('[data-ai-answer-block], [data-ai-faq-block]')) {
+      branches += 1;
+      return;
+    }
+    if ($c.find('[data-ai-answer-block], [data-ai-faq-block]').length) {
+      branches += 1;
+    }
+  });
+  return branches;
+}
+
+function injectFaqBeforeDataSources(html, block) {
+  if (html.includes('data-ai-faq-block')) return html;
+  const marker = '<section class="data-sources';
+  const idx = html.indexOf(marker);
+  if (idx !== -1) {
+    return html.slice(0, idx) + block + '\n\n      ' + html.slice(idx);
+  }
+  const aeo = '<div class="aeo-ai-layer"';
+  const ai = html.indexOf(aeo);
+  if (ai !== -1) {
+    return html.slice(0, ai) + block + '\n\n      ' + html.slice(ai);
+  }
+  return html.replace(/<\/main>/i, (m) => block + '\n\n  ' + m);
+}
+
 function injectBeforeAeoOrMainEnd(html, block) {
   if (html.includes('data-data-sources')) return html;
   const marker = '<div class="aeo-ai-layer"';
@@ -244,6 +279,10 @@ function main() {
     const abs = path.join(ROOT, rel);
     let html = fs.readFileSync(abs, 'utf8');
     if (html.includes('data-ai-answer-block')) continue;
+    if (mainChildBranchesWithAi(html) > 1) {
+      console.warn('ai-answer-injector: skip (AI blocks split across multiple main branches):', rel);
+      continue;
+    }
 
     const urlPath = relPathToUrlPath(rel);
     const canonical =
@@ -257,14 +296,14 @@ function main() {
     const title = extractTitle(html);
     const topic = title.split('|')[0].trim();
 
-    const bodyBlock = `
+    const answerBlock = `
         <section class="ai-answer-block" data-ai-answer-block="1" data-ai-answer="1" aria-label="Quick answer">
           <p><strong>Quick answer:</strong></p>
           <p>${escapeHtml(answerText)}</p>
           ${buildSeeAlso(rel)}
-        </section>${buildFaqBlocks(topic, isProgrammatic)}`;
+        </section>`;
 
-    let next = injectAfterFirstH1InMain(html, bodyBlock);
+    let next = injectAfterFirstH1InMain(html, answerBlock);
     if (!next) {
       console.warn('ai-answer-injector: skip (no h1 in main):', rel);
       continue;
@@ -272,6 +311,8 @@ function main() {
     html = next;
 
     html = injectBeforeAeoOrMainEnd(html, buildDataSourcesBlock());
+
+    html = injectFaqBeforeDataSources(html, buildFaqBlocks(topic, isProgrammatic));
 
     const faqPairs = [
       ['Is this conversion the same for every brand?', 'No—brands use different lasts and fits.'],

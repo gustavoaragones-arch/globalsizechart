@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<!DOCTYPE html><html lang="en"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="author" content="GlobalSizeChart Research Team" data-author-entity="1">
@@ -12,15 +10,13 @@
   <title>Measurement Assistant | GlobalSizeChart.com</title>
   <link rel="stylesheet" href="../styles.css">
   <style>
-    .tool-section { margin: 1.5rem 0; padding: 1rem; border: 1px solid #e0e0e0; border-radius: 8px; background: #fafafa; }
-    .tool-section h2 { margin-top: 0; }
+    .tool-stack > section h2:first-of-type { margin-top: 0; }
     .tool-row { margin: 0.5rem 0; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
     .tool-row label { min-width: 100px; }
     .tool-row input, .tool-row select { padding: 0.35rem 0.5rem; }
-    .recommendation-box { background: #e8f4f8; border: 1px solid #0a7ea4; border-radius: 8px; padding: 1rem; margin: 1rem 0; }
-    .recommendation-box h3 { margin-top: 0; }
-    .visual-guide { max-width: 280px; margin: 1rem 0; }
-    .visual-guide svg { width: 100%; height: auto; }
+    .recommendation-box { background: #e8f4f8; border: 1px solid #0a7ea4; border-radius: 8px; padding: 1rem; margin: 0; }
+    .measurement-tips { margin: 1.5rem 0; padding: 1.25rem 1.5rem; border: 1px solid #e5e7eb; border-radius: 12px; background: #fafafa; }
+    .measurement-tips h2 { margin-top: 0; }
     .explanation-module { margin: 1rem 0; padding: 1rem; background: #fff; border-left: 4px solid #0a7ea4; }
     .faq-item { margin: 0.75rem 0; }
     .faq-item summary { cursor: pointer; font-weight: bold; }
@@ -68,40 +64,16 @@
       </nav>
     </div>
   </header>
-  <main class="main-content" style="max-width: 900px; margin: 0 auto; padding: 1rem;">
-  <section class="crawl-priority-links crawl-priority-links--main" data-crawl-priority-links="main" aria-label="Popular conversions">
-    <h2>Popular conversions</h2>
-    <ul>
-    <li><a href="../shoe-size-converter.html">Shoe Size Converter</a></li>
-    <li><a href="../us-to-eu-size.html">US to EU Size</a></li>
-    <li><a href="../cm-to-us-shoe-size.html">CM to US Shoe Size</a></li>
-    <li><a href="../shoe-size-conversions/index.html">Shoe size conversions</a></li>
-    </ul>
-  </section>
-    <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="../index.html">Home</a> &gt; <a href="../measurement-tools.html">Measurement Tools</a> &gt; <span>Measurement Assistant</span></nav>
+  <main class="main-content container">
     <h1>Measurement Assistant</h1>
 
-        <section class="ai-answer-block" data-ai-answer-block="1" data-ai-answer="1" aria-label="Quick answer">
-          <p><strong>Quick answer:</strong></p>
-          <p>Interactive foot and clothing measurement calculator with inch/cm converter, size recommendations, and visual guides.</p>
-          <p class="ai-answer-see-also"><strong>See also:</strong> <a href="../cm-to-us-shoe-size.html">CM to US converter</a> · <a href="../shoe-size-converter.html">Shoe size converter</a> · <a href="../measurement-standards.html">Measurement standards</a></p>
-        </section>
-  <section class="ai-faq-block" data-ai-faq-block="1" aria-label="Common questions">
-    <h2>Common questions</h2>
-    <h3>How should I use this converter?</h3>
-    <p>Pick your region and size, then read the equivalents. When in doubt, measure in centimeters and compare to the brand chart.</p>
-    <h3>Why do sizes differ between countries?</h3>
-    <p>Each region uses its own scale; mapping through foot length (cm) reduces error.</p>
-    <h3>More on Measurement Assistant</h3>
-    <p>See linked guides on this site for measurement tips and regional differences.</p>
-  </section>
-    <p>Use the tools below to convert units, calculate shoe size from foot length, get clothing size recommendations, and see a combined size summary. All recommendations are approximate; always check the brand size chart.</p>
+    <section class="ai-answer-block" data-ai-answer-block="1" data-ai-answer="1" aria-label="Quick answer">
+      <p><strong>Quick answer:</strong></p>
+      <p>Interactive foot and clothing measurement calculator with inch/cm converter, size recommendations, and visual guides.</p>
+      <p class="ai-answer-see-also"><strong>See also:</strong> <a href="../cm-to-us-shoe-size.html">CM to US converter</a> · <a href="../shoe-size-converter.html">Shoe size converter</a> · <a href="../measurement-standards.html">Measurement standards</a></p>
+    </section>
 
-    <div class="recommendation-box" id="recommendation-box" aria-live="polite">
-      <h3>Dynamic size recommendation</h3>
-      <p id="recommendation-text">Enter measurements above to see your recommended sizes here.</p>
-    </div>
-
+    <section class="tool-stack" aria-label="Measurement tools">
     <section class="tool-section" id="unit-converter">
       <h2>Unit converter (inch / cm)</h2>
       <p class="explanation-module">Convert between inches and centimeters. 1 inch = 2.54 cm. Use this to enter your measurements in either unit.</p>
@@ -119,13 +91,19 @@
 
     <section class="tool-section" id="foot-calculator">
       <h2>Foot measurement calculator</h2>
-      <div class="visual-guide" aria-hidden="true">
-        <svg viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram showing foot length and measurement reference for shoe size conversion">
-          <ellipse cx="60" cy="35" rx="45" ry="18" fill="none" stroke="#333" stroke-width="1.5"/>
-          <line x1="15" y1="35" x2="105" y2="35" stroke="#0a7ea4" stroke-width="2" stroke-dasharray="4 2"/>
-          <text x="60" y="52" text-anchor="middle" font-size="8" fill="#555">Measure heel to longest toe</text>
-        </svg>
-      </div>
+      <img
+        src="/images/foot-size-measurements-footstep.png"
+        alt="Foot length and width measurement diagram showing how to measure heel to toe and foot width"
+        class="measurement-visual"
+        decoding="async">
+      <p class="image-caption">Measure carefully using this reference to improve size accuracy.</p>
+      <img
+        src="/images/foot-size-measurements.png"
+        alt="Foot width measurement diagram showing how to measure the widest part of the foot"
+        class="measurement-visual small"
+        decoding="async"
+        loading="lazy">
+      <p class="image-caption">Measure carefully using this reference to improve size accuracy.</p>
       <div class="explanation-module">Enter your foot length (heel to longest toe). Measure in the evening when feet are slightly larger. Use the larger foot if they differ.</div>
       <div class="tool-row">
         <label for="foot-cm">Foot length (cm)</label>
@@ -148,17 +126,12 @@
 
     <section class="tool-section" id="clothing-assistant">
       <h2>Clothing measurement assistant</h2>
-      <div class="visual-guide" aria-hidden="true">
-        <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram showing foot length and measurement reference for shoe size conversion">
-          <path d="M50 10 L65 25 L65 45 Q65 55 50 58 Q35 55 35 45 L35 25 Z" fill="none" stroke="#333" stroke-width="1.5"/>
-          <line x1="50" y1="28" x2="50" y2="42" stroke="#0a7ea4" stroke-width="1.5" stroke-dasharray="3 2"/>
-          <text x="50" y="25" text-anchor="middle" font-size="7" fill="#555">chest</text>
-          <line x1="50" y1="48" x2="50" y2="58" stroke="#0a7ea4" stroke-width="1.5" stroke-dasharray="3 2"/>
-          <text x="50" y="65" text-anchor="middle" font-size="7" fill="#555">waist</text>
-          <ellipse cx="50" cy="85" rx="22" ry="12" fill="none" stroke="#333" stroke-width="1"/>
-          <text x="50" y="100" text-anchor="middle" font-size="7" fill="#555">hips</text>
-        </svg>
-      </div>
+      <img
+        src="/images/body-measurements.png"
+        alt="Body measurement guide showing chest, waist, hips, inseam, and height for men, women, and children"
+        class="measurement-visual"
+        decoding="async">
+      <p class="image-caption">Measure carefully using this reference to improve size accuracy.</p>
       <div class="explanation-module">Chest: fullest part under arms. Waist: natural waist above navel. Hips: fullest part. Keep tape horizontal and snug but not tight.</div>
       <div class="tool-row">
         <label for="chest">Chest (cm)</label>
@@ -195,8 +168,20 @@
       </div>
     </section>
 
-    <section class="tool-section">
-      <h2>Semantic explanation modules</h2>
+    <section class="tool-section" id="dynamic-recommendation">
+      <h2>Dynamic size recommendation</h2>
+      <div class="recommendation-box" id="recommendation-box" aria-live="polite">
+        <p id="recommendation-text">Enter measurements above to see your recommended sizes here.</p>
+      </div>
+    </section>
+    </section>
+
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="../index.html">Home</a> &gt; <a href="../measurement-tools.html">Measurement Tools</a> &gt; <span>Measurement Assistant</span></nav>
+
+    <p class="measurement-assistant-lead">Use the tools above to convert units, calculate shoe size from foot length, get clothing size recommendations, and see a combined size summary. All recommendations are approximate; always check the brand size chart.</p>
+
+    <section class="measurement-tips content-section" aria-label="How measurements work">
+      <h2>How measurements work</h2>
       <details class="faq-item">
         <summary>How is foot length measured?</summary>
         <p>Foot length is measured from the back of the heel to the tip of the longest toe. Stand on a flat surface with your weight on the foot being measured. Measure both feet and use the larger value. Chart conversions assume a standard toe allowance; brand lasts vary.</p>
@@ -211,60 +196,38 @@
       </details>
     </section>
 
-    <section class="tool-section">
-      <h2>Related tools</h2>
-      <ul>
-        <li><a href="../shoe-size-converter.html">Shoe Size Converter</a></li>
-        <li><a href="../clothing-size-converter.html">Clothing Size Converter</a></li>
-        <li><a href="../printable/foot-measuring-sheet.html">Printable Foot Measuring Sheet</a></li>
-        <li><a href="../printable/clothing-measurement-chart.html">Printable Clothing Measurement Chart</a></li>
-      </ul>
-    </section>
-  
-      
-      <section class="data-sources content-section" data-data-sources="1" aria-label="Data sources">
-        <h2>Data sources</h2>
-        <ul>
-          <li>ISO and regional footwear sizing references (length-based mapping)</li>
-          <li>Published brand size charts (e.g. Nike, Adidas) for cross-checks—not endorsements</li>
-          <li>International measurement and apparel sizing studies (public summaries)</li>
-        </ul>
-      </section>
+    <section class="ai-faq-block" data-ai-faq-block="1" aria-label="Common questions">
+    <h2>Common questions</h2>
+    <h3>How should I use this converter?</h3>
+    <p>Pick your region and size, then read the equivalents. When in doubt, measure in centimeters and compare to the brand chart.</p>
+    <h3>Why do sizes differ between countries?</h3>
+    <p>Each region uses its own scale; mapping through foot length (cm) reduces error.</p>
+    <h3>More on Measurement Assistant</h3>
+    <p>See linked guides on this site for measurement tips and regional differences.</p>
+  </section>
 
-      <div class="aeo-ai-layer" data-aeo-ai-layer>
-      <section class="ai-answer content-section" aria-labelledby="aeo-qa-h2">
-        <h2 id="aeo-qa-h2">Quick Answer</h2>
-        <p>Measurement Assistant: Global Size Chart helps you compare international clothing and shoe labels using standardized length-based references. Check linked guides for measurement tips.</p>
-      </section>
-      <section class="why-sizes-vary content-section" aria-labelledby="aeo-why-h2">
-        <h2 id="aeo-why-h2">Why Sizes May Vary</h2>
-        <p>Shoe and clothing sizes can vary between brands due to manufacturing differences, materials, and regional sizing standards.</p>
-      </section>
-      <section class="faq-block content-section" id="aeo-faq-block">
-        <h2>Frequently Asked Questions</h2>
-        <div class="faq-item">
-          <h3>What is EU 42 in US shoe size?</h3>
-          <p>EU 42 typically converts to US men's size 9 and US women's size 10.5, depending on brand and width. Use any converter on this page when available.</p>
-        </div>
-        <div class="faq-item">
-          <h3>Are EU and US shoe sizes the same?</h3>
-          <p>No. The <strong>EU sizing system</strong> and <strong>US shoe sizing scale</strong> use different scales. <strong>International shoe size conversion</strong> is most reliable when you anchor to <strong>foot length in cm</strong>.</p>
-        </div>
-      </section>
-      <section class="author-box content-section" aria-label="Author">
-        <p><strong>Author:</strong> Albor Digital Team</p>
-        <p>Global Size Chart is operated by Albor Digital, specializing in international sizing systems and conversion tools.</p>
-      </section>
-      <section class="aeo-see-also content-section">
-        <h2>See also</h2>
-        <p>
-          <a href="../shoe-size-converter.html">Shoe Size Converter</a> ·
-          <a href="../knowledge/">Knowledge hub</a> ·
-          <a href="../guides/">Guides</a> ·
-          <a href="../measurement-standards.html">Measurement standards</a>
-        </p>
-      </section>
-      </div>
+  <section class="data-sources content-section" data-data-sources="1" aria-label="Data sources">
+    <h2>Data sources</h2>
+    <ul>
+      <li>ISO and regional footwear sizing references (length-based mapping)</li>
+      <li>Published brand size charts (e.g. Nike, Adidas) for cross-checks—not endorsements</li>
+      <li>International measurement and apparel sizing studies (public summaries)</li>
+    </ul>
+  </section>
+
+  <section class="aeo-see-also content-section">
+    <h2>See also</h2>
+    <p>
+      <a href="../shoe-size-converter.html">Shoe size converter</a> ·
+      <a href="../clothing-size-converter.html">Clothing size converter</a> ·
+      <a href="../printable/foot-measuring-sheet.html">Printable foot measuring sheet</a> ·
+      <a href="../printable/clothing-measurement-chart.html">Printable clothing chart</a> ·
+      <a href="../knowledge/">Knowledge hub</a> ·
+      <a href="../guides/">Guides</a> ·
+      <a href="../measurement-standards.html">Measurement standards</a>
+    </p>
+  </section>
+
 </main>
   <footer>
     <div class="container">
@@ -294,20 +257,13 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2026 GlobalSizeChart.com. Recommendations are approximate; check brand size charts.</p>
+        <p>© 2026 GlobalSizeChart.com. Recommendations are approximate; check brand size charts.</p>
       </div>
     </div>
   
-  <section class="crawl-priority-links crawl-priority-links--footer" data-crawl-priority-links="footer" aria-label="Popular conversions">
-    <h2>Popular conversions</h2>
-    <ul>
-    <li><a href="../shoe-size-converter.html">Shoe Size Converter</a></li>
-    <li><a href="../us-to-eu-size.html">US to EU Size</a></li>
-    <li><a href="../cm-to-us-shoe-size.html">CM to US Shoe Size</a></li>
-    <li><a href="../shoe-size-conversions/index.html">Shoe size conversions</a></li>
-    </ul>
-  </section>
+  
   </footer>
+
   <script>
 (function() {
   var shoeData = {"men":[{"us":6,"uk":5,"eu":39,"jp":25,"cn":39,"cm":24},{"us":6.5,"uk":5.5,"eu":39.5,"jp":25.5,"cn":39.5,"cm":24.5},{"us":7,"uk":6,"eu":40,"jp":26,"cn":40,"cm":25},{"us":7.5,"uk":6.5,"eu":40.5,"jp":26.5,"cn":40.5,"cm":25.5},{"us":8,"uk":7,"eu":41,"jp":27,"cn":41,"cm":26},{"us":8.5,"uk":7.5,"eu":41.5,"jp":27.5,"cn":41.5,"cm":26.5},{"us":9,"uk":8,"eu":42,"jp":28,"cn":42,"cm":27},{"us":9.5,"uk":8.5,"eu":42.5,"jp":28.5,"cn":42.5,"cm":27.5},{"us":10,"uk":9,"eu":43,"jp":29,"cn":43,"cm":28},{"us":10.5,"uk":9.5,"eu":43.5,"jp":29.5,"cn":43.5,"cm":28.5},{"us":11,"uk":10,"eu":44,"jp":30,"cn":44,"cm":29},{"us":11.5,"uk":10.5,"eu":44.5,"jp":30.5,"cn":44.5,"cm":29.5},{"us":12,"uk":11,"eu":45,"jp":31,"cn":45,"cm":30},{"us":12.5,"uk":11.5,"eu":45.5,"jp":31.5,"cn":45.5,"cm":30.5},{"us":13,"uk":12,"eu":46,"jp":32,"cn":46,"cm":31},{"us":13.5,"uk":12.5,"eu":46.5,"jp":32.5,"cn":46.5,"cm":31.5},{"us":14,"uk":13,"eu":47,"jp":33,"cn":47,"cm":32}],"women":[{"us":4,"uk":2,"eu":35,"jp":22,"cn":35,"cm":21},{"us":4.5,"uk":2.5,"eu":35.5,"jp":22.5,"cn":35.5,"cm":21.5},{"us":5,"uk":3,"eu":36,"jp":23,"cn":36,"cm":22},{"us":5.5,"uk":3.5,"eu":36.5,"jp":23.5,"cn":36.5,"cm":22.5},{"us":6,"uk":4,"eu":37,"jp":24,"cn":37,"cm":23},{"us":6.5,"uk":4.5,"eu":37.5,"jp":24.5,"cn":37.5,"cm":23.5},{"us":7,"uk":5,"eu":38,"jp":25,"cn":38,"cm":24},{"us":7.5,"uk":5.5,"eu":38.5,"jp":25.5,"cn":38.5,"cm":24.5},{"us":8,"uk":6,"eu":39,"jp":26,"cn":39,"cm":25},{"us":8.5,"uk":6.5,"eu":39.5,"jp":26.5,"cn":39.5,"cm":25.5},{"us":9,"uk":7,"eu":40,"jp":27,"cn":40,"cm":26},{"us":9.5,"uk":7.5,"eu":40.5,"jp":27.5,"cn":40.5,"cm":26.5},{"us":10,"uk":8,"eu":41,"jp":28,"cn":41,"cm":27},{"us":10.5,"uk":8.5,"eu":41.5,"jp":28.5,"cn":41.5,"cm":27.5},{"us":11,"uk":9,"eu":42,"jp":29,"cn":42,"cm":28},{"us":11.5,"uk":9.5,"eu":42.5,"jp":29.5,"cn":42.5,"cm":28.5},{"us":12,"uk":10,"eu":43,"jp":30,"cn":43,"cm":29}],"kids":[{"us":10,"uk":9,"eu":27,"jp":17,"cn":27,"cm":16.5},{"us":10.5,"uk":9.5,"eu":28,"jp":17.5,"cn":28,"cm":17},{"us":11,"uk":10,"eu":29,"jp":18,"cn":29,"cm":17.5},{"us":11.5,"uk":10.5,"eu":30,"jp":18.5,"cn":30,"cm":18},{"us":12,"uk":11,"eu":31,"jp":19,"cn":31,"cm":18.5},{"us":12.5,"uk":11.5,"eu":31.5,"jp":19.5,"cn":31.5,"cm":19},{"us":13,"uk":12,"eu":32,"jp":20,"cn":32,"cm":19.5},{"us":13.5,"uk":12.5,"eu":33,"jp":20.5,"cn":33,"cm":20},{"us":1,"uk":0.5,"eu":33.5,"jp":21,"cn":33.5,"cm":20.5},{"us":1.5,"uk":1,"eu":34,"jp":21.5,"cn":34,"cm":21},{"us":2,"uk":1.5,"eu":34.5,"jp":22,"cn":34.5,"cm":21.5},{"us":2.5,"uk":2,"eu":35,"jp":22.5,"cn":35,"cm":22},{"us":3,"uk":2.5,"eu":35.5,"jp":23,"cn":35.5,"cm":22.5},{"us":3.5,"uk":3,"eu":36,"jp":23.5,"cn":36,"cm":23},{"us":4,"uk":3.5,"eu":36.5,"jp":24,"cn":36.5,"cm":23.5},{"us":4.5,"uk":4,"eu":37,"jp":24.5,"cn":37,"cm":24},{"us":5,"uk":4.5,"eu":37.5,"jp":25,"cn":37.5,"cm":24.5}]};
@@ -419,5 +375,4 @@
   updateRecommendation();
 })();
   </script>
-</body>
-</html>
+</body></html>
