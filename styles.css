@@ -544,6 +544,14 @@ main {
   line-height: 1.5;
 }
 
+.muted {
+  margin-top: var(--spacing-md);
+  margin-bottom: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
 .converter-results-empty {
   margin: 0;
   padding: var(--spacing-md) 0;
