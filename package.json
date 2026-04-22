@@ -27,7 +27,8 @@
     "authority:seed": "node scripts/generate-authority-answers.js",
     "authority:inject-org": "node scripts/inject-authority-org-schema.js",
     "authority:inject-footer": "node scripts/inject-ai-footer-link.js",
-    "build:authority": "node scripts/generate-authority-answers.js && node scripts/inject-authority-org-schema.js && node scripts/inject-ai-footer-link.js"
+    "build:authority": "node scripts/generate-authority-answers.js && node scripts/inject-authority-org-schema.js && node scripts/inject-ai-footer-link.js",
+    "footer:standardize": "node scripts/standardize-footer.js"
   },
   "devDependencies": {
     "cheerio": "^1.2.0"

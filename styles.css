@@ -1466,6 +1466,34 @@ footer {
   color: white;
 }
 
+.footer-info-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-xl);
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .footer-info-row {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+
+  .footer-info-row .footer-accuracy:not(:first-child) {
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+}
+
+.footer-info-row .footer-accuracy {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
 .footer-accuracy {
   margin-top: var(--spacing-lg);
   padding-top: var(--spacing-lg);
