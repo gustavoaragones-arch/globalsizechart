@@ -138,6 +138,41 @@ const embeddedClothingData = {
   }
 };
 
+const embeddedBrandsData = {
+  tops: {
+    men: [
+      { name: 'Nike', fit: 'runs_large' },
+      { name: 'Uniqlo', fit: 'true_to_size' }
+    ],
+    women: [
+      { name: 'Zara', fit: 'runs_small' },
+      { name: 'H&M', fit: 'true_to_size' },
+      { name: 'Nike', fit: 'runs_large' },
+      { name: 'Uniqlo', fit: 'true_to_size' }
+    ],
+    kids: []
+  },
+  pants: {
+    men: [
+      { name: "Levi's", fit: 'true_to_size' },
+      { name: 'Wrangler', fit: 'runs_small' }
+    ],
+    women: [
+      { name: 'H&M', fit: 'true_to_size' },
+      { name: 'Uniqlo', fit: 'true_to_size' }
+    ],
+    kids: []
+  },
+  dresses: {
+    women: [
+      { name: 'Zara', fit: 'runs_small' },
+      { name: 'H&M', fit: 'true_to_size' }
+    ],
+    men: [],
+    kids: []
+  }
+};
+
 const embeddedRegionsData = {
   "US": {"region_code": "US", "region_name": "United States", "sizing_notes": "US sizing uses numeric sizes for shoes and letter sizes (XS-XXXL) or numeric waist sizes for clothing. Men's and women's sizing are separate."},
   "UK": {"region_code": "UK", "region_name": "United Kingdom", "sizing_notes": "UK shoe sizes are typically 1 size smaller than US. Clothing uses UK-specific numeric sizes that differ from US."},
@@ -150,6 +185,7 @@ const embeddedRegionsData = {
 let shoeData = {};
 let clothingData = {};
 let regionsData = {};
+let brandsData = {};
 let dataLoaded = false;
 // Dataset-driven: shoes[gender][region].sizes = [ { value, cm } ]. No synthetic increments.
 let sizeDatabase = { shoes: {}, clothing: {} };
@@ -270,15 +306,17 @@ async function loadData() {
     shoeData = embeddedShoeData;
     clothingData = embeddedClothingData;
     regionsData = embeddedRegionsData;
+    brandsData = embeddedBrandsData;
     dataLoaded = true;
     console.log('Data loaded from embedded source');
 
     // Try to fetch updated data in background (optional, for future updates)
     try {
-      const [shoeResponse, clothingResponse, regionsResponse] = await Promise.all([
+      const [shoeResponse, clothingResponse, regionsResponse, brandsResponse] = await Promise.all([
         fetch('data/shoe_sizes.json'),
         fetch('data/clothing_sizes.json'),
-        fetch('data/regions.json')
+        fetch('data/regions.json'),
+        fetch('data/brands.json')
       ]);
 
       if (shoeResponse.ok && clothingResponse.ok && regionsResponse.ok) {
@@ -293,6 +331,9 @@ async function loadData() {
           acc[region.region_code] = region;
           return acc;
         }, {});
+        if (brandsResponse.ok) {
+          brandsData = await brandsResponse.json();
+        }
         console.log('Data updated from fetched source');
       }
     } catch (fetchError) {
@@ -324,48 +365,40 @@ function applyRegionalDefault() {
 
 // Converter initialization: run only after DOM is ready. Form submit prevents default.
 function runConverterInit() {
-  // Show loading state
   const forms = document.querySelectorAll('.converter-form');
-  forms.forEach(form => {
-    const submitBtn = form.querySelector('button[type="submit"]');
-    if (submitBtn) {
-      if (!submitBtn.getAttribute('data-original-text')) {
-        submitBtn.setAttribute('data-original-text', submitBtn.textContent);
-      }
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Loading...';
-    }
-  });
 
   loadData().then(() => {
     buildSizeDatabase();
     applyRegionalDefault();
 
-    forms.forEach(form => {
-      const submitBtn = form.querySelector('button[type="submit"]');
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = submitBtn.getAttribute('data-original-text') || 'Convert Size';
-      }
-    });
-
     initializeConverters();
     initializeCollapsibles();
-    initializeCategoryToggle();
+
+    document.querySelectorAll('.converter-form').forEach((form) => {
+      if (!form.querySelector('#brand')) return;
+      populateBrandOptions(form);
+      const repopBrands = () => populateBrandOptions(form);
+      form.querySelector('[name="gender"]')?.addEventListener('change', repopBrands);
+      form.querySelector('[name="clothingCategory"]')?.addEventListener('change', repopBrands);
+    });
 
     document.querySelectorAll('.converter-form').forEach(form => {
+      if (!form.querySelector('[name="category"]')) return;
       populateSizeOptions(form);
       const refreshSizeDropdown = () => {
         const sizeSelect = form.querySelector('#sizeSelect');
         if (sizeSelect) sizeSelect.value = '';
         populateSizeOptions(form);
-        if (typeof updateConvertButtonState === 'function') updateConvertButtonState(form);
+        runAutoConversion(form);
       };
       form.querySelector('[name="category"]')?.addEventListener('change', refreshSizeDropdown);
       form.querySelector('[name="gender"]')?.addEventListener('change', refreshSizeDropdown);
       form.querySelector('[name="fromRegion"]')?.addEventListener('change', refreshSizeDropdown);
       form.querySelector('[name="clothingCategory"]')?.addEventListener('change', refreshSizeDropdown);
+      runAutoConversion(form);
     });
+
+    initializeCategoryToggle();
   });
 }
 
@@ -404,9 +437,6 @@ function initializeCategoryToggle() {
           if (cmOption) cmOption.style.display = 'block';
         }
       }
-      const sizeSelect = form?.querySelector('#sizeSelect');
-      if (sizeSelect && typeof populateSizeOptions === 'function') populateSizeOptions(form);
-      if (typeof updateConvertButtonState === 'function') updateConvertButtonState(form);
     });
     
     if (select.value === 'clothing') {
@@ -496,6 +526,96 @@ function getAllShoeConversions(size, fromRegion, gender) {
 // ============================================
 // Clothing Size Conversion
 // ============================================
+
+function humanizeFit(fit) {
+  if (!fit) return '';
+  return String(fit).replace(/_/g, ' ');
+}
+
+/**
+ * Numeric-only nudge from task spec (shoe-like sizes). Clothing uses adjustClothingSizeForBrand.
+ */
+function adjustForBrand(size, brandFit) {
+  if (!brandFit) return size;
+  const n = parseInt(String(size), 10);
+  if (!Number.isNaN(n) && /^\d+$/.test(String(size).trim())) {
+    if (brandFit === 'runs_small') return String(n + 1);
+    if (brandFit === 'runs_large') return String(Math.max(0, n - 1));
+  }
+  return size;
+}
+
+function getBrandsList(clothingCategory, gender) {
+  if (!brandsData || !brandsData[clothingCategory] || !brandsData[clothingCategory][gender]) return [];
+  const arr = brandsData[clothingCategory][gender];
+  return Array.isArray(arr) ? arr : [];
+}
+
+function populateBrandOptions(form) {
+  const sel = form.querySelector('#brand');
+  if (!sel) return;
+  const gender = form.querySelector('[name="gender"]')?.value || 'men';
+  const cat = form.querySelector('[name="clothingCategory"]')?.value || 'tops';
+  const prev = sel.value;
+  const list = getBrandsList(cat, gender);
+  sel.innerHTML = '';
+  const ph = document.createElement('option');
+  ph.value = '';
+  ph.textContent = 'Standard sizing (no brand)';
+  sel.appendChild(ph);
+  list.forEach((b) => {
+    const o = document.createElement('option');
+    o.value = b.name;
+    o.textContent = b.name;
+    o.setAttribute('data-fit', b.fit);
+    o.setAttribute('data-brand-name', b.name);
+    sel.appendChild(o);
+  });
+  if (prev && [...sel.options].some((o) => o.value === prev)) sel.value = prev;
+  else sel.selectedIndex = 0;
+}
+
+/**
+ * Move one row on the clothing chart in fromRegion when brand runs small/large.
+ * Does not change underlying JSON or non-clothing paths.
+ */
+function adjustClothingSizeForBrand(size, brandFit, gender, category, fromRegion) {
+  const raw = String(size == null ? '' : size).trim();
+  if (!brandFit || brandFit === 'true_to_size' || !raw) return raw;
+  if (!clothingData[gender] || !clothingData[gender][category]) return raw;
+  const categoryData = clothingData[gender][category];
+  const rk = String(fromRegion).toLowerCase();
+  let idx = -1;
+  for (let i = 0; i < categoryData.length; i++) {
+    const v = categoryData[i][rk];
+    if (v != null && String(v).trim().toLowerCase() === raw.toLowerCase()) {
+      idx = i;
+      break;
+    }
+  }
+  if (idx < 0) {
+    const num = parseFloat(raw);
+    if (!Number.isNaN(num)) {
+      for (let i = 0; i < categoryData.length; i++) {
+        const v = categoryData[i][rk];
+        if (v == null) continue;
+        const entryNum = parseFloat(v);
+        if (!Number.isNaN(entryNum) && entryNum === num) {
+          idx = i;
+          break;
+        }
+      }
+    }
+  }
+  if (idx < 0) return raw;
+  let delta = 0;
+  if (brandFit === 'runs_small') delta = 1;
+  else if (brandFit === 'runs_large') delta = -1;
+  else return raw;
+  const newIdx = Math.max(0, Math.min(categoryData.length - 1, idx + delta));
+  const out = categoryData[newIdx][rk];
+  return out != null ? String(out).trim() : raw;
+}
 
 function convertClothingSize(size, fromRegion, toRegion, gender, category) {
   if (!clothingData[gender] || !clothingData[gender][category] || !size) return null;
@@ -654,49 +774,59 @@ function validateClothingSize(value) {
 
 const CLOTHING_SIZE_ERROR_MSG = 'Use standard sizes only (XS–XXXL or numeric values like 32, 40).';
 
-/**
- * Enable convert button when a size is selected (dropdown) or valid input (legacy input).
- */
-function updateConvertButtonState(form) {
-  const sizeSelect = form.querySelector('#sizeSelect');
-  const sizeInput = form.querySelector('[name="size"]');
-  const sizeRaw = sizeSelect ? sizeSelect.value : sizeInput?.value;
-  let valid = false;
-  if (sizeSelect) {
-    valid = sizeRaw !== '' && sizeRaw != null;
-  } else {
-    const category = form.querySelector('[name="category"]')?.value;
-    const fromRegion = form.querySelector('[name="fromRegion"]')?.value;
-    const gender = form.querySelector('[name="gender"]')?.value;
-    const isClothing = category === 'clothing';
-    if (isClothing) {
-      valid = validateClothingSize(sizeRaw);
-    } else {
-      if (!validateShoeSize(sizeRaw)) valid = false;
-      else {
-        const num = parseFloat(sizeRaw);
-        if (num < 0 || num > 60) valid = false;
-        else valid = validateSize('shoes', gender, fromRegion, num);
-      }
-    }
+const CONVERTER_EMPTY_MSG = 'Select your size to see conversions';
+
+function showConverterEmptyState(form, message = CONVERTER_EMPTY_MSG) {
+  const formSection = form.closest('.converter-card');
+  const resultsContainer = formSection?.querySelector('.results');
+  if (!resultsContainer) return;
+  resultsContainer.classList.remove('loading');
+  const prevBrand = resultsContainer.querySelector('.brand-adjustment-note');
+  if (prevBrand) prevBrand.remove();
+  const resultsGrid = resultsContainer.querySelector('.results-grid');
+  if (resultsGrid) {
+    resultsGrid.innerHTML = '';
+    const p = document.createElement('p');
+    p.className = 'converter-results-empty';
+    p.setAttribute('role', 'status');
+    p.textContent = message;
+    resultsGrid.appendChild(p);
   }
-  const submitBtn = form.querySelector('button[type="submit"]');
-  if (submitBtn) submitBtn.disabled = !valid;
+  resultsContainer.classList.add('active');
+  const fitNotice = formSection?.querySelector('.fit-notice');
+  if (fitNotice) fitNotice.style.display = 'none';
+}
+
+/**
+ * Runs conversion immediately on control change (no debounce, no submit button).
+ * @param {HTMLFormElement} form
+ */
+function runAutoConversion(form) {
+  if (form.dataset.autoConvert === 'false') return;
+  if (!form.querySelector('[name="category"]')) return;
+
+  const box = form.closest('.converter-card')?.querySelector('.results');
+  if (box) box.classList.add('loading');
+  try {
+    handleConversion(form);
+  } finally {
+    if (box) box.classList.remove('loading');
+  }
 }
 
 function initializeConverters() {
   const forms = document.querySelectorAll('.converter-form');
   forms.forEach(form => {
-    form.addEventListener('submit', (e) => {
+    if (!form.querySelector('[name="category"]')) return;
+
+    form.addEventListener('submit', e => {
       e.preventDefault();
-      handleConversion(form);
+      runAutoConversion(form);
     });
 
     const sizeSelect = form.querySelector('#sizeSelect');
     const sizeInput = form.querySelector('[name="size"]');
     const sizeEl = sizeSelect || sizeInput;
-    const submitBtn = form.querySelector('button[type="submit"]');
-    if (submitBtn) submitBtn.disabled = true;
 
     const shoeErrorEl = form.querySelector('#shoe-size-error');
     if (sizeEl && shoeErrorEl) {
@@ -717,26 +847,14 @@ function initializeConverters() {
       sizeEl.addEventListener('change', clearClothingError);
     }
 
-    const syncButtonState = () => updateConvertButtonState(form);
-    if (sizeEl) {
-      sizeEl.addEventListener('input', syncButtonState);
-      sizeEl.addEventListener('change', syncButtonState);
-    }
-    const categorySelect = form.querySelector('[name="category"]');
-    if (categorySelect) {
-      categorySelect.addEventListener('change', syncButtonState);
-    }
+    form.querySelectorAll('select').forEach(el => {
+      if (el.getAttribute('name') === 'category') return;
+      el.addEventListener('change', () => runAutoConversion(form));
+    });
 
-    updateConvertButtonState(form);
-
-    // Auto-convert on input change
-    const inputs = form.querySelectorAll('select, input');
-    inputs.forEach(input => {
-      input.addEventListener('change', () => {
-        if (form.dataset.autoConvert !== 'false') {
-          handleConversion(form);
-        }
-      });
+    form.querySelectorAll('input:not([type="hidden"])').forEach(el => {
+      el.addEventListener('input', () => runAutoConversion(form));
+      el.addEventListener('change', () => runAutoConversion(form));
     });
   });
 }
@@ -748,7 +866,10 @@ function handleConversion(form) {
     return;
   }
 
-  const category = form.querySelector('[name="category"]')?.value;
+  const categoryEl = form.querySelector('[name="category"]');
+  if (!categoryEl) return;
+
+  const category = categoryEl.value;
   const fromRegion = form.querySelector('[name="fromRegion"]')?.value;
   const toRegion = form.querySelector('[name="toRegion"]')?.value;
   const sizeSelect = form.querySelector('#sizeSelect');
@@ -761,10 +882,23 @@ function handleConversion(form) {
 
   if (!fromRegion || !gender) {
     console.warn('Missing required fields:', { size: sizeRaw, fromRegion, gender });
+    showConverterEmptyState(form);
     return;
   }
 
   if (category === 'shoes' || !category) {
+    const shoeEmpty = sizeRaw === null || sizeRaw === undefined || String(sizeRaw).trim() === '';
+    if (shoeEmpty) {
+      const shoeErrorEl =
+        form.closest('.converter-card')?.querySelector('#shoe-size-error') ||
+        form.querySelector('#shoe-size-error');
+      if (shoeErrorEl) {
+        shoeErrorEl.style.display = 'none';
+        shoeErrorEl.textContent = '';
+      }
+      showConverterEmptyState(form);
+      return;
+    }
     if (!validateShoeSize(sizeRaw)) {
       const formSection = form.closest('.converter-card');
       const shoeErrorEl = formSection?.querySelector('#shoe-size-error') || form.querySelector('#shoe-size-error');
@@ -772,6 +906,7 @@ function handleConversion(form) {
         shoeErrorEl.textContent = SHOE_SIZE_ERROR_MSG;
         shoeErrorEl.style.display = 'block';
       }
+      showConverterEmptyState(form);
       return;
     }
     const sizeNum = parseFloat(sizeRaw);
@@ -782,6 +917,7 @@ function handleConversion(form) {
         shoeErrorEl.textContent = SHOE_SIZE_RANGE_ERROR_MSG;
         shoeErrorEl.style.display = 'block';
       }
+      showConverterEmptyState(form);
       return;
     }
     if (!validateSize('shoes', gender, fromRegion, sizeNum)) {
@@ -791,6 +927,7 @@ function handleConversion(form) {
         shoeErrorEl.textContent = SHOE_SIZE_RANGE_ERROR_MSG;
         shoeErrorEl.style.display = 'block';
       }
+      showConverterEmptyState(form);
       return;
     }
     const shoeErrorEl = form.querySelector('#shoe-size-error');
@@ -801,6 +938,18 @@ function handleConversion(form) {
   }
 
   if (category === 'clothing') {
+    const clothingEmpty = sizeRaw === null || sizeRaw === undefined || String(sizeRaw).trim() === '';
+    if (clothingEmpty) {
+      const clothingErrorEl =
+        form.closest('.converter-card')?.querySelector('#clothing-size-error') ||
+        form.querySelector('#clothing-size-error');
+      if (clothingErrorEl) {
+        clothingErrorEl.style.display = 'none';
+        clothingErrorEl.textContent = '';
+      }
+      showConverterEmptyState(form);
+      return;
+    }
     if (!validateClothingSize(sizeRaw)) {
       const formSection = form.closest('.converter-card');
       const clothingErrorEl = formSection?.querySelector('#clothing-size-error') || form.querySelector('#clothing-size-error');
@@ -808,6 +957,7 @@ function handleConversion(form) {
         clothingErrorEl.textContent = CLOTHING_SIZE_ERROR_MSG;
         clothingErrorEl.style.display = 'block';
       }
+      showConverterEmptyState(form);
       return;
     }
     const clothingErrorEl = form.querySelector('#clothing-size-error');
@@ -818,7 +968,7 @@ function handleConversion(form) {
   }
 
   if (!size) {
-    console.warn('Missing size');
+    showConverterEmptyState(form);
     return;
   }
 
@@ -826,12 +976,37 @@ function handleConversion(form) {
 
   let results = {};
   let bestMatchRegion = toRegion || fromRegion;
+  let brandNote = '';
 
   if (category === 'shoes' || !category) {
     results = getAllShoeConversions(size, fromRegion, gender);
   } else if (category === 'clothing') {
-    // Clothing conversion
-    results = getAllClothingConversions(size, fromRegion, gender, clothingCategory || 'tops');
+    let sizeToConvert = size;
+    const brandSel = form.querySelector('#brand');
+    if (brandSel && brandSel.value) {
+      const opt = brandSel.options[brandSel.selectedIndex];
+      const fit = opt.getAttribute('data-fit');
+      const bname = opt.getAttribute('data-brand-name') || brandSel.value;
+      if (fit && fit !== 'true_to_size') {
+        const adj = adjustClothingSizeForBrand(
+          size,
+          fit,
+          gender,
+          clothingCategory || 'tops',
+          fromRegion
+        );
+        if (adj !== String(size).trim()) {
+          sizeToConvert = adj;
+          brandNote = `Adjusted for brand: ${bname} (${humanizeFit(fit)})`;
+        }
+      }
+    }
+    results = getAllClothingConversions(
+      sizeToConvert,
+      fromRegion,
+      gender,
+      clothingCategory || 'tops'
+    );
   }
 
   console.log('Conversion results:', results);
@@ -841,7 +1016,9 @@ function handleConversion(form) {
   const resultsContainer = formSection?.querySelector('.results');
   
   if (resultsContainer) {
-    displayResults(results, bestMatchRegion, category === 'shoes' || !category, resultsContainer);
+    displayResults(results, bestMatchRegion, category === 'shoes' || !category, resultsContainer, {
+      brandNote
+    });
   } else {
     console.error('Results container not found');
   }
@@ -855,7 +1032,7 @@ function handleConversion(form) {
   }
 }
 
-function displayResults(results, bestMatchRegion, isShoe = true, resultsContainer = null) {
+function displayResults(results, bestMatchRegion, isShoe = true, resultsContainer = null, opts = {}) {
   if (!resultsContainer) {
     resultsContainer = document.querySelector('.results');
   }
@@ -864,11 +1041,16 @@ function displayResults(results, bestMatchRegion, isShoe = true, resultsContaine
     return;
   }
 
+  resultsContainer.classList.remove('loading');
+
   const resultsGrid = resultsContainer.querySelector('.results-grid');
   if (!resultsGrid) {
     console.error('Results grid not found');
     return;
   }
+
+  const prevBrandNote = resultsContainer.querySelector('.brand-adjustment-note');
+  if (prevBrandNote) prevBrandNote.remove();
 
   resultsGrid.innerHTML = '';
 
@@ -882,6 +1064,14 @@ function displayResults(results, bestMatchRegion, isShoe = true, resultsContaine
     resultsGrid.appendChild(errorMsg);
     resultsContainer.classList.add('active');
     return;
+  }
+
+  if (opts && opts.brandNote) {
+    const note = document.createElement('p');
+    note.className = 'brand-adjustment-note';
+    note.setAttribute('role', 'status');
+    note.textContent = opts.brandNote;
+    resultsContainer.insertBefore(note, resultsGrid);
   }
 
   const regions = [
@@ -944,9 +1134,6 @@ function displayResults(results, bestMatchRegion, isShoe = true, resultsContaine
   });
 
   resultsContainer.classList.add('active');
-  
-  // Scroll to results
-  resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 // ============================================
@@ -994,6 +1181,8 @@ if (typeof module !== 'undefined' && module.exports) {
     convertShoeSize,
     convertClothingSize,
     getAllShoeConversions,
-    getAllClothingConversions
+    getAllClothingConversions,
+    adjustForBrand,
+    adjustClothingSizeForBrand
   };
 }

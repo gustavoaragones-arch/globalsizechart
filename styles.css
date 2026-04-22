@@ -298,6 +298,137 @@ main {
   margin-bottom: var(--spacing-xl);
 }
 
+/* Generic tool card (matches .converter-card; used e.g. mattress intl converter) */
+.card {
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+}
+
+.card .form-row {
+  margin-bottom: var(--spacing-md);
+}
+
+.card .form-row label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: var(--spacing-xs);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.card .form-row select {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: var(--spacing-sm);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.card .form-row select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+.result-box {
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+.result-box.loading {
+  opacity: 0.6;
+}
+
+.result-box.result-success {
+  border: 1px solid var(--border-color);
+  border-left: 6px solid #16a34a;
+  background: #f0fdf4;
+}
+
+.result-box.result-warning {
+  border: 1px solid var(--border-color);
+  border-left: 6px solid #d97706;
+  background: #fffbeb;
+}
+
+.result-box.result-danger {
+  border: 1px solid var(--border-color);
+  border-left: 6px solid #dc2626;
+  background: #fef2f2;
+}
+
+.result-box.result-neutral {
+  border: 1px solid var(--border-color);
+  border-left: 6px solid #64748b;
+  background: #f8fafc;
+}
+
+.result-box .result-badge {
+  margin-bottom: var(--spacing-md);
+  font-weight: 700;
+  font-size: 1.05rem;
+  line-height: 1.35;
+  color: var(--text-primary);
+}
+
+.result-box p {
+  margin: 0 0 var(--spacing-sm);
+}
+
+.result-box p:last-child {
+  margin-bottom: 0;
+}
+
+.result-box .fit-analysis {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.result-box .buy-recommendation {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--border-color);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+.result-box .sheet-compatibility {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Inline tone for converter / mattress helper copy (scanability) */
+.warning {
+  color: #b45309;
+}
+.success {
+  color: #15803d;
+}
+.neutral {
+  color: #334155;
+}
+
 .converter-form {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -342,6 +473,17 @@ main {
   color: var(--text-light, #8a9ba8);
 }
 
+.brand-adjustment-note {
+  margin: 0 0 var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}
+
 .converter-error {
   margin-top: var(--spacing-xs);
   font-size: 0.9rem;
@@ -379,10 +521,35 @@ main {
 .results {
   margin-top: var(--spacing-lg);
   display: none;
+  transition: all 0.2s ease;
+}
+
+.results.loading {
+  opacity: 0.6;
 }
 
 .results.active {
   display: block;
+}
+
+.results.result-box {
+  margin-top: var(--spacing-lg);
+}
+
+.auto-note {
+  margin-top: var(--spacing-md);
+  margin-bottom: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.converter-results-empty {
+  margin: 0;
+  padding: var(--spacing-md) 0;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  text-align: center;
 }
 
 .results-grid {
@@ -427,6 +594,14 @@ main {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--text-primary);
+}
+
+/* Long text in result cards (e.g. mattress dimensions, multi-region notes) */
+.result-value.result-value--text {
+  font-size: 1.05rem;
+  line-height: 1.35;
+  font-weight: 600;
+  word-break: break-word;
 }
 
 .result-cm {

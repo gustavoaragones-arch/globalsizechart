@@ -1,0 +1,34 @@
+{
+  "tops": {
+    "men": [
+      { "name": "Nike", "fit": "runs_large" },
+      { "name": "Uniqlo", "fit": "true_to_size" }
+    ],
+    "women": [
+      { "name": "Zara", "fit": "runs_small" },
+      { "name": "H&M", "fit": "true_to_size" },
+      { "name": "Nike", "fit": "runs_large" },
+      { "name": "Uniqlo", "fit": "true_to_size" }
+    ],
+    "kids": []
+  },
+  "pants": {
+    "men": [
+      { "name": "Levi's", "fit": "true_to_size" },
+      { "name": "Wrangler", "fit": "runs_small" }
+    ],
+    "women": [
+      { "name": "H&M", "fit": "true_to_size" },
+      { "name": "Uniqlo", "fit": "true_to_size" }
+    ],
+    "kids": []
+  },
+  "dresses": {
+    "women": [
+      { "name": "Zara", "fit": "runs_small" },
+      { "name": "H&M", "fit": "true_to_size" }
+    ],
+    "men": [],
+    "kids": []
+  }
+}
