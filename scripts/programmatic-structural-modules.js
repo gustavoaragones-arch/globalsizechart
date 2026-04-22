@@ -5,6 +5,7 @@
  */
 
 const internalLinkBuilder = require('../utils/internalLinkBuilder.js');
+const { QUICK_CONVERTERS_HTML } = require('./lib/quick-converters-snippet');
 
 /**
  * Authority Links Section HTML.
@@ -69,66 +70,10 @@ function escapeHtml(s) {
 }
 
 /**
- * Related Sizes Grid HTML: ±1 size, same gender, same region.
- * @param {object} route - { from_region, to_region, size, gender, slug }
- * @param {object[]} allRoutes - list of routes with type, from_region, to_region, size, gender, slug
- * @param {function} getFromRegionLabel - (region) => string
- * @param {number} maxLinks - max links in grid (default 20)
- * @returns {string} HTML section or ''
+ * Canonical Quick Converters card grid (replaces dynamic related-size grid).
  */
-function getRelatedSizeGridHtml(route, allRoutes, getFromRegionLabel, maxLinks = 20) {
-  const from = route.from_region;
-  const to = route.to_region;
-  const size = route.size;
-  const gender = route.gender || 'men';
-  const added = new Set();
-  const items = [];
-
-  function add(href, text) {
-    if (added.has(href) || href === route.slug + '.html') return;
-    added.add(href);
-    items.push({ href, text });
-  }
-
-  // ±1 size, same gender, same region
-  const samePair = (allRoutes || []).filter(
-    r => (r.type === 'size_pair' || !r.type) && r.from_region === from && r.to_region === to && r.gender === gender
-  );
-  samePair.sort((a, b) => parseFloat(a.size) - parseFloat(b.size));
-  const idx = samePair.findIndex(r => String(r.size) === String(size));
-  if (idx >= 0) {
-    if (idx > 0) add(samePair[idx - 1].slug + '.html', `${getFromRegionLabel(from)} ${samePair[idx - 1].size} to ${getFromRegionLabel(to)}`);
-    if (idx < samePair.length - 1) add(samePair[idx + 1].slug + '.html', `${getFromRegionLabel(from)} ${samePair[idx + 1].size} to ${getFromRegionLabel(to)}`);
-  }
-
-  // Same region (other sizes, same from/to)
-  const sameRegion = (allRoutes || []).filter(
-    r => (r.type === 'size_pair' || !r.type) && r.from_region === from && r.to_region === to && r.slug !== route.slug
-  );
-  sameRegion.sort((a, b) => parseFloat(a.size) - parseFloat(b.size));
-  for (const r of sameRegion) {
-    if (items.length >= maxLinks) break;
-    add(r.slug + '.html', `${getFromRegionLabel(from)} ${r.size} to ${getFromRegionLabel(to)}`);
-  }
-
-  // Same gender (other region pairs)
-  const sameGender = (allRoutes || []).filter(
-    r => (r.type === 'size_pair' || !r.type) && r.gender === gender && (r.from_region !== from || r.to_region !== to)
-  );
-  sameGender.sort((a, b) => `${a.from_region}-${a.to_region}`.localeCompare(`${b.from_region}-${b.to_region}`) || parseFloat(a.size) - parseFloat(b.size));
-  for (const r of sameGender) {
-    if (items.length >= maxLinks) break;
-    add(r.slug + '.html', `${getFromRegionLabel(r.from_region)} ${r.size} to ${getFromRegionLabel(r.to_region)}`);
-  }
-
-  if (items.length === 0) return '';
-  const gridLinks = items.map(it => `<a href="${it.href}">${escapeHtml(it.text)}</a>`).join('\n        ');
-  return `<section class="related-size-grid">
-  <h2>Explore Nearby Size Conversions</h2>
-  <div class="grid">
-        ${gridLinks}
-  </div>
-</section>`;
+function getRelatedSizeGridHtml(_route, _allRoutes, _getFromRegionLabel, _maxLinks = 20) {
+  return QUICK_CONVERTERS_HTML;
 }
 
 // --- Breadcrumb (Step 4): Home > Shoe Converter > Region > Size Pair ---

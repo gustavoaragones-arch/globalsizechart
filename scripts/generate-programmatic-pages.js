@@ -13,6 +13,7 @@ const fs = require('fs');
 const path = require('path');
 const structuralModules = require('./programmatic-structural-modules.js');
 const internalLinkBuilder = require('../utils/internalLinkBuilder.js');
+const { QUICK_CONVERTERS_HTML } = require('./lib/quick-converters-snippet');
 
 const ROOT = path.resolve(__dirname, '..');
 const CONFIG_DIR = path.join(ROOT, 'config');
@@ -377,75 +378,9 @@ function buildAuthorityLinksSection(currentFile) {
   return structuralModules.getAuthorityLinksSectionHtml(currentFile);
 }
 
-/** Related conversions grid for region or category pages (so every programmatic page has a grid + 15–25+ links). */
-function generateRelatedGridForRegionOrCategory(route, allRoutes) {
-  const added = new Set();
-  const items = [];
-
-  function add(href, text) {
-    if (added.has(href)) return;
-    added.add(href);
-    items.push({ href, text });
-  }
-
-  // Region converters (EU→US, US→UK, JP→US, CM→US, CM→EU, UK→EU, China, Japan, Korea, Inch)
-  const regionSlugs = [
-    { slug: 'eu-to-us-shoe-size', label: 'EU to US' },
-    { slug: 'us-to-uk-shoe-size', label: 'US to UK' },
-    { slug: 'japan-to-us-shoe-size', label: 'Japan to US' },
-    { slug: 'cm-to-us-shoe-size', label: 'CM to US' },
-    { slug: 'cm-to-eu-shoe-size', label: 'CM to EU' },
-    { slug: 'cm-to-uk-shoe-size', label: 'CM to UK' },
-    { slug: 'us-to-eu-shoe-size', label: 'US to EU' },
-    { slug: 'uk-to-us-shoe-size', label: 'UK to US' },
-    { slug: 'uk-to-eu-shoe-size', label: 'UK to EU' },
-    { slug: 'inch-to-us-shoe-size', label: 'Inch to US' },
-    { slug: 'inch-to-eu-shoe-size', label: 'Inch to EU' },
-    { slug: 'japan-to-eu-shoe-size', label: 'Japan to EU' },
-    { slug: 'eu-to-japan-shoe-size', label: 'EU to Japan' },
-    { slug: 'us-to-japan-shoe-size', label: 'US to Japan' },
-    { slug: 'china-to-us-shoe-size', label: 'China to US' },
-    { slug: 'china-to-eu-shoe-size', label: 'China to EU' },
-    { slug: 'korea-cm-to-us', label: 'Korea to US' },
-    { slug: 'women-cm-to-us', label: "Women's CM to US" },
-    { slug: 'men-cm-to-eu', label: "Men's CM to EU" },
-    { slug: 'kids-cm-to-us', label: "Kids' CM to US" }
-  ];
-  for (const r of regionSlugs) {
-    if (route.type === 'region' && route.slug === r.slug) continue;
-    add(r.slug + '.html', r.label + ' Shoe Size');
-  }
-
-  // Category converters
-  const categories = allRoutes.filter(r => r.type === 'category');
-  const categoryLabels = { men: "Men's", women: "Women's", kids: "Kids'" };
-  for (const r of categories) {
-    add(r.slug + '.html', categoryLabels[r.gender] + ' Shoe Size Converter');
-  }
-
-  if (route.type === 'region') {
-    const sizePairs = allRoutes.filter(r => r.type === 'size_pair' && r.from_region === route.from_region && r.to_region === route.to_region);
-    sizePairs.sort((a, b) => parseFloat(a.size) - parseFloat(b.size));
-    for (const r of sizePairs.slice(0, 12)) {
-      const genderTag = r.gender === 'women' ? "Women's " : r.gender === 'kids' ? "Kids' " : '';
-      add(r.slug + '.html', `${genderTag}${getFromRegionLabel(route.from_region)} ${r.size} to ${getFromRegionLabel(route.to_region)}`);
-    }
-  }
-
-  if (route.type === 'category') {
-    const sameGender = allRoutes.filter(r => r.type === 'size_pair' && r.gender === route.gender);
-    sameGender.sort((a, b) => `${a.from_region}-${a.to_region}`.localeCompare(`${b.from_region}-${b.to_region}`) || parseFloat(a.size) - parseFloat(b.size));
-    for (const r of sameGender.slice(0, 15)) {
-      add(r.slug + '.html', `${getFromRegionLabel(r.from_region)} ${r.size} to ${getFromRegionLabel(r.to_region)}`);
-    }
-  }
-
-  if (items.length === 0) return '';
-  const gridLinks = items.map(it => `<a href="${it.href}">${escapeHtml(it.text)}</a>`).join('\n        ');
-  return `<section class="related-size-grid">
-  <h2>Explore Nearby Size Conversions</h2>
-  <div class="grid">\n        ${gridLinks}\n  </div>
-</section>`;
+/** Canonical Quick Converters card grid (replaces per-page related-size-grid). */
+function generateRelatedGridForRegionOrCategory(_route, _allRoutes) {
+  return QUICK_CONVERTERS_HTML;
 }
 
 /** Hub pages — linked from every page for 20–35 internal link target. */
@@ -688,81 +623,13 @@ function findRegionConverters(allRoutes) {
   return allRoutes.filter(r => r.type === 'region');
 }
 
-const MIN_RELATED_GRID_LINKS = 12;
-const MAX_RELATED_GRID_LINKS = 20;
-
 /**
- * Related Size Grid HTML for Type A pages only. Content: adjacent sizes, direct equivalents,
- * same-gender converters (category pages), region converters. 12–20 links, no self, no dupes.
- * Returns empty string for Type B/C.
+ * Canonical Quick Converters card grid for Type A (size_pair) pages only.
+ * Returns empty string when this template slot is not used for the route type.
  */
-function generateRelatedSizeGrid(route, allRoutes) {
+function generateRelatedSizeGrid(route, _allRoutes) {
   if (route.type !== 'size_pair' && !(route.type != null && route.size != null)) return '';
-
-  const added = new Set();
-  const items = [];
-
-  function add(href, text) {
-    if (added.has(href) || href === route.slug + '.html') return;
-    added.add(href);
-    items.push({ href, text });
-  }
-
-  const from = route.from_region;
-  const to = route.to_region;
-  const gender = route.gender || 'men';
-
-  // 1. Adjacent sizes
-  const [prevRoute, nextRoute] = findAdjacentSizes(route, allRoutes);
-  if (prevRoute) add(prevRoute.slug + '.html', `${getFromRegionLabel(from)} ${prevRoute.size} to ${getFromRegionLabel(to)}`);
-  if (nextRoute) add(nextRoute.slug + '.html', `${getFromRegionLabel(from)} ${nextRoute.size} to ${getFromRegionLabel(to)}`);
-
-  // 2. Direct equivalents (same from + size, different to_region)
-  const equivalents = findDirectEquivalents(route, allRoutes);
-  for (const r of equivalents) {
-    if (items.length >= MAX_RELATED_GRID_LINKS) break;
-    add(r.slug + '.html', `${getFromRegionLabel(r.from_region)} ${r.size} to ${getFromRegionLabel(r.to_region)}`);
-  }
-
-  // 3. Same gender converters (category pages: Men's, Women's, Kids' Shoe Size Converter)
-  const categories = allRoutes.filter(r => r.type === 'category');
-  const categoryLabels = { men: "Men's", women: "Women's", kids: "Kids'" };
-  for (const r of categories) {
-    if (items.length >= MAX_RELATED_GRID_LINKS) break;
-    add(r.slug + '.html', `${categoryLabels[r.gender] || r.gender} Shoe Size Converter`);
-  }
-
-  // Region converters (from routes only)
-  const regionConverters = findRegionConverters(allRoutes);
-  for (const r of regionConverters) {
-    if (items.length >= MAX_RELATED_GRID_LINKS) break;
-    add(r.slug + '.html', `${getFromRegionLabel(r.from_region)} to ${getFromRegionLabel(r.to_region)} Shoe Size`);
-  }
-
-  // Same region nearby (fill toward 12–20)
-  const sameRegion = findSameRegionRoutes(route, allRoutes);
-  for (const r of sameRegion) {
-    if (items.length >= MAX_RELATED_GRID_LINKS) break;
-    add(r.slug + '.html', `${getFromRegionLabel(from)} ${r.size} to ${getFromRegionLabel(to)}`);
-  }
-
-  // Same gender other regions (fill)
-  const sameGender = findSameGenderRoutes(route, allRoutes);
-  for (const r of sameGender) {
-    if (items.length >= MAX_RELATED_GRID_LINKS) break;
-    add(r.slug + '.html', `${getFromRegionLabel(r.from_region)} ${r.size} to ${getFromRegionLabel(r.to_region)}`);
-  }
-
-  const out = items.slice(0, MAX_RELATED_GRID_LINKS);
-  if (out.length === 0) return '';
-
-  const gridLinks = out.map(it => `<a href="${it.href}">${escapeHtml(it.text)}</a>`).join('\n        ');
-  return `<section class="related-size-grid">
-  <h2>Explore Nearby Size Conversions</h2>
-  <div class="grid">
-        ${gridLinks}
-  </div>
-</section>`;
+  return QUICK_CONVERTERS_HTML;
 }
 
 function buildCrawlDiscoveryLinks(route, allRoutes) {

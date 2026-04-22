@@ -278,6 +278,18 @@ main {
   margin: 0 auto;
 }
 
+/* Homepage: keep the lead sentence on one line under the H1 (narrow max-width forces wraps). */
+.hero .container > p.muted:first-of-type {
+  white-space: nowrap;
+  max-width: 100%;
+  font-size: clamp(0.75rem, 0.5rem + 1.2vw, 1.25rem);
+  line-height: 1.45;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
 .hero-trust {
   margin-top: 1rem;
   font-size: 0.9rem;
@@ -305,6 +317,82 @@ main {
   box-shadow: var(--shadow-md);
   padding: var(--spacing-xl);
   margin-bottom: var(--spacing-xl);
+}
+
+/* Card grids (Quick Converters, fit guide, etc.): same surface as former related-size-grid links */
+.card .grid.grid-3,
+.card .grid.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+  .card .grid.grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .card .grid.grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.card .grid.grid-3 > .card-link,
+.card .grid.grid-2 > .card-link {
+  display: block;
+  padding: var(--spacing-md);
+  background: var(--bg-secondary, #f5f5f5);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: background 0.2s ease;
+  box-sizing: border-box;
+}
+
+.card .grid.grid-3 > .card-link:hover,
+.card .grid.grid-2 > .card-link:hover {
+  background: var(--bg-tertiary, #eee);
+  text-decoration: none;
+}
+
+.card .grid.grid-3 > .card-link h3,
+.card .grid.grid-2 > .card-link h3 {
+  margin: 0 0 var(--spacing-xs);
+  font-size: 1.1rem;
+  color: var(--primary-color);
+}
+
+.card .grid.grid-3 > .card-link p,
+.card .grid.grid-2 > .card-link p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.card .grid.grid-3 > .card-link ul,
+.card .grid.grid-2 > .card-link ul {
+  margin: var(--spacing-sm) 0 0;
+  padding-left: 1.25rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.card .grid.grid-3 > .card-link li,
+.card .grid.grid-2 > .card-link li {
+  margin-bottom: 0.35rem;
+}
+
+.card .grid.grid-3 > .card-link li:last-child,
+.card .grid.grid-2 > .card-link li:last-child {
+  margin-bottom: 0;
+}
+
+.card > h2 {
+  margin-top: 0;
+  margin-bottom: var(--spacing-md);
+  font-size: 1.35rem;
 }
 
 .card .form-row {
@@ -534,6 +622,7 @@ main {
 
 .results.result-box {
   margin-top: var(--spacing-lg);
+  text-align: center;
 }
 
 .auto-note {
@@ -542,6 +631,7 @@ main {
   font-size: 0.9rem;
   color: var(--text-secondary);
   line-height: 1.5;
+  text-align: center;
 }
 
 .muted {
@@ -556,8 +646,28 @@ main {
   margin: 0;
   padding: var(--spacing-md) 0;
   color: var(--text-secondary);
-  font-size: 1rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
   text-align: center;
+  width: 100%;
+  grid-column: 1 / -1;
+  justify-self: stretch;
+}
+
+.result-box .muted {
+  text-align: center;
+}
+
+/* Homepage hero: .hero p applies max-width to all descendants; reset inside the tool card */
+.hero .converter-card p {
+  max-width: none;
+}
+
+.hero .converter-card p.muted,
+.hero .converter-card .converter-results-empty {
+  text-align: center;
+  font-size: 0.9rem;
+  line-height: 1.5;
 }
 
 .results-grid {
@@ -1564,6 +1674,11 @@ footer .footer-accuracy.content-section {
 
   .hero p {
     font-size: 1rem;
+  }
+
+  .hero .converter-card p.muted,
+  .hero .converter-card .converter-results-empty {
+    font-size: 0.9rem;
   }
 
   .converter-form {

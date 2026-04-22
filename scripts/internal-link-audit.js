@@ -34,9 +34,9 @@ function countInternalLinks(html) {
   return count;
 }
 
-/** Check for Related Sizes Grid (section or "Explore Nearby"). */
+/** Check for canonical Quick Converters card grid (replaces related-size-grid). */
 function hasRelatedSizesGrid(html) {
-  return /related-size-grid|Explore Nearby Size Conversions/i.test(html);
+  return /Quick Converters/i.test(html) && /class="grid grid-3"/i.test(html) && /card-link/i.test(html);
 }
 
 /** Check for Region Converters (EU→US, US→UK, JP→US, CM→US or "Region Converters"). */

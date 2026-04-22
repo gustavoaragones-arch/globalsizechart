@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 /**
- * Dedupe crawl + AI blocks, reorder <main> for conversion UX.
+ * Dedupe legacy nav + AI blocks, reorder <main> for conversion UX.
  * Run: node scripts/fix-ai-layout.js [--dry-run]
  */
 
 const fs = require('fs');
 const path = require('path');
 const cheerio = require('cheerio');
+const { QUICK_CONVERTERS_HTML, mainHasQuickConverters } = require('./lib/quick-converters-snippet');
 
 const ROOT = path.resolve(__dirname, '..');
 const IGNORE_DIRS = new Set(['node_modules', '.git', 'scripts', 'sitemaps', 'components', 'authority/generated']);
@@ -25,41 +26,6 @@ function walkHtmlFiles(dir = '.', prefix = '') {
     }
   }
   return out;
-}
-
-const TARGETS = [
-  { path: '/shoe-size-converter.html', label: 'Shoe Size Converter' },
-  { path: '/us-to-eu-size.html', label: 'US to EU Size' },
-  { path: '/cm-to-us-shoe-size.html', label: 'CM to US Shoe Size' },
-  { path: '/shoe-size-conversions/', label: 'Shoe size conversions' },
-];
-
-function hrefTo(fromRel, toUrlPath) {
-  const fromDir = path.dirname(path.join(ROOT, fromRel));
-  let toFull;
-  if (toUrlPath.endsWith('/')) {
-    const seg = toUrlPath.replace(/^\//, '').replace(/\/$/, '');
-    toFull = path.join(ROOT, seg, 'index.html');
-  } else {
-    toFull = path.join(ROOT, toUrlPath.replace(/^\//, ''));
-  }
-  if (!fs.existsSync(toFull)) {
-    return toUrlPath.startsWith('/') ? `.${toUrlPath}` : toUrlPath;
-  }
-  let r = path.relative(fromDir, toFull);
-  r = r.replace(/\\/g, '/');
-  if (!r.startsWith('.')) r = `./${r}`;
-  return r;
-}
-
-function buildPopularSection(rel) {
-  const items = TARGETS.map((t) => `    <li><a href="${hrefTo(rel, t.path)}">${t.label}</a></li>`).join('\n');
-  return `<section class="crawl-priority-links crawl-priority-links--content" data-crawl-priority-links="content" aria-label="Popular conversions">
-    <h2>Popular conversions</h2>
-    <ul>
-${items}
-    </ul>
-  </section>`;
 }
 
 function stripAfterFooter(html) {
@@ -98,6 +64,12 @@ function fixDocument(content, rel) {
   $('section.author-box').remove();
 
   $('section.crawl-priority-links').remove();
+  $('section.related-size-grid').remove();
+
+  const $quickDup = $main.find('section.card').filter((_, el) => $(el).find('> h2').first().text().trim() === 'Quick Converters');
+  if ($quickDup.length > 1) {
+    $quickDup.slice(1).remove();
+  }
 
   $main.find('[data-ai-answer-block]').slice(1).remove();
   $main.find('[data-ai-faq-block]').slice(1).remove();
@@ -123,25 +95,22 @@ function fixDocument(content, rel) {
     }
   }
 
-  const $card = $main.find('section.converter-card').first();
-  if ($card.length && !$main.find('[data-crawl-priority-links="content"]').length) {
-    $card.after(buildPopularSection(rel));
-  } else if (!$card.length) {
-    const $formSec = $main.find('form#mainConverter').closest('section').first();
-    if ($formSec.length && !$main.find('[data-crawl-priority-links="content"]').length) {
-      $formSec.after(buildPopularSection(rel));
-    }
-  }
+  const hasTool =
+    $main.find('section.converter-card').length > 0 ||
+    $main.find('form#shoeConverter').length > 0 ||
+    $main.find('form#mainConverter').length > 0;
 
-  const $heroInner = $hero.find('> .container').first();
-  const $popBlock = $main.find('[data-crawl-priority-links="content"]').first();
-  if ($heroInner.length && $popBlock.length) {
-    let $anchor = $popBlock;
-    $heroInner.children('p').each((_, p) => {
-      const $p = $(p);
-      $p.insertAfter($anchor);
-      $anchor = $p;
-    });
+  const $card = $main.find('section.converter-card').first();
+  if (hasTool && !mainHasQuickConverters($, $main)) {
+    const $quick = $(QUICK_CONVERTERS_HTML);
+    if ($card.length) {
+      $card.after($quick);
+    } else {
+      const $formSec = $main.find('form#mainConverter, form#shoeConverter').closest('section').first();
+      if ($formSec.length) {
+        $formSec.after($quick);
+      }
+    }
   }
 
   const $faq = $main.find('section.ai-faq-block').first();
