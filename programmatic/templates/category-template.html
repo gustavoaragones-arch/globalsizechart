@@ -65,19 +65,7 @@
   <main>
   
     <div class="container">
-      <section class="converter-card">
-        <h1>{{H1_TITLE}}</h1>
-
-        <section class="ai-answer-block" data-ai-answer-block="1" data-ai-answer="1" aria-label="Quick answer">
-          <p><strong>Quick answer:</strong></p>
-          <p>{{PAGE_TITLE}}: use this page’s tools and charts for international size conversion; measure foot or body length in centimeters when possible for the closest match.</p>
-          
-        </section>
-  
-        <p class="mb-lg">{{INTRO_TEXT}}</p>
-        <div class="ad-container ad-top"><!-- ADSENSE --></div>
-        <p><a href="{{CONVERTER_LINK}}" class="btn">Use {{CATEGORY_LABEL}} Converter</a></p>
-      </section><section class="card">
+      <section class="hero-tool"><h1>{{H1_TITLE}}</h1><p class="lead">{{INTRO_TEXT}}</p><div class="converter-wrapper"><div class="converter-card"><div class="ad-container ad-top"><!-- ADSENSE --></div><p><a href="{{CONVERTER_LINK}}" class="btn">Use {{CATEGORY_LABEL}} Converter</a></p></div></div></section><section class="card">
   <h2>Quick Converters</h2>
 
   <div class="grid grid-3">
@@ -127,40 +115,30 @@
       <div class="ad-container ad-bottom"><!-- ADSENSE --></div>
     </div>
   
-      
-      <section class="ai-faq-block" data-ai-faq-block="1" aria-label="Common questions">
-    <h2>Common questions</h2>
-    <h3>How should I use this converter?</h3>
-    <p>Pick your region and size, then read the equivalents. When in doubt, measure in centimeters and compare to the brand chart.</p>
-    <h3>Why do sizes differ between countries?</h3>
-    <p>Each region uses its own scale; mapping through foot length (cm) reduces error.</p>
-    <h3>More on {{PAGE_TITLE}}</h3>
-    <p>See linked guides on this site for measurement tips and regional differences.</p>
-  </section>
-
       <div class="aeo-ai-layer" data-aeo-ai-layer="">
-      
-      <section class="why-sizes-vary content-section" aria-labelledby="aeo-why-h2">
-        <h2 id="aeo-why-h2">Why Sizes May Vary</h2>
-        <p>Shoe and clothing sizes can vary between brands due to manufacturing differences, materials, and regional sizing standards.</p>
-      </section>
-      <section class="faq-block content-section" id="aeo-faq-block">
-        <h2>Frequently Asked Questions</h2>
-        <div class="faq-item">
-          <h3>What is EU 42 in US shoe size?</h3>
-          <p>EU 42 typically converts to US men's size 9 and US women's size 10.5, depending on brand and width. Use any converter on this page when available.</p>
+      <section class="content-section why-vary-cards" aria-labelledby="aeo-why-h2">
+        <h2 id="aeo-why-h2">Why sizes don’t line up everywhere</h2>
+        <div class="card-grid">
+          <article class="info-card">
+            <h3>Different scales</h3>
+            <p>US, UK, EU, and JP labels rarely describe the same foot length in millimeters.</p>
+          </article>
+          <article class="info-card">
+            <h3>Brand lasts</h3>
+            <p>Two brands can label the same length differently based on shape and materials.</p>
+          </article>
+          <article class="info-card">
+            <h3>Use centimeters</h3>
+            <p>Measuring both feet in cm is the most reliable way to cross-check any chart.</p>
+          </article>
         </div>
-        <div class="faq-item">
-          <h3>Are EU and US shoe sizes the same?</h3>
-          <p>No. The <strong>EU sizing system</strong> and <strong>US shoe sizing scale</strong> use different scales. <strong>International shoe size conversion</strong> is most reliable when you anchor to <strong>foot length in cm</strong>.</p>
-        </div>
       </section>
-      
-      
       </div>
 
       
   </main>
+
+<!-- FOOTER:START -->
 
   <footer>
     <div class="container">
@@ -244,4 +222,6 @@
   
   
   </footer>
+
+<!-- FOOTER:END -->
 </body></html>

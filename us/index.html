@@ -86,23 +86,9 @@
 
   <main>
   
-    <section class="hero">
-      <div class="container">
-        <h1>US Size Conversion Tools</h1>
+    
 
-        <section class="ai-answer-block" data-ai-answer-block="1" data-ai-answer="1" aria-label="Quick answer">
-          <p><strong>Quick answer:</strong></p>
-          <p>Convert US shoe and clothing sizes to UK, EU, Japan and CM with accurate measurement logic. Built for American sizing standards.</p>
-          
-        </section>
-  
-        
-      </div>
-    </section>
-
-    <div class="ad-container ad-top"><!-- ADSENSE TOP BANNER --></div><div class="container"><section class="converter-card">
-        <h2>Size Converter</h2>
-        <form class="converter-form" id="mainConverter">
+    <div class="container"><section class="hero-tool"><h1>US Size Conversion Tools</h1><div class="converter-wrapper"><div class="ad-container ad-top"><!-- ADSENSE TOP BANNER --></div><div class="converter-card"><form class="converter-form" id="mainConverter">
           <div class="form-group">
             <label for="category">Category</label>
             <select name="category" id="category" required="">
@@ -110,20 +96,19 @@
               <option value="clothing">Clothing</option>
             </select>
           </div>
-          <div class="form-group" id="clothingCategoryGroup" style="display: none;">
-            <label for="clothingCategory">Clothing Type</label>
-            <select name="clothingCategory" id="clothingCategory">
-              <option value="tops">Tops</option>
-              <option value="pants">Pants</option>
-              <option value="dresses">Dresses</option>
-            </select>
-          </div>
           <div class="form-group">
             <label for="gender">Gender</label>
-            <select name="gender" id="gender" required="">
+            <select name="gender" id="gender">
+              <option value="" selected disabled>Select gender</option>
               <option value="men">Men</option>
               <option value="women">Women</option>
               <option value="kids">Kids</option>
+            </select>
+          </div>
+          <div class="form-group" id="clothingCategoryGroup" style="display: none;">
+            <label for="clothingCategory">Clothing Type</label>
+            <select name="clothingCategory" id="clothingCategory" disabled>
+              <option value="" selected disabled>Select clothing type</option>
             </select>
           </div>
           <div class="form-group">
@@ -139,15 +124,13 @@
           </div>
           <div class="form-group">
             <label for="sizeSelect">Size</label>
-            <select name="size" id="sizeSelect" required=""></select>
+            <select name="size" id="sizeSelect" disabled></select>
           </div>
-        </form>
-        <div class="results">
+        </form><div class="results">
           <h3>Converted Sizes</h3>
           <div class="results-grid"></div>
           <p class="converter-trust-bar">This tool converts standardized size systems. Fit may vary by brand, width, and foot shape. <a href="../shoe-width-guide.html">Shoe width guide →</a></p>
-        </div>
-      </section><section class="card">
+        </div></div></div></section><section class="card">
   <h2>Quick Converters</h2>
 
   <div class="grid grid-3">
@@ -272,21 +255,26 @@
     </div>
   
       
-      <section class="ai-faq-block" data-ai-faq-block="1" aria-label="Common questions">
-    <h2>Common questions</h2>
-    <h3>How should I use this converter?</h3>
-    <p>Pick your region and size, then read the equivalents. When in doubt, measure in centimeters and compare to the brand chart.</p>
-    <h3>Why do sizes differ between countries?</h3>
-    <p>Each region uses its own scale; mapping through foot length (cm) reduces error.</p>
-    <h3>More on US Shoe &amp; Clothing Size Converters</h3>
-    <p>See linked guides on this site for measurement tips and regional differences.</p>
-  </section>
+      
 
       <div class="aeo-ai-layer" data-aeo-ai-layer="">
       
-      <section class="why-sizes-vary content-section" aria-labelledby="aeo-why-h2">
-        <h2 id="aeo-why-h2">Why Sizes May Vary</h2>
-        <p>Shoe and clothing sizes can vary between brands due to manufacturing differences, materials, and regional sizing standards.</p>
+      <section class="content-section why-vary-cards" aria-labelledby="aeo-why-h2">
+        <h2 id="aeo-why-h2">Why sizes don’t line up everywhere</h2>
+        <div class="card-grid">
+          <article class="info-card">
+            <h3>Different scales</h3>
+            <p>US, UK, EU, and JP labels rarely describe the same foot length in millimeters.</p>
+          </article>
+          <article class="info-card">
+            <h3>Brand lasts</h3>
+            <p>Two brands can label the same length differently based on shape and materials.</p>
+          </article>
+          <article class="info-card">
+            <h3>Use centimeters</h3>
+            <p>Measuring both feet in cm is the most reliable way to cross-check any chart.</p>
+          </article>
+        </div>
       </section>
       <section class="faq-block content-section" id="aeo-faq-block">
         <h2>Frequently Asked Questions</h2>
@@ -313,6 +301,11 @@
   </script>
 
   
+
+  
+<script src="../app.js"></script>
+
+<!-- FOOTER:START -->
 
   <footer>
     <div class="container">
@@ -396,7 +389,6 @@
   
   
   </footer>
-<script src="../app.js"></script>
 
-  
+<!-- FOOTER:END -->
 </body></html>

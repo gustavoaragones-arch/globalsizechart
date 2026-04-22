@@ -82,18 +82,7 @@
   <main>
   
     <div class="container">
-      <section class="converter-card">
-        <h1>UK Shoe Size Converter</h1>
-
-        <section class="ai-answer-block" data-ai-answer-block="1" data-ai-answer="1" aria-label="Quick answer">
-          <p><strong>Quick answer:</strong></p>
-          <p>Convert UK shoe sizes to US, EU, Japan, China and CM. Free UK shoe size converter for British sizing baselines.</p>
-          
-        </section>
-  
-        <p class="mb-lg">Convert UK shoe sizes to US, EU, Japan, China, and centimeter measurements. Get accurate conversions for men's, women's, and kids' shoes.</p>
-
-        <form class="converter-form" id="shoeConverter">
+      <section class="hero-tool"><h1>UK Shoe Size Converter</h1><p class="lead">Convert UK shoe sizes to US, EU, Japan, China, and centimeter measurements. Get accurate conversions for men's, women's, and kids' shoes.</p><div class="converter-wrapper"><div class="converter-card"><form class="converter-form" id="shoeConverter">
           <div class="form-group">
             <label for="gender">Gender</label>
             <select name="gender" id="gender" required="">
@@ -120,20 +109,15 @@
             <p class="converter-error" id="shoe-size-error" role="alert" aria-live="polite" style="display: none;"></p>
           </div>
           <input type="hidden" name="category" value="shoes">
-        </form>
-
-        <div class="auto-note">Results update automatically as you select options</div>
-        <div class="results result-box">
+        </form><div class="auto-note">Results update automatically as you select options</div><div class="results result-box">
           <h3>Converted Sizes</h3>
           <div class="results-grid"></div>
           <p class="converter-trust-bar">This tool converts standardized size systems. Fit may vary by brand, width, and foot shape. <a href="../shoe-width-guide.html">Shoe width guide →</a></p>
-        </div>
-        <div class="fit-notice" style="display: none;">
+        </div><div class="fit-notice" style="display: none;">
           <h3>Fit Notice</h3>
           <p>Shoe size charts convert <strong>length only</strong>. Real-world fit may vary depending on width, foot shape, and brand design.</p>
           <a href="../understanding-shoe-width.html">Learn how width affects fit →</a>
-        </div>
-      </section><section class="card">
+        </div></div></div></section><section class="card">
   <h2>Quick Converters</h2>
 
   <div class="grid grid-3">
@@ -193,21 +177,26 @@
     </div>
   
       
-      <section class="ai-faq-block" data-ai-faq-block="1" aria-label="Common questions">
-    <h2>Common questions</h2>
-    <h3>How should I use this converter?</h3>
-    <p>Pick your region and size, then read the equivalents. When in doubt, measure in centimeters and compare to the brand chart.</p>
-    <h3>Why do sizes differ between countries?</h3>
-    <p>Each region uses its own scale; mapping through foot length (cm) reduces error.</p>
-    <h3>More on UK Shoe Size Converter - US, EU, JP, CM</h3>
-    <p>See linked guides on this site for measurement tips and regional differences.</p>
-  </section>
+      
 
       <div class="aeo-ai-layer" data-aeo-ai-layer="">
       
-      <section class="why-sizes-vary content-section" aria-labelledby="aeo-why-h2">
-        <h2 id="aeo-why-h2">Why Sizes May Vary</h2>
-        <p>Shoe and clothing sizes can vary between brands due to manufacturing differences, materials, and regional sizing standards.</p>
+      <section class="content-section why-vary-cards" aria-labelledby="aeo-why-h2">
+        <h2 id="aeo-why-h2">Why sizes don’t line up everywhere</h2>
+        <div class="card-grid">
+          <article class="info-card">
+            <h3>Different scales</h3>
+            <p>US, UK, EU, and JP labels rarely describe the same foot length in millimeters.</p>
+          </article>
+          <article class="info-card">
+            <h3>Brand lasts</h3>
+            <p>Two brands can label the same length differently based on shape and materials.</p>
+          </article>
+          <article class="info-card">
+            <h3>Use centimeters</h3>
+            <p>Measuring both feet in cm is the most reliable way to cross-check any chart.</p>
+          </article>
+        </div>
       </section>
       <section class="faq-block content-section" id="aeo-faq-block">
         <h2>Frequently Asked Questions</h2>
@@ -230,6 +219,11 @@
   
 
   
+
+  
+<script src="../app.js"></script>
+
+<!-- FOOTER:START -->
 
   <footer>
     <div class="container">
@@ -313,7 +307,6 @@
   
   
   </footer>
-<script src="../app.js"></script>
 
-  
+<!-- FOOTER:END -->
 </body></html>

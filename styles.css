@@ -310,6 +310,41 @@ main {
   margin-bottom: var(--spacing-xl);
 }
 
+/* Unified hero: page title + lead + converter (conversion & region tool pages) */
+.hero-tool {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 32px;
+  border: 1px solid #e5e7eb;
+  margin-bottom: var(--spacing-xl);
+}
+
+.hero-tool h1 {
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.hero-tool .lead {
+  margin-bottom: 24px;
+  font-size: 16px;
+  color: #4b5563;
+  text-align: center;
+}
+
+.hero-tool .converter-wrapper {
+  margin-top: 12px;
+}
+
+/* Inner tool: avoid double card chrome inside .hero-tool */
+.hero-tool .converter-wrapper .converter-card {
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+  margin-bottom: 0;
+}
+
 /* Generic tool card (matches .converter-card; used e.g. mattress intl converter) */
 .card {
   background: var(--bg-primary);
@@ -1998,17 +2033,6 @@ p.image-caption {
   }
 }
 
-/* Phase 22 tail blocks often sit as direct <main> children after </div.container>; match .container width */
-main > .ai-faq-block,
-main > .data-sources,
-main > .aeo-see-also {
-  width: 100%;
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-  box-sizing: border-box;
-}
-
 .ai-index-list {
   list-style: none;
   padding: 0;
@@ -2024,6 +2048,140 @@ main > .aeo-see-also {
   .ai-index-list {
     columns: 2;
   }
+}
+
+/* --- Page model: scannable card grids (conversion & hub pages) --- */
+.card-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.nav-card-grid {
+  margin-top: 0.5rem;
+}
+
+.nav-card {
+  display: block;
+  padding: 20px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+  color: var(--text-primary);
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.nav-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.nav-card__label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* Primary nav tiles (no <ul>): section.card-grid.nav-primary > a.card */
+.card-grid.nav-primary {
+  margin-top: 0.75rem;
+}
+
+.card-grid.nav-primary > a.card {
+  display: block;
+  padding: 20px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+  color: var(--text-primary);
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.card-grid.nav-primary > a.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.card-grid.nav-primary > a.card h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.1rem;
+  color: var(--primary-color);
+}
+
+.card-grid.nav-primary > a.card p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.why-vary-cards .card-grid {
+  margin-top: 0.75rem;
+}
+
+.why-vary-cards .info-card {
+  padding: 20px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+}
+
+.why-vary-cards .info-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.why-vary-cards .info-card h3 {
+  margin-top: 0;
+  font-size: 1.05rem;
+}
+
+.why-vary-cards .info-card p {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.faq-section--cards .faq-item {
+  padding: 20px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 16px;
+  transition: all 0.2s ease;
+}
+
+.faq-section--cards .faq-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.faq-section--cards .faq-item h3 {
+  margin-top: 0;
+  font-size: 1.1rem;
+}
+
+.faq-section--cards .faq-item p:last-child {
+  margin-bottom: 0;
+}
+
+main > .aeo-ai-layer,
+main > .data-sources {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+  padding: 0 var(--spacing-md);
 }
 
 /* ============================================

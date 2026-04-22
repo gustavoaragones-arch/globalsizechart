@@ -166,6 +166,12 @@ function escapeHtml(s) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+/** Scannable nav tile for card grids (replaces bullet lists of links). */
+function linkNavCard(currentFile, targetPath, text) {
+  const href = escapeHtml(internalLinkBuilder.href(currentFile, targetPath));
+  return `<a class="nav-card" href="${href}"><span class="nav-card__label">${escapeHtml(String(text))}</span></a>`;
+}
+
 function buildConversionExplanation(route, toSize, fromLabel, toLabel, genderLabel) {
   const size = route.size;
   if (toSize !== null && toSize !== undefined) {
@@ -1360,7 +1366,6 @@ function generateSessionDepthModules(route, opts) {
   brandRoutes = brandRoutes || [];
 
   const sections = [];
-  const link = (targetPath, text) => `<li><a href="${escapeHtml(internalLinkBuilder.href(currentFile, targetPath))}">${escapeHtml(text)}</a></li>`;
 
   // 1. People Also Convert
   if (pageType === 'programmatic' || pageType === 'region' || pageType === 'category' || pageType === 'size_pair') {
@@ -1373,29 +1378,29 @@ function generateSessionDepthModules(route, opts) {
       let label = r.slug ? r.slug.replace(/-/g, ' ') : r.slug;
       if (r.type === 'region' && r.from_region && r.to_region) label = getFromRegionLabel(r.from_region) + ' to ' + getFromRegionLabel(r.to_region);
       if (r.type === 'category' && r.gender) label = (r.gender === 'men' ? "Men's" : r.gender === 'women' ? "Women's" : "Kids'") + ' Shoe Size Converter';
-      return link('programmatic-pages/' + r.slug + '.html', label);
+      return linkNavCard(currentFile, 'programmatic-pages/' + r.slug + '.html', label);
     });
-    if (peopleLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">People Also Convert</h3><ul class="session-depth-links">' + peopleLinks.join('') + '</ul></div>');
+    if (peopleLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">People Also Convert</h3><div class="card-grid nav-card-grid">' + peopleLinks.join('') + '</div></div>');
   } else if (pageType === 'clothing' && clothingRoutes.length) {
     const others = clothingRoutes.filter(r => r.type === 'clothing_size_pair' && r.slug !== route.slug).slice(0, 8);
     const peopleLinks = others.map(r => {
       const g = r.gender === 'men' ? "Men's" : r.gender === 'women' ? "Women's" : "Kids'";
       const cat = (r.category === 'tops' ? 'Tops' : r.category === 'pants' ? 'Pants' : r.category === 'dresses' ? 'Dresses' : r.category === 'jackets' ? 'Jackets' : r.category) || '';
       const label = `${g} ${getFromRegionLabel(r.from_region)} ${r.size} to ${getFromRegionLabel(r.to_region)} ${cat}`;
-      return link('clothing/' + r.slug + '.html', label);
+      return linkNavCard(currentFile, 'clothing/' + r.slug + '.html', label);
     });
-    if (peopleLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">People Also Convert</h3><ul class="session-depth-links">' + peopleLinks.join('') + '</ul></div>');
+    if (peopleLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">People Also Convert</h3><div class="card-grid nav-card-grid">' + peopleLinks.join('') + '</div></div>');
   } else if (pageType === 'measurement' && measurementRoutes.length) {
     const others = measurementRoutes.filter(r => r.slug && r.slug !== route.slug).slice(0, 8);
     const peopleLinks = others.map(r => {
       const label = r.measurement_type === 'foot_cm' ? `${r.value_cm} cm to ${r.to_region} Shoe Size` : r.measurement_type === 'chest_cm' ? `${r.value_cm} cm chest to ${r.to_region}` : `${r.value_cm} cm waist to ${r.to_region}`;
-      return link('measurement/' + r.slug + '.html', label);
+      return linkNavCard(currentFile, 'measurement/' + r.slug + '.html', label);
     });
-    if (peopleLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">People Also Convert</h3><ul class="session-depth-links">' + peopleLinks.join('') + '</ul></div>');
+    if (peopleLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">People Also Convert</h3><div class="card-grid nav-card-grid">' + peopleLinks.join('') + '</div></div>');
   } else if (pageType === 'brand' && brandRoutes.length) {
     const others = brandRoutes.filter(r => r.type === 'brand_converter' && r.slug !== route.slug).slice(0, 6);
-    const peopleLinks = others.map(r => link('brands/' + r.slug + '.html', (r.brand || r.slug) + ' Size Guide'));
-    if (peopleLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">People Also Convert</h3><ul class="session-depth-links">' + peopleLinks.join('') + '</ul></div>');
+    const peopleLinks = others.map(r => linkNavCard(currentFile, 'brands/' + r.slug + '.html', (r.brand || r.slug) + ' Size Guide'));
+    if (peopleLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">People Also Convert</h3><div class="card-grid nav-card-grid">' + peopleLinks.join('') + '</div></div>');
   }
 
   // 2. Related Fit Problems (semantic: fit_guides, measurement_guides)
@@ -1404,8 +1409,8 @@ function generateSessionDepthModules(route, opts) {
     const fitFirst = fitRelated.filter(r => r.semantic_category === 'fit_guides').slice(0, 3);
     const measFirst = fitRelated.filter(r => r.semantic_category === 'measurement_guides').slice(0, 2);
     const rest = fitRelated.filter(r => !['fit_guides', 'measurement_guides'].includes(r.semantic_category)).slice(0, 3);
-    const fitLinks = [...fitFirst, ...measFirst, ...rest].slice(0, 6).map(r => link('semantic/' + r.slug + '.html', r.title || r.slug.replace(/-/g, ' ')));
-    if (fitLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">Related Fit Problems</h3><ul class="session-depth-links">' + fitLinks.join('') + '</ul></div>');
+    const fitLinks = [...fitFirst, ...measFirst, ...rest].slice(0, 6).map(r => linkNavCard(currentFile, 'semantic/' + r.slug + '.html', r.title || r.slug.replace(/-/g, ' ')));
+    if (fitLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">Related Fit Problems</h3><div class="card-grid nav-card-grid">' + fitLinks.join('') + '</div></div>');
   }
 
   // 3. Try These Measurements (measurement converter pages)
@@ -1415,9 +1420,9 @@ function generateSessionDepthModules(route, opts) {
     const nearby = measurementRoutes.filter(r => r.slug && r.slug !== route.slug).slice(0, 8);
     const tryLinks = nearby.map(r => {
       const label = r.measurement_type === 'foot_cm' ? `${r.value_cm} cm to ${r.to_region} shoe size` : r.measurement_type === 'chest_cm' ? `${r.value_cm} cm chest to ${r.to_region}` : `${r.value_cm} cm waist to ${r.to_region}`;
-      return link('measurement/' + r.slug + '.html', label);
+      return linkNavCard(currentFile, 'measurement/' + r.slug + '.html', label);
     });
-    if (tryLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">Try These Measurements</h3><ul class="session-depth-links">' + tryLinks.join('') + '</ul></div>');
+    if (tryLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">Try These Measurements</h3><div class="card-grid nav-card-grid">' + tryLinks.join('') + '</div></div>');
   }
 
   // 4. Other Sizes Near Yours
@@ -1425,27 +1430,27 @@ function generateSessionDepthModules(route, opts) {
     const sizeNum = parseFloat(route.size);
     const nearby = programmaticRoutes.filter(r => (r.type === 'size_pair' || !r.type) && r.from_region === route.from_region && r.to_region === route.to_region && r.gender === route.gender && r.slug !== route.slug);
     const withDist = nearby.map(r => ({ r, d: Math.abs(parseFloat(r.size) - sizeNum) })).sort((a, b) => a.d - b.d).slice(0, 7).map(x => x.r);
-    const otherLinks = withDist.map(r => link('programmatic-pages/' + r.slug + '.html', getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region)));
-    if (otherLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">Other Sizes Near Yours</h3><ul class="session-depth-links">' + otherLinks.join('') + '</ul></div>');
+    const otherLinks = withDist.map(r => linkNavCard(currentFile, 'programmatic-pages/' + r.slug + '.html', getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region)));
+    if (otherLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">Other Sizes Near Yours</h3><div class="card-grid nav-card-grid">' + otherLinks.join('') + '</div></div>');
   } else if (pageType === 'clothing' && route.category && route.size != null) {
     const sizeNum = parseFloat(route.size);
     const nearby = clothingRoutes.filter(r => r.type === 'clothing_size_pair' && r.category === route.category && r.gender === route.gender && r.slug !== route.slug);
     const withDist = nearby.map(r => ({ r, d: Math.abs(parseFloat(r.size) - sizeNum) })).sort((a, b) => a.d - b.d).slice(0, 6).map(x => x.r);
-    const otherLinks = withDist.map(r => link('clothing/' + r.slug + '.html', getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region)));
-    if (otherLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">Other Sizes Near Yours</h3><ul class="session-depth-links">' + otherLinks.join('') + '</ul></div>');
+    const otherLinks = withDist.map(r => linkNavCard(currentFile, 'clothing/' + r.slug + '.html', getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region)));
+    if (otherLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">Other Sizes Near Yours</h3><div class="card-grid nav-card-grid">' + otherLinks.join('') + '</div></div>');
   } else if (pageType === 'measurement' && route.value_cm != null) {
     const num = parseFloat(route.value_cm);
     const nearby = measurementRoutes.filter(r => r.slug !== route.slug && r.measurement_type === route.measurement_type);
     const withDist = nearby.map(r => ({ r, d: Math.abs(parseFloat(r.value_cm) - num) })).sort((a, b) => a.d - b.d).slice(0, 6).map(x => x.r);
-    const otherLinks = withDist.map(r => link('measurement/' + r.slug + '.html', r.value_cm + ' cm to ' + r.to_region));
-    if (otherLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">Other Sizes Near Yours</h3><ul class="session-depth-links">' + otherLinks.join('') + '</ul></div>');
+    const otherLinks = withDist.map(r => linkNavCard(currentFile, 'measurement/' + r.slug + '.html', r.value_cm + ' cm to ' + r.to_region));
+    if (otherLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">Other Sizes Near Yours</h3><div class="card-grid nav-card-grid">' + otherLinks.join('') + '</div></div>');
   }
 
   // 5. Same Brand — Different Region (brand pages: other brand guides, same/different category)
   if (pageType === 'brand' && brandRoutes.length) {
     const others = brandRoutes.filter(r => r.type === 'brand_converter' && r.slug !== route.slug).slice(0, 6);
-    const sameLinks = others.map(r => link('brands/' + r.slug + '.html', (r.brand || r.slug) + ' ' + (r.category === 'shoes' ? 'Shoe' : 'Clothing') + ' Guide'));
-    if (sameLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">Same Brand — Different Region</h3><ul class="session-depth-links">' + sameLinks.join('') + '</ul></div>');
+    const sameLinks = others.map(r => linkNavCard(currentFile, 'brands/' + r.slug + '.html', (r.brand || r.slug) + ' ' + (r.category === 'shoes' ? 'Shoe' : 'Clothing') + ' Guide'));
+    if (sameLinks.length) sections.push('<div class="session-depth-block"><h3 class="session-depth-block__title">Same Brand — Different Region</h3><div class="card-grid nav-card-grid">' + sameLinks.join('') + '</div></div>');
   }
 
   if (sections.length === 0) return '';
@@ -1478,8 +1483,6 @@ function buildConversionLoopSection(route, opts) {
   measurementRoutes = measurementRoutes || [];
   brandRoutes = brandRoutes || [];
 
-  const link = (targetPath, text) => `<li><a href="${escapeHtml(internalLinkBuilder.href(currentFile, targetPath))}">${escapeHtml(text)}</a></li>`;
-
   const blocks = [];
 
   // Size pair: "If [FROM] [SIZE] didn't fit, try…"
@@ -1489,59 +1492,59 @@ function buildConversionLoopSection(route, opts) {
     const links = [];
     const nearby = programmaticRoutes.filter(r => (r.type === 'size_pair' || !r.type) && r.from_region === route.from_region && r.to_region === route.to_region && r.gender === route.gender && r.slug !== route.slug);
     const withDist = nearby.map(r => ({ r, d: Math.abs(parseFloat(r.size) - sizeNum) })).sort((a, b) => a.d - b.d).slice(0, 3).map(x => x.r);
-    withDist.forEach(r => links.push(link('programmatic-pages/' + r.slug + '.html', fromLabel + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region))));
+    withDist.forEach(r => links.push(linkNavCard(currentFile, 'programmatic-pages/' + r.slug + '.html', fromLabel + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region))));
     const meas = semanticRoutes.find(r => r.semantic_category === 'measurement_guides');
-    if (meas) links.push(link('semantic/' + meas.slug + '.html', 'How to measure your feet in CM'));
+    if (meas) links.push(linkNavCard(currentFile, 'semantic/' + meas.slug + '.html', 'How to measure your feet in CM'));
     const fit = semanticRoutes.find(r => r.semantic_category === 'fit_guides');
-    if (fit) links.push(link('semantic/' + fit.slug + '.html', 'Common fit mistakes'));
+    if (fit) links.push(linkNavCard(currentFile, 'semantic/' + fit.slug + '.html', 'Common fit mistakes'));
     if (measurementRoutes.length) {
       const foot = measurementRoutes.find(r => r.measurement_type === 'foot_cm');
-      if (foot) links.push(link('measurement/' + foot.slug + '.html', 'Convert cm to shoe size'));
+      if (foot) links.push(linkNavCard(currentFile, 'measurement/' + foot.slug + '.html', 'Convert cm to shoe size'));
     }
-    links.push(link('tools/measurement-assistant.html', 'Measurement Assistant tool'));
-    if (links.length) blocks.push('<div class="conversion-loop__block"><h3 class="conversion-loop__title">If ' + escapeHtml(fromLabel) + ' ' + escapeHtml(String(route.size)) + ' didn\'t fit, try…</h3><ul class="conversion-loop__links">' + links.slice(0, 6).join('') + '</ul></div>');
+    links.push(linkNavCard(currentFile, 'tools/measurement-assistant.html', 'Measurement Assistant tool'));
+    if (links.length) blocks.push('<div class="conversion-loop__block"><h3 class="conversion-loop__title">If ' + escapeHtml(fromLabel) + ' ' + escapeHtml(String(route.size)) + ' didn\'t fit, try…</h3><div class="card-grid nav-card-grid">' + links.slice(0, 6).join('') + '</div></div>');
   }
 
   // Region/category: "Not sure of your size? Try…"
   if ((pageType === 'programmatic' || pageType === 'region' || pageType === 'category') && (route.type === 'region' || route.type === 'category')) {
     const links = [];
-    semanticRoutes.filter(r => r.type === 'semantic' && (r.semantic_category === 'measurement_guides' || r.semantic_category === 'fit_guides')).slice(0, 2).forEach(r => links.push(link('semantic/' + r.slug + '.html', r.title || r.slug.replace(/-/g, ' '))));
-    if (measurementRoutes.length) links.push(link('measurement/' + measurementRoutes[0].slug + '.html', 'Convert cm to shoe size'));
-    links.push(link('tools/measurement-assistant.html', 'Measurement Assistant'));
-    if (links.length) blocks.push('<div class="conversion-loop__block"><h3 class="conversion-loop__title">Not sure of your size? Try…</h3><ul class="conversion-loop__links">' + links.join('') + '</ul></div>');
+    semanticRoutes.filter(r => r.type === 'semantic' && (r.semantic_category === 'measurement_guides' || r.semantic_category === 'fit_guides')).slice(0, 2).forEach(r => links.push(linkNavCard(currentFile, 'semantic/' + r.slug + '.html', r.title || r.slug.replace(/-/g, ' '))));
+    if (measurementRoutes.length) links.push(linkNavCard(currentFile, 'measurement/' + measurementRoutes[0].slug + '.html', 'Convert cm to shoe size'));
+    links.push(linkNavCard(currentFile, 'tools/measurement-assistant.html', 'Measurement Assistant'));
+    if (links.length) blocks.push('<div class="conversion-loop__block"><h3 class="conversion-loop__title">Not sure of your size? Try…</h3><div class="card-grid nav-card-grid">' + links.join('') + '</div></div>');
   }
 
   // Clothing: "Size varies by brand — check…"
   if (pageType === 'clothing') {
     const links = [];
-    semanticRoutes.filter(r => r.type === 'semantic').slice(0, 2).forEach(r => links.push(link('semantic/' + r.slug + '.html', r.title || r.slug.replace(/-/g, ' '))));
-    if (brandRoutes.length) links.push(link('brands/' + brandRoutes[0].slug + '.html', (brandRoutes[0].brand || '') + ' size guide'));
-    links.push(link('tools/measurement-assistant.html', 'Measurement Assistant'));
-    links.push(link('clothing-size-converter.html', 'Clothing Size Converter'));
-    if (links.length) blocks.push('<div class="conversion-loop__block"><h3 class="conversion-loop__title">Size varies by brand — check…</h3><ul class="conversion-loop__links">' + links.slice(0, 5).join('') + '</ul></div>');
+    semanticRoutes.filter(r => r.type === 'semantic').slice(0, 2).forEach(r => links.push(linkNavCard(currentFile, 'semantic/' + r.slug + '.html', r.title || r.slug.replace(/-/g, ' '))));
+    if (brandRoutes.length) links.push(linkNavCard(currentFile, 'brands/' + brandRoutes[0].slug + '.html', (brandRoutes[0].brand || '') + ' size guide'));
+    links.push(linkNavCard(currentFile, 'tools/measurement-assistant.html', 'Measurement Assistant'));
+    links.push(linkNavCard(currentFile, 'clothing-size-converter.html', 'Clothing Size Converter'));
+    if (links.length) blocks.push('<div class="conversion-loop__block"><h3 class="conversion-loop__title">Size varies by brand — check…</h3><div class="card-grid nav-card-grid">' + links.slice(0, 5).join('') + '</div></div>');
   }
 
   // Brand: "Brand sizing runs small — check…"
   if (pageType === 'brand' && route.brand) {
     const links = [];
     const meas = semanticRoutes.find(r => r.semantic_category === 'measurement_guides');
-    if (meas) links.push(link('semantic/' + meas.slug + '.html', 'How to measure in CM'));
+    if (meas) links.push(linkNavCard(currentFile, 'semantic/' + meas.slug + '.html', 'How to measure in CM'));
     const fit = semanticRoutes.find(r => r.semantic_category === 'fit_guides');
-    if (fit) links.push(link('semantic/' + fit.slug + '.html', 'Fit and sizing tips'));
-    links.push(link('tools/measurement-assistant.html', 'Measurement Assistant'));
-    brandRoutes.filter(r => r.slug !== route.slug).slice(0, 2).forEach(r => links.push(link('brands/' + r.slug + '.html', (r.brand || r.slug) + ' size guide')));
-    if (links.length) blocks.push('<div class="conversion-loop__block"><h3 class="conversion-loop__title">' + escapeHtml(route.brand) + ' sizing runs small — check…</h3><ul class="conversion-loop__links">' + links.slice(0, 5).join('') + '</ul></div>');
+    if (fit) links.push(linkNavCard(currentFile, 'semantic/' + fit.slug + '.html', 'Fit and sizing tips'));
+    links.push(linkNavCard(currentFile, 'tools/measurement-assistant.html', 'Measurement Assistant'));
+    brandRoutes.filter(r => r.slug !== route.slug).slice(0, 2).forEach(r => links.push(linkNavCard(currentFile, 'brands/' + r.slug + '.html', (r.brand || r.slug) + ' size guide')));
+    if (links.length) blocks.push('<div class="conversion-loop__block"><h3 class="conversion-loop__title">' + escapeHtml(route.brand) + ' sizing runs small — check…</h3><div class="card-grid nav-card-grid">' + links.slice(0, 5).join('') + '</div></div>');
   }
 
   // Measurement: "Measure again using CM…"
   if (pageType === 'measurement') {
     const links = [];
     const meas = semanticRoutes.find(r => r.semantic_category === 'measurement_guides');
-    if (meas) links.push(link('semantic/' + meas.slug + '.html', 'How to measure your feet in CM'));
-    links.push(link('tools/measurement-assistant.html', 'Measurement Assistant tool'));
-    links.push(link('shoe-size-converter.html', 'Shoe Size Converter'));
-    measurementRoutes.filter(r => r.slug !== route.slug).slice(0, 2).forEach(r => links.push(link('measurement/' + r.slug + '.html', r.value_cm + ' cm to ' + r.to_region)));
-    if (links.length) blocks.push('<div class="conversion-loop__block"><h3 class="conversion-loop__title">Measure again using CM…</h3><ul class="conversion-loop__links">' + links.slice(0, 5).join('') + '</ul></div>');
+    if (meas) links.push(linkNavCard(currentFile, 'semantic/' + meas.slug + '.html', 'How to measure your feet in CM'));
+    links.push(linkNavCard(currentFile, 'tools/measurement-assistant.html', 'Measurement Assistant tool'));
+    links.push(linkNavCard(currentFile, 'shoe-size-converter.html', 'Shoe Size Converter'));
+    measurementRoutes.filter(r => r.slug !== route.slug).slice(0, 2).forEach(r => links.push(linkNavCard(currentFile, 'measurement/' + r.slug + '.html', r.value_cm + ' cm to ' + r.to_region)));
+    if (links.length) blocks.push('<div class="conversion-loop__block"><h3 class="conversion-loop__title">Measure again using CM…</h3><div class="card-grid nav-card-grid">' + links.slice(0, 5).join('') + '</div></div>');
   }
 
   if (blocks.length === 0) return '';
@@ -1578,8 +1581,6 @@ function buildBehavioralRecommendations(route, opts) {
   clothingRoutes = clothingRoutes || [];
   brandRoutes = brandRoutes || [];
 
-  const link = (targetPath, text) => `<li><a href="${escapeHtml(internalLinkBuilder.href(currentFile, targetPath))}">${escapeHtml(text)}</a></li>`;
-
   const blocks = [];
 
   // --- Next logical size ---
@@ -1588,19 +1589,19 @@ function buildBehavioralRecommendations(route, opts) {
     const fromLabel = getFromRegionLabel(route.from_region);
     const toLabel = getFromRegionLabel(route.to_region);
     const items = [];
-    if (prevR) items.push(link('programmatic-pages/' + prevR.slug + '.html', fromLabel + ' ' + prevR.size + ' to ' + toLabel));
-    if (nextR) items.push(link('programmatic-pages/' + nextR.slug + '.html', fromLabel + ' ' + nextR.size + ' to ' + toLabel));
-    if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Next logical size</h3><ul class="next-step__links">' + items.join('') + '</ul></div>');
+    if (prevR) items.push(linkNavCard(currentFile, 'programmatic-pages/' + prevR.slug + '.html', fromLabel + ' ' + prevR.size + ' to ' + toLabel));
+    if (nextR) items.push(linkNavCard(currentFile, 'programmatic-pages/' + nextR.slug + '.html', fromLabel + ' ' + nextR.size + ' to ' + toLabel));
+    if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Next logical size</h3><div class="card-grid nav-card-grid">' + items.join('') + '</div></div>');
   } else if ((route.type === 'region' || route.type === 'category') && programmaticRoutes.length) {
     const sizePairs = programmaticRoutes.filter(r => (r.type === 'size_pair' || !r.type) && r.from_region && r.size != null);
     if (route.type === 'region') {
       const same = sizePairs.filter(r => r.from_region === route.from_region && r.to_region === route.to_region).slice(0, 3);
-      const items = same.map(r => link('programmatic-pages/' + r.slug + '.html', getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region)));
-      if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Next logical size</h3><ul class="next-step__links">' + items.join('') + '</ul></div>');
+      const items = same.map(r => linkNavCard(currentFile, 'programmatic-pages/' + r.slug + '.html', getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region)));
+      if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Next logical size</h3><div class="card-grid nav-card-grid">' + items.join('') + '</div></div>');
     } else {
       const same = sizePairs.filter(r => r.gender === route.gender).slice(0, 3);
-      const items = same.map(r => link('programmatic-pages/' + r.slug + '.html', getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region)));
-      if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Next logical size</h3><ul class="next-step__links">' + items.join('') + '</ul></div>');
+      const items = same.map(r => linkNavCard(currentFile, 'programmatic-pages/' + r.slug + '.html', getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region)));
+      if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Next logical size</h3><div class="card-grid nav-card-grid">' + items.join('') + '</div></div>');
     }
   }
 
@@ -1608,24 +1609,24 @@ function buildBehavioralRecommendations(route, opts) {
   if (programmaticRoutes.length) {
     const regionRoutes = programmaticRoutes.filter(r => r.type === 'region');
     const otherRegions = route.type === 'region' ? regionRoutes.filter(r => r.slug !== route.slug) : regionRoutes;
-    const items = otherRegions.slice(0, 4).map(r => link('programmatic-pages/' + r.slug + '.html', getFromRegionLabel(r.from_region) + ' to ' + getFromRegionLabel(r.to_region) + ' Shoe Size'));
-    if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Next region</h3><ul class="next-step__links">' + items.join('') + '</ul></div>');
+    const items = otherRegions.slice(0, 4).map(r => linkNavCard(currentFile, 'programmatic-pages/' + r.slug + '.html', getFromRegionLabel(r.from_region) + ' to ' + getFromRegionLabel(r.to_region) + ' Shoe Size'));
+    if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Next region</h3><div class="card-grid nav-card-grid">' + items.join('') + '</div></div>');
   }
 
-  // --- Similar garment ---
+  // --- Men's, women's & kids' (clothing conversions as cards) ---
   if (pageType === 'clothing' && clothingRoutes.length) {
     const others = clothingRoutes.filter(r => r.type === 'clothing_size_pair' && r.slug !== route.slug && (r.category === route.category || r.gender === route.gender)).slice(0, 4);
     const items = others.map(r => {
       const g = r.gender === 'men' ? "Men's" : r.gender === 'women' ? "Women's" : "Kids'";
       const cat = (r.category === 'tops' ? 'Tops' : r.category === 'pants' ? 'Pants' : r.category === 'dresses' ? 'Dresses' : r.category === 'jackets' ? 'Jackets' : r.category) || '';
-      return link('clothing/' + r.slug + '.html', g + ' ' + getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region) + ' ' + cat);
+      return linkNavCard(currentFile, 'clothing/' + r.slug + '.html', g + ' ' + getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region) + ' ' + cat);
     });
-    if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Similar garment</h3><ul class="next-step__links">' + items.join('') + '</ul></div>');
+    if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Men\'s, women\'s &amp; kids\'</h3><div class="card-grid nav-card-grid">' + items.join('') + '</div></div>');
   } else if ((pageType === 'programmatic' || pageType === 'size_pair' || route.type === 'region' || route.type === 'category') && clothingRoutes.length) {
     const sample = clothingRoutes.filter(r => r.type === 'clothing_size_pair').slice(0, 3);
-    const items = sample.map(r => link('clothing/' + r.slug + '.html', (r.gender === 'women' ? "Women's" : r.gender === 'men' ? "Men's" : "Kids'") + ' ' + getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region)));
-    items.push(link('clothing-size-converter.html', 'Clothing Size Converter'));
-    if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Similar garment</h3><ul class="next-step__links">' + items.join('') + '</ul></div>');
+    const items = sample.map(r => linkNavCard(currentFile, 'clothing/' + r.slug + '.html', (r.gender === 'women' ? "Women's" : r.gender === 'men' ? "Men's" : "Kids'") + ' ' + getFromRegionLabel(r.from_region) + ' ' + r.size + ' to ' + getFromRegionLabel(r.to_region)));
+    items.push(linkNavCard(currentFile, 'clothing-size-converter.html', 'Clothing Size Converter'));
+    if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Men\'s, women\'s &amp; kids\'</h3><div class="card-grid nav-card-grid">' + items.join('') + '</div></div>');
   }
 
   // --- Measurement page ---
@@ -1633,22 +1634,22 @@ function buildBehavioralRecommendations(route, opts) {
     const foot = measurementRoutes.find(r => r.measurement_type === 'foot_cm');
     const sample = measurementRoutes.filter(r => r.slug).slice(0, 3);
     const items = [];
-    if (foot) items.push(link('measurement/' + foot.slug + '.html', 'Convert cm to shoe size'));
+    if (foot) items.push(linkNavCard(currentFile, 'measurement/' + foot.slug + '.html', 'Convert cm to shoe size'));
     sample.filter(r => r.slug !== (foot && foot.slug)).forEach(r => {
       if (items.length >= 4) return;
       const label = r.measurement_type === 'foot_cm' ? r.value_cm + ' cm to ' + r.to_region + ' shoe' : r.measurement_type === 'chest_cm' ? r.value_cm + ' cm chest' : r.value_cm + ' cm waist';
-      items.push(link('measurement/' + r.slug + '.html', label));
+      items.push(linkNavCard(currentFile, 'measurement/' + r.slug + '.html', label));
     });
     const measGuide = semanticRoutes.find(r => r.semantic_category === 'measurement_guides');
-    if (measGuide) items.push(link('semantic/' + measGuide.slug + '.html', measGuide.title || 'How to measure'));
-    if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Measurement page</h3><ul class="next-step__links">' + items.slice(0, 4).join('') + '</ul></div>');
+    if (measGuide) items.push(linkNavCard(currentFile, 'semantic/' + measGuide.slug + '.html', measGuide.title || 'How to measure'));
+    if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Measurement page</h3><div class="card-grid nav-card-grid">' + items.slice(0, 4).join('') + '</div></div>');
   }
 
   // --- Brand comparison ---
   if (brandRoutes.length) {
     const sample = brandRoutes.filter(r => r.type === 'brand_converter').slice(0, 4);
-    const items = sample.map(r => link('brands/' + r.slug + '.html', (r.brand || r.slug) + ' size guide'));
-    if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Brand comparison</h3><ul class="next-step__links">' + items.join('') + '</ul></div>');
+    const items = sample.map(r => linkNavCard(currentFile, 'brands/' + r.slug + '.html', (r.brand || r.slug) + ' size guide'));
+    if (items.length) blocks.push('<div class="next-step__block"><h3 class="next-step__title">Brand comparison</h3><div class="card-grid nav-card-grid">' + items.join('') + '</div></div>');
   }
 
   if (blocks.length === 0) return '';

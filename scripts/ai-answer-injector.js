@@ -8,16 +8,9 @@
 
 const fs = require('fs');
 const path = require('path');
-const cheerio = require('cheerio');
 const { relPathToUrlPath } = require('./lib/ai-engine-utils');
 const { getPriorityTier } = require('./crawl-priority-map');
-const {
-  generateAnswer,
-  parseConversionGuideParagraph,
-  extractConversionGuideParagraph,
-  extractCmFromHtml,
-  decodeBasicEntities,
-} = require('./lib/ai-answer-generate');
+const { decodeBasicEntities } = require('./lib/ai-answer-generate');
 
 const ROOT = path.resolve(__dirname, '..');
 const IGNORE_DIRS = new Set(['node_modules', '.git', 'scripts', 'sitemaps', 'components']);
@@ -48,16 +41,6 @@ function shouldInjectAiCitation(relPath) {
   return false;
 }
 
-function hrefTo(fromRel, toUrlPath) {
-  const clean = toUrlPath.replace(/^\//, '');
-  const fromDir = path.dirname(path.join(ROOT, fromRel));
-  const toFull = path.join(ROOT, clean);
-  let r = path.relative(fromDir, toFull);
-  r = r.replace(/\\/g, '/');
-  if (!r.startsWith('.')) r = `./${r}`;
-  return r;
-}
-
 function escapeHtml(s) {
   return String(s)
     .replace(/&/g, '&amp;')
@@ -71,72 +54,6 @@ function extractTitle(html) {
   return m ? decodeBasicEntities(m[1].replace(/\s*\|.*$/i, '').trim()) : 'Global Size Chart';
 }
 
-function extractMetaDescription(html) {
-  const m = html.match(/<meta\s+name=["']description["']\s+content=["']([^"']*)["']/i);
-  return m ? decodeBasicEntities(m[1]) : '';
-}
-
-function buildProgrammaticAnswer(html, relPath) {
-  const guide = extractConversionGuideParagraph(html);
-  if (!guide) {
-    const desc = extractMetaDescription(html);
-    if (desc) return desc.split('. ').slice(0, 2).join('. ') + (desc.endsWith('.') ? '' : '.');
-    return null;
-  }
-  const parsed = parseConversionGuideParagraph(guide);
-  let cm = extractCmFromHtml(html.slice(0, 12000));
-  if (!cm) {
-    const faqCm = html.match(/"text":"[^"]*(\d+\.?\d*)\s*cm/i);
-    if (faqCm) cm = faqCm[1];
-  }
-  if (parsed) {
-    return generateAnswer({
-      from: parsed.from,
-      to: parsed.to,
-      value: parsed.value,
-      result: parsed.result,
-      cm,
-    });
-  }
-  return guide.length > 320 ? guide.slice(0, 317) + '…' : guide;
-}
-
-function buildGenericAnswer(html) {
-  const desc = extractMetaDescription(html);
-  if (desc && desc.length > 40) {
-    const parts = desc.split(/(?<=[.!?])\s+/).slice(0, 2);
-    return parts.join(' ');
-  }
-  const t = extractTitle(html);
-  return `${t}: use this page’s tools and charts for international size conversion; measure foot or body length in centimeters when possible for the closest match.`;
-}
-
-function buildFaqBlocks(topicSnippet, isProgrammatic) {
-  const t = escapeHtml(topicSnippet.slice(0, 80));
-  if (isProgrammatic) {
-    return `
-  <section class="ai-faq-block" data-ai-faq-block="1" aria-label="Common questions">
-    <h2>Common questions</h2>
-    <h3>Is this conversion the same for every brand?</h3>
-    <p>No—brands use different lasts and fits. Use this chart as a starting point and check the brand’s own size guide when you can.</p>
-    <h3>How accurate are shoe size conversions?</h3>
-    <p>Standard tables map foot length across regions; real fit still varies by width, materials, and design. Measuring your foot in cm is the most reliable cross-check.</p>
-    <h3>Where does the centimeter value come from?</h3>
-    <p>We anchor sizes to typical foot-length ranges used in international sizing references; always measure both feet and use the longer one.</p>
-  </section>`;
-  }
-  return `
-  <section class="ai-faq-block" data-ai-faq-block="1" aria-label="Common questions">
-    <h2>Common questions</h2>
-    <h3>How should I use this converter?</h3>
-    <p>Pick your region and size, then read the equivalents. When in doubt, measure in centimeters and compare to the brand chart.</p>
-    <h3>Why do sizes differ between countries?</h3>
-    <p>Each region uses its own scale; mapping through foot length (cm) reduces error.</p>
-    <h3>More on ${t}</h3>
-    <p>See linked guides on this site for measurement tips and regional differences.</p>
-  </section>`;
-}
-
 function buildDataSourcesBlock() {
   return `
       <section class="data-sources content-section" data-data-sources="1" aria-label="Data sources">
@@ -147,58 +64,6 @@ function buildDataSourcesBlock() {
           <li>International measurement and apparel sizing studies (public summaries)</li>
         </ul>
       </section>`;
-}
-
-function buildSeeAlso(relPath) {
-  const cm = hrefTo(relPath, '/cm-to-us-shoe-size.html');
-  const shoe = hrefTo(relPath, '/shoe-size-converter.html');
-  return `<p class="ai-answer-see-also"><strong>See also:</strong> <a href="${cm}">CM to US converter</a> · <a href="${shoe}">Shoe size converter</a> · <a href="${hrefTo(relPath, '/measurement-standards.html')}">Measurement standards</a></p>`;
-}
-
-function injectAfterFirstH1InMain(html, insert) {
-  const mainRe = /<main[^>]*>/i;
-  const mm = html.match(mainRe);
-  if (!mm) return null;
-  const start = mm.index + mm[0].length;
-  const slice = html.slice(start);
-  const h1m = slice.match(/<h1[^>]*>[\s\S]*?<\/h1>/i);
-  if (!h1m) return null;
-  const pos = start + h1m.index + h1m[0].length;
-  return html.slice(0, pos) + '\n' + insert + html.slice(pos);
-}
-
-/** Skip injection when AI blocks are split across multiple direct <main> children (ambiguous layout). */
-function mainChildBranchesWithAi(html) {
-  const $ = cheerio.load(html, { decodeEntities: false });
-  const $main = $('main').first();
-  if (!$main.length) return 0;
-  let branches = 0;
-  $main.children().each((_, el) => {
-    const $c = $(el);
-    if ($c.is('[data-ai-answer-block], [data-ai-faq-block]')) {
-      branches += 1;
-      return;
-    }
-    if ($c.find('[data-ai-answer-block], [data-ai-faq-block]').length) {
-      branches += 1;
-    }
-  });
-  return branches;
-}
-
-function injectFaqBeforeDataSources(html, block) {
-  if (html.includes('data-ai-faq-block')) return html;
-  const marker = '<section class="data-sources';
-  const idx = html.indexOf(marker);
-  if (idx !== -1) {
-    return html.slice(0, idx) + block + '\n\n      ' + html.slice(idx);
-  }
-  const aeo = '<div class="aeo-ai-layer"';
-  const ai = html.indexOf(aeo);
-  if (ai !== -1) {
-    return html.slice(0, ai) + block + '\n\n      ' + html.slice(ai);
-  }
-  return html.replace(/<\/main>/i, (m) => block + '\n\n  ' + m);
 }
 
 function injectBeforeAeoOrMainEnd(html, block) {
@@ -278,41 +143,17 @@ function main() {
     if (!shouldInjectAiCitation(rel)) continue;
     const abs = path.join(ROOT, rel);
     let html = fs.readFileSync(abs, 'utf8');
-    if (html.includes('data-ai-answer-block')) continue;
-    if (mainChildBranchesWithAi(html) > 1) {
-      console.warn('ai-answer-injector: skip (AI blocks split across multiple main branches):', rel);
-      continue;
-    }
+    if (html.includes('data-data-sources')) continue;
 
     const urlPath = relPathToUrlPath(rel);
     const canonical =
       html.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i)?.[1] ||
       `https://globalsizechart.com${urlPath === '/' ? '/' : urlPath}`;
-    const isProgrammatic = rel.includes('programmatic-pages/');
-
-    let answerText = isProgrammatic ? buildProgrammaticAnswer(html, rel) : buildGenericAnswer(html);
-    if (!answerText) answerText = buildGenericAnswer(html);
-
     const title = extractTitle(html);
     const topic = title.split('|')[0].trim();
 
-    const answerBlock = `
-        <section class="ai-answer-block" data-ai-answer-block="1" data-ai-answer="1" aria-label="Quick answer">
-          <p><strong>Quick answer:</strong></p>
-          <p>${escapeHtml(answerText)}</p>
-          ${buildSeeAlso(rel)}
-        </section>`;
-
-    let next = injectAfterFirstH1InMain(html, answerBlock);
-    if (!next) {
-      console.warn('ai-answer-injector: skip (no h1 in main):', rel);
-      continue;
-    }
-    html = next;
-
+    /* Page model: no separate "Quick answer" block — lead stays in intro / meta only. */
     html = injectBeforeAeoOrMainEnd(html, buildDataSourcesBlock());
-
-    html = injectFaqBeforeDataSources(html, buildFaqBlocks(topic, isProgrammatic));
 
     const faqPairs = [
       ['Is this conversion the same for every brand?', 'No—brands use different lasts and fits.'],

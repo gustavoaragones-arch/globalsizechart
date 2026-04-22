@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Injects AI/AEO HTML layer (Quick Answer, Why sizes vary, optional FAQ block,
- * author box, See also) before </main> on static HTML pages.
+ * Injects a compact AEO layer (why sizes vary as info cards + key navigation tiles)
+ * before </main> on static HTML pages.
  *
  * Also adds Article + FAQPage JSON-LD in <head> when missing (Albor Digital Team / FAQPage).
  *
@@ -61,56 +61,36 @@ function formatDate(ms) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-function escapeHtml(s) {
-  return String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
-
-function quickAnswerFromTitle(title, lower) {
-  if (/shoe|size|eu|us|uk|cm|jp|convert/i.test(lower)) {
-    return `${escapeHtml(title)}: this page is part of Global Size Chart’s international sizing reference. Use the on-page converter or charts to map between US, UK, EU, JP, and centimeters, anchored to foot length where applicable.`;
-  }
-  return `${escapeHtml(title)}: Global Size Chart helps you compare international clothing and shoe labels using standardized length-based references. Check linked guides for measurement tips.`;
-}
-
-function buildBodyLayer(prefix, quickAnswer, includeFaqBlock) {
+function buildBodyLayer(prefix) {
   const p = prefix;
-  const faq = includeFaqBlock
-    ? `
-      <section class="faq-block content-section" id="aeo-faq-block">
-        <h2>Frequently Asked Questions</h2>
-        <div class="faq-item">
-          <h3>What is EU 42 in US shoe size?</h3>
-          <p>EU 42 typically converts to US men's size 9 and US women's size 10.5, depending on brand and width. Use any converter on this page when available.</p>
-        </div>
-        <div class="faq-item">
-          <h3>Are EU and US shoe sizes the same?</h3>
-          <p>No. The <strong>EU sizing system</strong> and <strong>US shoe sizing scale</strong> use different scales. <strong>International shoe size conversion</strong> is most reliable when you anchor to <strong>foot length in cm</strong>.</p>
-        </div>
-      </section>`
-    : '';
-
   return `
       <div class="aeo-ai-layer" data-aeo-ai-layer>
-      <section class="ai-answer content-section" aria-labelledby="aeo-qa-h2">
-        <h2 id="aeo-qa-h2">Quick Answer</h2>
-        <p>${quickAnswer}</p>
+      <section class="content-section why-vary-cards" aria-labelledby="aeo-why-h2">
+        <h2 id="aeo-why-h2">Why sizes don’t line up everywhere</h2>
+        <div class="card-grid">
+          <article class="info-card">
+            <h3>Different scales</h3>
+            <p>US, UK, EU, and JP labels rarely describe the same foot length in millimeters.</p>
+          </article>
+          <article class="info-card">
+            <h3>Brand lasts</h3>
+            <p>Two brands can label the same length differently based on shape and materials.</p>
+          </article>
+          <article class="info-card">
+            <h3>Use centimeters</h3>
+            <p>Measuring both feet in cm is the most reliable way to cross-check any chart.</p>
+          </article>
+        </div>
       </section>
-      <section class="why-sizes-vary content-section" aria-labelledby="aeo-why-h2">
-        <h2 id="aeo-why-h2">Why Sizes May Vary</h2>
-        <p>Shoe and clothing sizes can vary between brands due to manufacturing differences, materials, and regional sizing standards.</p>
-      </section>${faq}
-      <section class="aeo-see-also content-section">
-        <h2>See also</h2>
-        <p>
-          <a href="${p}shoe-size-converter.html">Shoe Size Converter</a> ·
-          <a href="${p}knowledge/">Knowledge hub</a> ·
-          <a href="${p}guides/">Guides</a> ·
-          <a href="${p}measurement-standards.html">Measurement standards</a>
-        </p>
+      <section class="content-section" aria-label="Key tools">
+        <h2>Key navigation</h2>
+        <div class="card-grid nav-card-grid">
+          <a class="nav-card" href="${p}shoe-size-converter.html"><span class="nav-card__label">Shoe size converter</span></a>
+          <a class="nav-card" href="${p}clothing-size-converter.html"><span class="nav-card__label">Clothing size converter</span></a>
+          <a class="nav-card" href="${p}knowledge/"><span class="nav-card__label">Knowledge hub</span></a>
+          <a class="nav-card" href="${p}guides/"><span class="nav-card__label">Guides</span></a>
+          <a class="nav-card" href="${p}measurement-standards.html"><span class="nav-card__label">Measurement standards</span></a>
+        </div>
       </section>
       </div>
 `;
@@ -181,14 +161,7 @@ function processFile(relPath) {
 
   const prefix = pathPrefix(relPath);
   const title = extractTitle(html);
-  const lower = title.toLowerCase();
-  const quickAnswer = quickAnswerFromTitle(title, lower);
-
-  const hasFaq =
-    /\bid=["']faq["']/.test(html) ||
-    /class=["'][^"']*faq-block/.test(html) ||
-    /class=["'][^"']*faq-section/.test(html);
-  const layer = buildBodyLayer(prefix, quickAnswer, !hasFaq);
+  const layer = buildBodyLayer(prefix);
 
   const stat = fs.statSync(full);
   const dateModified = formatDate(stat.mtimeMs);

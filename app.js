@@ -190,6 +190,45 @@ let dataLoaded = false;
 // Dataset-driven: shoes[gender][region].sizes = [ { value, cm } ]. No synthetic increments.
 let sizeDatabase = { shoes: {}, clothing: {} };
 
+/** Full dropdown labels / aliases → codes (must match shoe DB keys when uppercased). */
+const SHOE_REGION_LABEL_MAP = {
+  'United States (US)': 'US',
+  'United States / Canada (US)': 'US',
+  'United Kingdom (UK)': 'UK',
+  'European Union (EU)': 'EU',
+  'Europe (EU)': 'EU',
+  'Japan (JP)': 'JP',
+  'China (CN)': 'CN',
+  China: 'CN',
+  'Centimeters (CM)': 'CM',
+};
+
+const REGION_NO_DATA_MSG = 'No data available for this region yet.';
+
+/**
+ * Normalize region for shoe logic (dataset keys are lowercase us, uk, eu, jp, cn, cm).
+ * @param {string} raw - option value or label text
+ * @returns {string} US | UK | EU | JP | CN | CM | … (uppercase code)
+ */
+function normalizeShoeRegion(raw) {
+  if (raw == null) return '';
+  const s = String(raw).trim();
+  if (!s) return '';
+  if (Object.prototype.hasOwnProperty.call(SHOE_REGION_LABEL_MAP, s)) {
+    return SHOE_REGION_LABEL_MAP[s];
+  }
+  if (/^china$/i.test(s)) return 'CN';
+  const up = s.toUpperCase();
+  if (/^(US|UK|EU|JP|CN|CM|KR|INCH)$/.test(up)) return up;
+  return up;
+}
+
+function shoeRegionHasDataset(gender, regionNormUpper) {
+  if (!gender || !regionNormUpper) return false;
+  const r = String(regionNormUpper).toLowerCase();
+  return !!(sizeDatabase.shoes?.[gender]?.[r]?.sizes?.length);
+}
+
 /**
  * Build size database from row data only. No arithmetic generation, no step loops.
  * Shoes: each region gets explicit { value, cm } from rows (CM is universal anchor).
@@ -248,22 +287,140 @@ function buildSizeDatabase() {
   sizeDatabase = db;
 }
 
+/** Combined hub forms: Category + Clothing Type group (index, regional home pages). */
+function isMainComboForm(form) {
+  return !!(
+    form &&
+    form.querySelector('#clothingCategoryGroup') &&
+    form.querySelector('[name="category"]')
+  );
+}
+
+/** Map UI clothing type to `clothing_sizes.json` keys (jackets/skirts alias). */
+function resolveClothingDataKey(gender, clothingCategoryUi) {
+  if (!clothingCategoryUi) return null;
+  if (clothingCategoryUi === 'jackets') return 'tops';
+  if (clothingCategoryUi === 'skirts') return 'dresses';
+  return clothingCategoryUi;
+}
+
+function resolveBrandCategoryKey(gender, clothingCategoryUi) {
+  const k = resolveClothingDataKey(gender, clothingCategoryUi);
+  return k || null;
+}
+
+const CLOTHING_TYPES_BY_GENDER = {
+  men: [
+    { value: 'tops', label: 'Tops' },
+    { value: 'pants', label: 'Pants' },
+    { value: 'jackets', label: 'Jackets' },
+  ],
+  women: [
+    { value: 'tops', label: 'Tops' },
+    { value: 'pants', label: 'Pants' },
+    { value: 'dresses', label: 'Dresses' },
+    { value: 'skirts', label: 'Skirts' },
+    { value: 'jackets', label: 'Jackets' },
+  ],
+  kids: [
+    { value: 'tops', label: 'Tops' },
+    { value: 'pants', label: 'Pants' },
+  ],
+};
+
+const NO_SIZES_COMBO_MSG =
+  'No sizes available for this combination. Try selecting a different category or gender.';
+
+function effectiveGenderForSizes(form, category) {
+  const raw = form.querySelector('[name="gender"]')?.value || '';
+  if (isMainComboForm(form)) {
+    if (!raw) return '';
+    return raw;
+  }
+  return raw || 'men';
+}
+
+function rebuildClothingTypeOptions(form) {
+  const sel = form.querySelector('[name="clothingCategory"]');
+  if (!sel || !isMainComboForm(form)) return;
+  const category = form.querySelector('[name="category"]')?.value;
+  const gender = form.querySelector('[name="gender"]')?.value || '';
+  sel.innerHTML = '';
+  const ph = document.createElement('option');
+  ph.value = '';
+  ph.textContent = 'Select clothing type';
+  ph.disabled = true;
+  ph.selected = true;
+  sel.appendChild(ph);
+  if (category !== 'clothing' || !gender) return;
+  const list = CLOTHING_TYPES_BY_GENDER[gender] || [];
+  list.forEach(({ value, label }) => {
+    const o = document.createElement('option');
+    o.value = value;
+    o.textContent = label;
+    sel.appendChild(o);
+  });
+}
+
+function updateMainConverterFieldDisabled(form) {
+  if (!isMainComboForm(form)) return;
+  const category = form.querySelector('[name="category"]')?.value;
+  const gender = form.querySelector('[name="gender"]')?.value || '';
+  const clothingGroup = form.querySelector('#clothingCategoryGroup');
+  const clothingSel = form.querySelector('[name="clothingCategory"]');
+  const sizeSelect = form.querySelector('#sizeSelect');
+  const fromRegionSelect = form.querySelector('[name="fromRegion"]');
+
+  if (fromRegionSelect) {
+    const cmOption = fromRegionSelect.querySelector('option[value="CM"]');
+    if (cmOption) {
+      cmOption.style.display = category === 'clothing' ? 'none' : 'block';
+    }
+  }
+
+  if (category === 'shoes') {
+    if (clothingGroup) clothingGroup.style.display = 'none';
+    if (clothingSel) clothingSel.disabled = true;
+    if (sizeSelect) sizeSelect.disabled = !gender;
+  } else if (category === 'clothing') {
+    if (clothingGroup) clothingGroup.style.display = 'flex';
+    if (clothingSel) clothingSel.disabled = !gender;
+    if (sizeSelect) sizeSelect.disabled = !gender || !clothingSel?.value;
+  }
+}
+
+function showNoSizesComboMessage(form) {
+  showConverterEmptyState(form, NO_SIZES_COMBO_MSG);
+}
+
+function syncMainConverterForm(form, opts = { rebuildTypes: false }) {
+  if (!isMainComboForm(form)) return;
+  if (opts.rebuildTypes) {
+    rebuildClothingTypeOptions(form);
+  }
+  updateMainConverterFieldDisabled(form);
+}
+
 /**
  * Returns sizes for the given context. Shoes: list of { value, cm } from dataset only.
  * Clothing: list of { value, label } from dataset only. No synthetic generation.
  */
 function getAvailableSizes(category, gender, region, clothingCategory) {
   if (category === 'shoes' || !category) {
-    const r = String(region || '').toLowerCase();
+    const r = String(normalizeShoeRegion(region || '') || region || '')
+      .trim()
+      .toLowerCase();
     const g = sizeDatabase.shoes[gender];
     if (!g || !g[r]) return [];
     const regionData = g[r];
     return regionData.sizes ? regionData.sizes : [];
   }
   if (category === 'clothing') {
+    const dataKey = resolveClothingDataKey(gender, clothingCategory);
+    if (!dataKey) return [];
     const g = sizeDatabase.clothing[gender];
     if (!g) return [];
-    const cat = g[clothingCategory || 'tops'];
+    const cat = g[dataKey];
     if (!cat) return [];
     const list = cat[region];
     return Array.isArray(list) ? list : [];
@@ -279,24 +436,51 @@ function populateSizeOptions(form) {
   const sizeSelect = form.querySelector('#sizeSelect');
   if (!sizeSelect) return;
   const category = form.querySelector('[name="category"]')?.value || 'shoes';
-  const gender = form.querySelector('[name="gender"]')?.value || 'men';
-  const region = form.querySelector('[name="fromRegion"]')?.value || 'US';
-  const clothingCategory = form.querySelector('[name="clothingCategory"]')?.value || 'tops';
+  const gender = effectiveGenderForSizes(form, category);
+  const regionRaw = form.querySelector('[name="fromRegion"]')?.value || 'US';
+  const region = normalizeShoeRegion(regionRaw) || regionRaw || 'US';
+  const clothingCategory = form.querySelector('[name="clothingCategory"]')?.value || '';
+
   sizeSelect.innerHTML = '';
   const placeholder = document.createElement('option');
   placeholder.value = '';
-  placeholder.textContent = 'Select size';
   placeholder.disabled = true;
   placeholder.selected = true;
   sizeSelect.appendChild(placeholder);
-  const sizes = getAvailableSizes(category, gender, region, category === 'clothing' ? clothingCategory : undefined);
-  sizes.forEach(s => {
+
+  if (isMainComboForm(form) && !gender) {
+    placeholder.textContent = 'Select gender first';
+    updateMainConverterFieldDisabled(form);
+    return;
+  }
+
+  if (isMainComboForm(form) && category === 'clothing' && !clothingCategory) {
+    placeholder.textContent = 'Select clothing type first';
+    updateMainConverterFieldDisabled(form);
+    return;
+  }
+
+  placeholder.textContent = 'Select size';
+
+  const sizes = getAvailableSizes(
+    category,
+    gender,
+    region,
+    category === 'clothing' ? clothingCategory : undefined
+  );
+
+  if (isMainComboForm(form) && category === 'clothing' && gender && clothingCategory && sizes.length === 0) {
+    showNoSizesComboMessage(form);
+  }
+
+  sizes.forEach((s) => {
     const option = document.createElement('option');
     option.value = s.value;
     option.textContent = s.label != null ? s.label : String(s.value);
     sizeSelect.appendChild(option);
   });
   sizeSelect.selectedIndex = 0;
+  updateMainConverterFieldDisabled(form);
 }
 
 // Load JSON data - use embedded data as primary, fetch as fallback for updates
@@ -382,19 +566,37 @@ function runConverterInit() {
       form.querySelector('[name="clothingCategory"]')?.addEventListener('change', repopBrands);
     });
 
-    document.querySelectorAll('.converter-form').forEach(form => {
+    document.querySelectorAll('.converter-form').forEach((form) => {
       if (!form.querySelector('[name="category"]')) return;
+      if (isMainComboForm(form)) {
+        rebuildClothingTypeOptions(form);
+        updateMainConverterFieldDisabled(form);
+      }
       populateSizeOptions(form);
+
       const refreshSizeDropdown = () => {
+        syncMainConverterForm(form, { rebuildTypes: false });
         const sizeSelect = form.querySelector('#sizeSelect');
         if (sizeSelect) sizeSelect.value = '';
         populateSizeOptions(form);
         runAutoConversion(form);
       };
-      form.querySelector('[name="category"]')?.addEventListener('change', refreshSizeDropdown);
-      form.querySelector('[name="gender"]')?.addEventListener('change', refreshSizeDropdown);
-      form.querySelector('[name="fromRegion"]')?.addEventListener('change', refreshSizeDropdown);
-      form.querySelector('[name="clothingCategory"]')?.addEventListener('change', refreshSizeDropdown);
+
+      const onGenderChange = () => {
+        if (isMainComboForm(form)) {
+          const c = form.querySelector('[name="clothingCategory"]');
+          if (c) c.value = '';
+          syncMainConverterForm(form, { rebuildTypes: true });
+        }
+        const sizeSelect = form.querySelector('#sizeSelect');
+        if (sizeSelect) sizeSelect.value = '';
+        populateSizeOptions(form);
+        runAutoConversion(form);
+      };
+
+      form.querySelector('[name="gender"]')?.addEventListener('change', onGenderChange, true);
+      form.querySelector('[name="fromRegion"]')?.addEventListener('change', refreshSizeDropdown, true);
+      form.querySelector('[name="clothingCategory"]')?.addEventListener('change', refreshSizeDropdown, true);
       runAutoConversion(form);
     });
 
@@ -414,31 +616,22 @@ if (document.readyState === 'loading') {
 
 function initializeCategoryToggle() {
   const categorySelects = document.querySelectorAll('[name="category"]');
-  categorySelects.forEach(select => {
+  categorySelects.forEach((select) => {
     select.addEventListener('change', () => {
       const form = select.closest('form');
-      const clothingCategoryGroup = form?.querySelector('#clothingCategoryGroup');
-      const fromRegionSelect = form?.querySelector('[name="fromRegion"]');
-      
-      if (select.value === 'clothing') {
-        if (clothingCategoryGroup) {
-          clothingCategoryGroup.style.display = 'flex';
+      if (form?.querySelector('#sizeSelect')) {
+        if (isMainComboForm(form)) {
+          const c = form.querySelector('[name="clothingCategory"]');
+          if (c) c.value = '';
+          const sizeSelect = form.querySelector('#sizeSelect');
+          if (sizeSelect) sizeSelect.value = '';
+          syncMainConverterForm(form, { rebuildTypes: true });
         }
-        if (fromRegionSelect) {
-          const cmOption = fromRegionSelect.querySelector('option[value="CM"]');
-          if (cmOption) cmOption.style.display = 'none';
-        }
-      } else {
-        if (clothingCategoryGroup) {
-          clothingCategoryGroup.style.display = 'none';
-        }
-        if (fromRegionSelect) {
-          const cmOption = fromRegionSelect.querySelector('option[value="CM"]');
-          if (cmOption) cmOption.style.display = 'block';
-        }
+        populateSizeOptions(form);
+        runAutoConversion(form);
       }
     });
-    
+
     if (select.value === 'clothing') {
       select.dispatchEvent(new Event('change'));
     }
@@ -456,8 +649,12 @@ function initializeCategoryToggle() {
  */
 function convertSize(category, gender, fromRegion, toRegion, selectedValue) {
   if (category !== 'shoes') return null;
-  fromRegion = String(fromRegion || '').toLowerCase();
-  toRegion = String(toRegion || '').toLowerCase();
+  fromRegion = String(normalizeShoeRegion(fromRegion || '') || fromRegion || '')
+    .trim()
+    .toLowerCase();
+  toRegion = String(normalizeShoeRegion(toRegion || '') || toRegion || '')
+    .trim()
+    .toLowerCase();
 
   let cmValue;
   if (fromRegion === 'cm') {
@@ -512,7 +709,9 @@ function convertShoeFromCM(cm, gender) {
 function getAllShoeConversions(size, fromRegion, gender) {
   const regionCodes = ['us', 'uk', 'eu', 'jp', 'cn', 'cm'];
   const result = {};
-  const fromNorm = String(fromRegion || '').toLowerCase();
+  const fromNorm = String(normalizeShoeRegion(fromRegion || '') || fromRegion || '')
+    .trim()
+    .toLowerCase();
   const hasUs = convertSize('shoes', gender, fromRegion, 'us', size) != null;
   if (!hasUs && fromNorm !== 'cm') return {};
 
@@ -555,9 +754,10 @@ function populateBrandOptions(form) {
   const sel = form.querySelector('#brand');
   if (!sel) return;
   const gender = form.querySelector('[name="gender"]')?.value || 'men';
-  const cat = form.querySelector('[name="clothingCategory"]')?.value || 'tops';
+  const catUi = form.querySelector('[name="clothingCategory"]')?.value || 'tops';
+  const cat = resolveBrandCategoryKey(gender, catUi);
   const prev = sel.value;
-  const list = getBrandsList(cat, gender);
+  const list = cat ? getBrandsList(cat, gender) : [];
   sel.innerHTML = '';
   const ph = document.createElement('option');
   ph.value = '';
@@ -579,10 +779,11 @@ function populateBrandOptions(form) {
  * Move one row on the clothing chart in fromRegion when brand runs small/large.
  * Does not change underlying JSON or non-clothing paths.
  */
-function adjustClothingSizeForBrand(size, brandFit, gender, category, fromRegion) {
+function adjustClothingSizeForBrand(size, brandFit, gender, categoryUi, fromRegion) {
   const raw = String(size == null ? '' : size).trim();
   if (!brandFit || brandFit === 'true_to_size' || !raw) return raw;
-  if (!clothingData[gender] || !clothingData[gender][category]) return raw;
+  const category = resolveClothingDataKey(gender, categoryUi);
+  if (!category || !clothingData[gender] || !clothingData[gender][category]) return raw;
   const categoryData = clothingData[gender][category];
   const rk = String(fromRegion).toLowerCase();
   let idx = -1;
@@ -617,8 +818,9 @@ function adjustClothingSizeForBrand(size, brandFit, gender, category, fromRegion
   return out != null ? String(out).trim() : raw;
 }
 
-function convertClothingSize(size, fromRegion, toRegion, gender, category) {
-  if (!clothingData[gender] || !clothingData[gender][category] || !size) return null;
+function convertClothingSize(size, fromRegion, toRegion, gender, categoryUi) {
+  const category = resolveClothingDataKey(gender, categoryUi);
+  if (!category || !clothingData[gender] || !clothingData[gender][category] || !size) return null;
 
   const categoryData = clothingData[gender][category];
   
@@ -639,8 +841,9 @@ function convertClothingSize(size, fromRegion, toRegion, gender, category) {
   return sourceEntry[targetKey] !== undefined ? sourceEntry[targetKey] : null;
 }
 
-function getAllClothingConversions(size, fromRegion, gender, category) {
-  if (!clothingData[gender] || !clothingData[gender][category]) {
+function getAllClothingConversions(size, fromRegion, gender, categoryUi) {
+  const category = resolveClothingDataKey(gender, categoryUi);
+  if (!category || !clothingData[gender] || !clothingData[gender][category]) {
     console.warn('No data for:', { gender, category });
     return {};
   }
@@ -720,6 +923,7 @@ function validateShoeSize(value) {
  * @returns {boolean}
  */
 function validateSize(category, gender, region, size) {
+  const regionKey = normalizeShoeRegion(region || '') || region;
   const ranges = {
     shoes: {
       men: {
@@ -727,6 +931,7 @@ function validateSize(category, gender, region, size) {
         UK: [2, 17],
         EU: [35, 52],
         JP: [21, 32],
+        CN: [39, 47],
         CM: [21, 32]
       },
       women: {
@@ -734,17 +939,20 @@ function validateSize(category, gender, region, size) {
         UK: [2, 14],
         EU: [34, 46],
         JP: [21, 30],
+        CN: [35, 43],
         CM: [21, 30]
       },
       kids: {
         US: [1, 13],
         EU: [16, 35],
+        CN: [27, 38],
         CM: [9, 22]
       }
     }
   };
 
-  const regionRanges = ranges[category] && ranges[category][gender] && ranges[category][gender][region];
+  const regionRanges =
+    ranges[category] && ranges[category][gender] && ranges[category][gender][regionKey];
   if (!regionRanges) return false;
   const [min, max] = regionRanges;
   return size >= min && size <= max;
@@ -870,23 +1078,42 @@ function handleConversion(form) {
   if (!categoryEl) return;
 
   const category = categoryEl.value;
-  const fromRegion = form.querySelector('[name="fromRegion"]')?.value;
-  const toRegion = form.querySelector('[name="toRegion"]')?.value;
+  const fromRegionRaw = form.querySelector('[name="fromRegion"]')?.value;
+  const toRegionRaw = form.querySelector('[name="toRegion"]')?.value;
+  const fromRegionNorm = normalizeShoeRegion(fromRegionRaw || '');
+  const toRegionNorm = normalizeShoeRegion(toRegionRaw || '');
   const sizeSelect = form.querySelector('#sizeSelect');
   const sizeInput = form.querySelector('[name="size"]');
   const sizeEl = sizeSelect || sizeInput;
   const sizeRaw = sizeEl?.value;
-  const size = category === 'clothing' ? sizeRaw?.trim() : sizeRaw;
   const gender = form.querySelector('[name="gender"]')?.value;
-  const clothingCategory = form.querySelector('[name="clothingCategory"]')?.value;
+  const clothingCategory = form.querySelector('[name="clothingCategory"]')?.value || '';
 
-  if (!fromRegion || !gender) {
-    console.warn('Missing required fields:', { size: sizeRaw, fromRegion, gender });
+  const isShoePath = category === 'shoes' || !category;
+  const isLetterClothing = category === 'clothing';
+  const size = isLetterClothing ? sizeRaw?.trim() : sizeRaw;
+
+  if (isMainComboForm(form) && !gender) {
     showConverterEmptyState(form);
     return;
   }
 
-  if (category === 'shoes' || !category) {
+  if (category === 'clothing' && !clothingCategory) {
+    showConverterEmptyState(form);
+    return;
+  }
+
+  if (!fromRegionRaw || !gender) {
+    console.warn('Missing required fields:', { size: sizeRaw, fromRegion: fromRegionRaw, gender });
+    showConverterEmptyState(form);
+    return;
+  }
+
+  if (isShoePath) {
+    if (!shoeRegionHasDataset(gender, fromRegionNorm)) {
+      showConverterEmptyState(form, REGION_NO_DATA_MSG);
+      return;
+    }
     const shoeEmpty = sizeRaw === null || sizeRaw === undefined || String(sizeRaw).trim() === '';
     if (shoeEmpty) {
       const shoeErrorEl =
@@ -920,7 +1147,7 @@ function handleConversion(form) {
       showConverterEmptyState(form);
       return;
     }
-    if (!validateSize('shoes', gender, fromRegion, sizeNum)) {
+    if (!validateSize('shoes', gender, fromRegionNorm, sizeNum)) {
       const formSection = form.closest('.converter-card');
       const shoeErrorEl = formSection?.querySelector('#shoe-size-error') || form.querySelector('#shoe-size-error');
       if (shoeErrorEl) {
@@ -937,7 +1164,7 @@ function handleConversion(form) {
     }
   }
 
-  if (category === 'clothing') {
+  if (isLetterClothing) {
     const clothingEmpty = sizeRaw === null || sizeRaw === undefined || String(sizeRaw).trim() === '';
     if (clothingEmpty) {
       const clothingErrorEl =
@@ -972,14 +1199,20 @@ function handleConversion(form) {
     return;
   }
 
-  console.log('Converting:', { category, fromRegion, size, gender, clothingCategory });
+  console.log('Converting:', {
+    category,
+    fromRegion: fromRegionNorm || fromRegionRaw,
+    size,
+    gender,
+    clothingCategory
+  });
 
   let results = {};
-  let bestMatchRegion = toRegion || fromRegion;
+  let bestMatchRegion = toRegionNorm || fromRegionNorm || fromRegionRaw;
   let brandNote = '';
 
-  if (category === 'shoes' || !category) {
-    results = getAllShoeConversions(size, fromRegion, gender);
+  if (isShoePath) {
+    results = getAllShoeConversions(size, fromRegionNorm, gender);
   } else if (category === 'clothing') {
     let sizeToConvert = size;
     const brandSel = form.querySelector('#brand');
@@ -993,7 +1226,7 @@ function handleConversion(form) {
           fit,
           gender,
           clothingCategory || 'tops',
-          fromRegion
+          fromRegionNorm || fromRegionRaw
         );
         if (adj !== String(size).trim()) {
           sizeToConvert = adj;
@@ -1003,7 +1236,7 @@ function handleConversion(form) {
     }
     results = getAllClothingConversions(
       sizeToConvert,
-      fromRegion,
+      fromRegionNorm || fromRegionRaw,
       gender,
       clothingCategory || 'tops'
     );
@@ -1016,7 +1249,7 @@ function handleConversion(form) {
   const resultsContainer = formSection?.querySelector('.results');
   
   if (resultsContainer) {
-    displayResults(results, bestMatchRegion, category === 'shoes' || !category, resultsContainer, {
+    displayResults(results, bestMatchRegion, isShoePath, resultsContainer, {
       brandNote
     });
   } else {
@@ -1026,9 +1259,8 @@ function handleConversion(form) {
   // Phase 13.5: show fit notice only for shoe conversions when results are shown
   const fitNotice = formSection?.querySelector('.fit-notice');
   if (fitNotice) {
-    const isShoeConversion = category === 'shoes' || !category;
     const hasResults = results && Object.keys(results).length > 0;
-    fitNotice.style.display = isShoeConversion && hasResults ? 'block' : 'none';
+    fitNotice.style.display = isShoePath && hasResults ? 'block' : 'none';
   }
 }
 

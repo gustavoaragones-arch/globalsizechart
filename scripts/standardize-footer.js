@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 /**
- * Replaces every full-page HTML footer with scripts/lib/master-footer.html
- * and strips legacy pre-footer blocks (data-sources, see also, related, etc.).
+ * Footer drift control: marker-wrapped master in scripts/lib/master-footer.html
+ *
+ *   node scripts/standardize-footer.js           — update HTML files
+ *   node scripts/standardize-footer.js --check    — verify only (no writes)
+ *
  * Skips components/*.html (fragments, no document body).
  */
 
@@ -10,15 +13,30 @@ const path = require("path");
 
 const ROOT = path.resolve(__dirname, "..");
 const MASTER_PATH = path.join(__dirname, "lib", "master-footer.html");
-const MASTER_FOOTER = fs.readFileSync(MASTER_PATH, "utf8").replace(/\n$/, "");
+const MARKER_START = "<!-- FOOTER:START -->";
+const MARKER_END = "<!-- FOOTER:END -->";
 
-const LEGACY_PATTERNS = [
-  /<section class="publisher-trust content-section"[^>]*>[\s\S]*?<\/section>/gi,
-  /<section class="data-sources content-section"[^>]*>[\s\S]*?<\/section>/gi,
-  /<section class="aeo-see-also content-section"[^>]*>[\s\S]*?<\/section>/gi,
-  /<section class="content-section internal-link-boost"[^>]*>[\s\S]*?<\/section>/gi,
-  /<p class="ai-answer-see-also"[^>]*>[\s\S]*?<\/p>/gi,
-];
+function loadMasterBlock() {
+  const raw = fs.readFileSync(MASTER_PATH, "utf8");
+  return raw.replace(/\r\n/g, "\n").replace(/\r/g, "\n").replace(/\n+$/, "");
+}
+
+/** Set at the start of each run (write or check). */
+let MASTER_BLOCK = "";
+
+function normalizeCompare(s) {
+  return s.replace(/\r\n/g, "\n").replace(/\r/g, "\n").trimEnd();
+}
+
+function countLiteral(hay, needle) {
+  let n = 0;
+  let i = 0;
+  while ((i = hay.indexOf(needle, i)) !== -1) {
+    n++;
+    i += needle.length;
+  }
+  return n;
+}
 
 function walkHtmlFiles(dir, out = []) {
   for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -35,24 +53,8 @@ function shouldProcess(absPath) {
   return !rel.startsWith(`components${path.sep}`);
 }
 
-function stripLegacy(html) {
-  let out = html;
-  for (const re of LEGACY_PATTERNS) {
-    out = out.replace(re, "");
-  }
-  return out;
-}
-
-/** First broken batch inserted <footer> inside <head>; remove only there. */
-function removeFooterFromHead(html) {
-  const hi = html.toLowerCase().indexOf("</head>");
-  if (hi === -1) return html;
-  const headPart = html.slice(0, hi);
-  const afterHead = html.slice(hi);
-  return headPart.replace(/<footer\b[\s\S]*?<\/footer>/gi, "") + afterHead;
-}
-
-function removeAllFooters(html) {
+/** Remove every <footer>...</footer> only inside <body> (never modify <head>). */
+function removeFootersInBody(html) {
   const bodyOpen = html.match(/<body\b[^>]*>/i);
   const bodyClose = html.toLowerCase().lastIndexOf("</body>");
   if (bodyOpen && bodyClose !== -1 && bodyClose > bodyOpen.index) {
@@ -81,49 +83,104 @@ function lastBodyCloseIndex(html) {
   return matches[matches.length - 1].index;
 }
 
-function insertMasterFooter(html) {
-  const idx = lastBodyCloseIndex(html);
-  if (idx === -1) return null;
-  const before = html.slice(0, idx);
-  const after = html.slice(idx);
-  // Do not use a trailing-regex over the whole document (head JSON can break `</script>` pairing).
-  const appScript = /<script[^>]*\bapp\.js[^>]*>\s*<\/script>/gi;
-  const hits = [...before.matchAll(appScript)];
-  if (hits.length) {
-    const last = hits[hits.length - 1];
-    const ins = last.index;
-    return `${before.slice(0, ins)}\n\n${MASTER_FOOTER}\n${before.slice(ins)}${after}`;
+function extractMarkedBlock(html) {
+  const re = /<!-- FOOTER:START -->[\s\S]*?<!-- FOOTER:END -->/;
+  const m = html.match(re);
+  return m ? m[0] : null;
+}
+
+/** After write: exactly one marker pair and a footer element. */
+function assertFooterInvariant(html) {
+  const sc = countLiteral(html, MARKER_START);
+  const ec = countLiteral(html, MARKER_END);
+  if (sc !== 1 || ec !== 1) {
+    return { ok: false, message: `expected 1 ${MARKER_START} and 1 ${MARKER_END}, got START=${sc} END=${ec}` };
   }
-  return `${before.trimEnd()}\n\n${MASTER_FOOTER}\n${after}`;
+  const footerTags = html.match(/<footer\b/gi) || [];
+  if (footerTags.length !== 1) {
+    return { ok: false, message: `expected exactly one <footer>, got ${footerTags.length}` };
+  }
+  const block = extractMarkedBlock(html);
+  if (!block) {
+    return { ok: false, message: "could not extract region between footer markers" };
+  }
+  return { ok: true, block };
 }
 
-function normalizeFooterForCompare(html) {
-  const match = html.match(/<footer\b[\s\S]*?<\/footer>/i);
-  if (!match) return "";
-  return match[0].replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim();
-}
-
-function processFile(absPath) {
+function processWrite(absPath) {
   let html = fs.readFileSync(absPath, "utf8");
-  if (!/<body\b/i.test(html)) return { skip: true, reason: "no body" };
+  if (!/<body\b/i.test(html)) return { skip: true };
 
   const original = html;
-  html = stripLegacy(html);
-  html = removeFooterFromHead(html);
-  html = removeAllFooters(html);
-  const next = insertMasterFooter(html);
-  if (!next) return { skip: true, reason: "no </body>" };
+  const hasMarkers = html.includes(MARKER_START);
 
-  const footers = next.match(/<footer\b/gi) || [];
-  if (footers.length !== 1) {
-    return { error: `expected 1 footer, got ${footers.length}` };
+  if (hasMarkers) {
+    const sc = countLiteral(html, MARKER_START);
+    const ec = countLiteral(html, MARKER_END);
+    if (sc !== 1 || ec !== 1) {
+      return { error: `${path.relative(ROOT, absPath)}: invalid markers START=${sc} END=${ec}` };
+    }
+    const currentBlock = extractMarkedBlock(html);
+    if (!currentBlock) {
+      return { error: `${path.relative(ROOT, absPath)}: could not read marker region` };
+    }
+    if (normalizeCompare(currentBlock) !== normalizeCompare(MASTER_BLOCK)) {
+      const next = html.replace(/<!-- FOOTER:START -->[\s\S]*?<!-- FOOTER:END -->/m, MASTER_BLOCK);
+      const afterBlock = extractMarkedBlock(next);
+      if (!afterBlock || normalizeCompare(afterBlock) !== normalizeCompare(MASTER_BLOCK)) {
+        return { error: `${path.relative(ROOT, absPath)}: marker replace failed` };
+      }
+      html = next;
+    }
+  } else {
+    html = removeFootersInBody(html);
+    const idx = lastBodyCloseIndex(html);
+    if (idx === -1) {
+      return { error: `${path.relative(ROOT, absPath)}: missing </body>` };
+    }
+    const before = html.slice(0, idx);
+    const after = html.slice(idx);
+    html = `${before.trimEnd()}\n\n${MASTER_BLOCK}\n${after}`;
   }
 
-  if (next !== original) fs.writeFileSync(absPath, next, "utf8");
-  return { ok: true, changed: next !== original };
+  const inv = assertFooterInvariant(html);
+  if (!inv.ok) {
+    return { error: `${path.relative(ROOT, absPath)}: ${inv.message}` };
+  }
+  if (normalizeCompare(inv.block) !== normalizeCompare(MASTER_BLOCK)) {
+    return { error: `${path.relative(ROOT, absPath)}: footer block does not match master` };
+  }
+
+  if (html !== original) fs.writeFileSync(absPath, html, "utf8");
+  return { ok: true, changed: html !== original };
 }
 
-function main() {
+function processCheck(absPath) {
+  const html = fs.readFileSync(absPath, "utf8");
+  if (!/<body\b/i.test(html)) return { skip: true };
+
+  const rel = path.relative(ROOT, absPath);
+  const sc = countLiteral(html, MARKER_START);
+  const ec = countLiteral(html, MARKER_END);
+  if (sc !== 1 || ec !== 1) {
+    return { mismatch: true, rel, reason: `markers START=${sc} END=${ec}` };
+  }
+  const footerTags = html.match(/<footer\b/gi) || [];
+  if (footerTags.length !== 1) {
+    return { mismatch: true, rel, reason: `expected one <footer>, got ${footerTags.length}` };
+  }
+  const block = extractMarkedBlock(html);
+  if (!block) {
+    return { mismatch: true, rel, reason: "unparseable marker region" };
+  }
+  if (normalizeCompare(block) !== normalizeCompare(MASTER_BLOCK)) {
+    return { mismatch: true, rel, reason: "content differs from scripts/lib/master-footer.html" };
+  }
+  return { ok: true };
+}
+
+function runWrite() {
+  MASTER_BLOCK = loadMasterBlock();
   const files = walkHtmlFiles(ROOT).filter(shouldProcess);
   const errors = [];
   let changed = 0;
@@ -131,40 +188,58 @@ function main() {
 
   for (const absPath of files) {
     try {
-      const r = processFile(absPath);
+      const r = processWrite(absPath);
       if (r.skip) skipped++;
-      else if (r.error) errors.push({ file: path.relative(ROOT, absPath), ...r });
-      else {
-        if (r.changed) changed++;
-      }
+      else if (r.error) errors.push(r.error);
+      else if (r.changed) changed++;
     } catch (e) {
-      errors.push({ file: path.relative(ROOT, absPath), error: String(e) });
+      errors.push(`${path.relative(ROOT, absPath)}: ${e}`);
     }
   }
 
   console.log(`Processed ${files.length} HTML files. Updated: ${changed}. Skipped: ${skipped}.`);
   if (errors.length) {
-    console.error("Errors:", errors);
+    console.error("Errors:\n", errors.join("\n"));
     process.exit(1);
   }
 
-  // Post-validation: single footer, byte match to master
-  const masterNorm = normalizeFooterForCompare(`<!DOCTYPE html><html><body>\n${MASTER_FOOTER}\n</body></html>`);
+  const mismatches = [];
   for (const absPath of files) {
-    if (!shouldProcess(absPath)) continue;
-    const html = fs.readFileSync(absPath, "utf8");
-    if (!/<body\b/i.test(html)) continue;
-    const n = (html.match(/<footer\b/gi) || []).length;
-    if (n !== 1) {
-      console.error("Validation failed:", path.relative(ROOT, absPath), "footer count", n);
-      process.exit(1);
-    }
-    if (normalizeFooterForCompare(html) !== masterNorm) {
-      console.error("Validation failed footer mismatch:", path.relative(ROOT, absPath));
-      process.exit(1);
-    }
+    const r = processCheck(absPath);
+    if (r.skip) continue;
+    if (r.mismatch) mismatches.push(`${r.rel}: ${r.reason}`);
   }
-  console.log("Validation OK: every full HTML page has identical footer.");
+  if (mismatches.length) {
+    console.error("Post-check failed:\n", mismatches.join("\n"));
+    process.exit(1);
+  }
+  console.log("Validation OK: markers, footer, and master match on every page.");
 }
 
-main();
+function runCheck() {
+  MASTER_BLOCK = loadMasterBlock();
+  const files = walkHtmlFiles(ROOT).filter(shouldProcess);
+  const mismatches = [];
+  let skipped = 0;
+
+  for (const absPath of files) {
+    try {
+      const r = processCheck(absPath);
+      if (r.skip) skipped++;
+      else if (r.mismatch) mismatches.push(`${r.rel}: ${r.reason}`);
+    } catch (e) {
+      mismatches.push(`${path.relative(ROOT, absPath)}: ${e}`);
+    }
+  }
+
+  console.log(`Checked ${files.length} HTML files (skipped ${skipped} without <body>).`);
+  if (mismatches.length) {
+    console.error("Mismatches:\n", mismatches.join("\n"));
+    process.exit(1);
+  }
+  console.log("OK: all footers match master.");
+}
+
+const isCheck = process.argv.includes("--check");
+if (isCheck) runCheck();
+else runWrite();

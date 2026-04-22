@@ -160,22 +160,12 @@
 
   <main>
   
-    <section class="hero">
-      <div class="container">
-        <h1>Global Size Chart</h1>
-
-<p class="muted">Convert shoe and clothing sizes between US, UK, EU, Japan, China, and CM measurements.</p>
-
-<p class="muted">
+    <div class="container"><section class="hero-tool"><h1>Global Size Chart</h1><p class="lead">Convert shoe and clothing sizes between US, UK, EU, Japan, China, and CM measurements.</p><p class="muted">
 See also:
 <a href="/measurement/cm-to-us.html">CM to US converter</a> ·
 <a href="/tools/shoe-size-converter.html">Shoe size converter</a> ·
 <a href="/measurement/">Measurement standards</a>
-</p>
-
-<section class="converter-card">
-        <h2>Size Converter</h2>
-        <form class="converter-form" id="mainConverter">
+</p><div class="converter-wrapper"><div class="converter-card"><form class="converter-form" id="mainConverter">
           <div class="form-group">
             <label for="category">Category</label>
             <select name="category" id="category" required="">
@@ -184,21 +174,20 @@ See also:
             </select>
           </div>
           
-          <div class="form-group" id="clothingCategoryGroup" style="display: none;">
-            <label for="clothingCategory">Clothing Type</label>
-            <select name="clothingCategory" id="clothingCategory">
-              <option value="tops">Tops</option>
-              <option value="pants">Pants</option>
-              <option value="dresses">Dresses</option>
-            </select>
-          </div>
-          
           <div class="form-group">
             <label for="gender">Gender</label>
-            <select name="gender" id="gender" required="">
+            <select name="gender" id="gender">
+              <option value="" selected disabled>Select gender</option>
               <option value="men">Men</option>
               <option value="women">Women</option>
               <option value="kids">Kids</option>
+            </select>
+          </div>
+          
+          <div class="form-group" id="clothingCategoryGroup" style="display: none;">
+            <label for="clothingCategory">Clothing Type</label>
+            <select name="clothingCategory" id="clothingCategory" disabled>
+              <option value="" selected disabled>Select clothing type</option>
             </select>
           </div>
           
@@ -216,21 +205,15 @@ See also:
           
           <div class="form-group">
             <label for="sizeSelect">Size</label>
-            <select name="size" id="sizeSelect"></select>
+            <select name="size" id="sizeSelect" disabled></select>
           </div>
-        </form>
-
-        <div class="auto-note">Results update automatically as you select options</div>
-        <div class="results result-box">
+        </form><div class="auto-note">Results update automatically as you select options</div><div class="results result-box">
           <h3>Converted Sizes</h3>
           <div class="results-grid"></div>
           <p class="muted" style="font-size:0.9rem; text-align:center; line-height:1.5;">
 Results are based on standard international size systems. Fit may vary by brand.
 </p>
-        </div>
-      </section>
-      </div>
-    </section>
+        </div></div></div></section></div>
 
     <div class="ad-container ad-top">
       <!-- ADSENSE TOP BANNER -->
@@ -532,6 +515,11 @@ Results are based on standard international size systems. Fit may vary by brand.
 
   
 
+  
+<script src="/app.js" defer=""></script>
+
+<!-- FOOTER:START -->
+
   <footer>
     <div class="container">
       <div class="footer-content">
@@ -614,7 +602,6 @@ Results are based on standard international size systems. Fit may vary by brand.
   
   
   </footer>
-<script src="/app.js" defer=""></script>
 
-  
+<!-- FOOTER:END -->
 </body></html>

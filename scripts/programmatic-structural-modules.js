@@ -14,15 +14,17 @@ const { QUICK_CONVERTERS_HTML } = require('./lib/quick-converters-snippet');
  */
 function getAuthorityLinksSectionHtml(currentFile) {
   const h = (t) => internalLinkBuilder.href(currentFile, t);
+  const tile = (path, label) =>
+    `<a class="nav-card" href="${escapeHtml(h(path))}"><span class="nav-card__label">${escapeHtml(label)}</span></a>`;
   return `<section class="content-section authority-links-block">
-        <h2>Authority Links</h2>
-        <ul class="hub-links">
-          <li><a href="${h('index.html')}">Home</a></li>
-          <li><a href="${h('brand-sizing-guide.html')}">Brand Sizing Guide</a></li>
-          <li><a href="${h('shoe-size-pages.html')}">Shoe Size Pages</a></li>
-          <li><a href="${h('measurement-tools.html')}">Measurement Tools</a></li>
-          <li><a href="${h('shoe-sizing-guides.html')}">Shoe Sizing Guides</a></li>
-        </ul>
+        <h2>Key navigation</h2>
+        <div class="card-grid nav-card-grid">
+          ${tile('index.html', 'Home')}
+          ${tile('brand-sizing-guide.html', 'Brand sizing guide')}
+          ${tile('shoe-size-pages.html', 'Shoe size pages')}
+          ${tile('measurement-tools.html', 'Measurement tools')}
+          ${tile('shoe-sizing-guides.html', 'Shoe sizing guides')}
+        </div>
       </section>`;
 }
 
@@ -51,12 +53,17 @@ function getRegionConvertersSectionHtml(currentFile) {
     { slug: 'china-to-eu-shoe-size', label: 'China to EU' },
     { slug: 'korea-cm-to-us', label: 'Korea to US' }
   ];
-  const items = slugs.map(l => `<li><a href="${internalLinkBuilder.href(currentFile, 'programmatic-pages/' + l.slug + '.html')}">${escapeHtml(l.label)} Shoe Size</a></li>`).join('\n          ');
+  const items = slugs
+    .map(
+      (l) =>
+        `<a class="nav-card" href="${escapeHtml(internalLinkBuilder.href(currentFile, 'programmatic-pages/' + l.slug + '.html'))}"><span class="nav-card__label">${escapeHtml(l.label)} shoe size</span></a>`
+    )
+    .join('\n          ');
   return `<section class="content-section region-converters-block">
-        <h2>Region Converters</h2>
-        <ul class="hub-links">
+        <h2>Regional &amp; conversion pages</h2>
+        <div class="card-grid nav-card-grid">
           ${items}
-        </ul>
+        </div>
       </section>`;
 }
 
