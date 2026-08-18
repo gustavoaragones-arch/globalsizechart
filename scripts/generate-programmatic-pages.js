@@ -137,8 +137,14 @@ function buildGenderOptions(selected) {
   return options.map(o => `<option value="${o.value}"${o.value === selected ? ' selected' : ''}>${o.label}</option>`).join('\n            ');
 }
 
+// Regions the conversion engine (app.js sizeDatabase) actually has shoe data for.
+// KR and INCH remain in REGION_LABELS/REGION_NAMES for text-label use, but must
+// never be offered as a selectable fromRegion option — there is no dataset behind them.
+const SUPPORTED_SHOE_DATA_REGIONS = new Set(['US', 'UK', 'EU', 'JP', 'CN', 'CM']);
+
 function buildFromRegionOptions(selected) {
   return Object.entries(REGION_LABELS)
+    .filter(([code]) => SUPPORTED_SHOE_DATA_REGIONS.has(code))
     .map(([code, label]) => `<option value="${code}"${code === selected ? ' selected' : ''}>${label}</option>`)
     .join('\n            ');
 }
@@ -2045,7 +2051,16 @@ function generateClothingProgrammaticPages(clothingRoutes, clothingData, semanti
     const title = `${genderLabel} ${fromLabel} ${route.size} to ${toLabel} ${categoryLabel} Size`;
     const description = route.description || `Convert ${genderLabel} ${fromLabel} size ${route.size} to ${toLabel} for ${categoryLabel.toLowerCase()}. Body measurement guide and fit tips.`;
     const fileName = route.slug + '.html';
-    const canonicalUrl = `${BASE_URL}/clothing/${fileName}`;
+    // Phase 5F: a route may carry canonical_target (set by
+    // findCanonicalizedDuplicateRoutes()) when it's the redundant member of
+    // a duplicate-semantic-intent pair (see
+    // reports/phase-5e-url-migration-architecture-audit.md §7-8) — the page
+    // still generates normally at its own URL, but every canonical-bearing
+    // reference (link tag, JSON-LD) points at the established base page
+    // instead of at itself.
+    const canonicalUrl = route.canonical_target
+      ? `${BASE_URL}/clothing/${route.canonical_target}.html`
+      : `${BASE_URL}/clothing/${fileName}`;
 
     const breadcrumbItems = [
       { name: 'Home', url: `${BASE_URL}/` },
@@ -2104,7 +2119,18 @@ function generateClothingProgrammaticPages(clothingRoutes, clothingData, semanti
     body += `<section class="content-section"><h1>${escapeHtml(title)}</h1>`;
     body += '<div class="ad-slot ad-top" data-module="ad-slot" data-slot="top"></div>';
     body += `<p class="mb-lg">${escapeHtml(description)}${toSize != null ? ` ${fromLabel} ${route.size} converts to approximately ${toLabel} ${toSize} for ${categoryLabel.toLowerCase()}.` : ''} Use the clothing converter below to get all regional equivalents.</p>`;
-    body += '<section class="content-section"><h2>Clothing converter tool</h2><p>Convert any clothing size between regions using our main tool:</p><p><a href="' + H('clothing-size-converter.html') + '" class="btn">Use Clothing Size Converter</a></p></section>';
+    // Phase 3 Step 8: deep-link the converter with this page's exact intent (gender,
+    // garment, from region, size, to region) so the user doesn't have to re-enter
+    // everything they already told us via the URL/title of this landing page.
+    const deepLinkQuery = new URLSearchParams({
+      gender: route.gender,
+      clothing: route.category,
+      from: route.from_region,
+      size: String(route.size),
+      to: route.to_region
+    }).toString();
+    const converterDeepLink = H('clothing-size-converter.html') + '?' + deepLinkQuery;
+    body += '<section class="content-section"><h2>Clothing converter tool</h2><p>Convert any clothing size between regions using our main tool:</p><p><a href="' + escapeHtml(converterDeepLink) + '" class="btn">Use Clothing Size Converter</a></p></section>';
     body += '<div class="ad-slot ad-inline" data-module="ad-slot" data-slot="inline"></div>';
     body += '<section class="content-section"><h2>Body measurement explanation</h2><p>Accurate conversion depends on your body measurements. For tops and jackets, measure your <strong>chest</strong> at the fullest part. For pants, use <strong>waist</strong> and <strong>hips</strong>. For dresses, use bust, waist, and hips. Record measurements in centimeters for the best match to EU and international size charts. Different brands use different fit models—when in doubt, refer to the brand\'s size chart.</p></section>';
     body += '<section class="content-section"><h2>Fit differences</h2><p>' + sanitizeForApprovalMode('US and UK sizing often use different base measurements; EU and Asian sizes may run smaller. <strong>US</strong> tends to be more relaxed; <strong>EU</strong> and <strong>Asian</strong> cuts are often slimmer. Consider sizing up when buying from European or Japanese brands if you prefer a looser fit.') + '</p></section>';
@@ -2683,9 +2709,11 @@ function generateCMConverters(measurementRoutes, shoeData, clothingData, semanti
       </div>
     </div>
   </footer>
-  <script src="${Hmeas('app.js')}"></script>
 </body>
 </html>`;
+    // Phase 3 Step 9: no app.js here — this page is a static computed-result article
+    // with no .converter-form / #sizeSelect. Loading the converter runtime here was
+    // pure dead weight (fetch + init cost, zero interactive functionality).
 
     fs.writeFileSync(path.join(MEASUREMENT_DIR, fileName), html, 'utf8');
     generated.push(fileName);
@@ -5403,6 +5431,9 @@ if (typeof require !== 'undefined' && require.main === module) {
     TOOLS_DIR,
     SITEMAPS_DIR,
     BASE_URL,
-    MAX_URLS_PER_SITEMAP
+    MAX_URLS_PER_SITEMAP,
+    // Exposed for scoped single-route regeneration (e.g. correcting one bad
+    // route entry without a full-site run) — see reports/phase-5a-*.md.
+    generateClothingProgrammaticPages
   };
 }

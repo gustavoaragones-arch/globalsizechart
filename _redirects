@@ -4,3 +4,49 @@
 # Example redirects (uncomment and modify as needed):
 # /old-page /new-page 301
 # /old-converter /shoe-size-converter.html 301
+
+# Phase 5F — clothing URL migration (2026-08-17)
+# 31 of the 38 corrected clothing routes moved to filenames matching their
+# actual source-region size. The other 7 corrected routes reused an old
+# filename string as their own new, correct home (a chain collision — see
+# reports/phase-5e-url-migration-architecture-audit.md §4/§9) — those 7 URLs
+# were never deleted, so they correctly have NO redirect entry here; adding
+# one would hijack live traffic away from the page that now legitimately
+# lives at that URL.
+/clothing/clothing-men-pants-28-EU-to-US.html /clothing/clothing-men-pants-42-EU-to-US.html 301
+/clothing/clothing-men-pants-30-EU-to-US.html /clothing/clothing-men-pants-44-EU-to-US.html 301
+/clothing/clothing-men-pants-32-EU-to-US.html /clothing/clothing-men-pants-46-EU-to-US.html 301
+/clothing/clothing-men-pants-34-EU-to-US.html /clothing/clothing-men-pants-48-EU-to-US.html 301
+/clothing/clothing-men-pants-36-EU-to-US.html /clothing/clothing-men-pants-50-EU-to-US.html 301
+/clothing/clothing-men-pants-38-EU-to-US.html /clothing/clothing-men-pants-52-EU-to-US.html 301
+/clothing/clothing-men-pants-40-EU-to-US.html /clothing/clothing-men-pants-54-EU-to-US.html 301
+/clothing/clothing-women-tops-XS-EU-to-US.html /clothing/clothing-women-tops-34-EU-to-US.html 301
+/clothing/clothing-women-tops-XS-UK-to-US.html /clothing/clothing-women-tops-6-UK-to-US.html 301
+/clothing/clothing-women-tops-S-EU-to-US.html /clothing/clothing-women-tops-36-EU-to-US.html 301
+/clothing/clothing-women-tops-S-UK-to-US.html /clothing/clothing-women-tops-8-UK-to-US.html 301
+/clothing/clothing-women-tops-M-EU-to-US.html /clothing/clothing-women-tops-38-EU-to-US.html 301
+/clothing/clothing-women-tops-M-UK-to-US.html /clothing/clothing-women-tops-10-UK-to-US.html 301
+/clothing/clothing-women-tops-L-EU-to-US.html /clothing/clothing-women-tops-40-EU-to-US.html 301
+/clothing/clothing-women-tops-L-UK-to-US.html /clothing/clothing-women-tops-12-UK-to-US.html 301
+/clothing/clothing-women-tops-XL-EU-to-US.html /clothing/clothing-women-tops-42-EU-to-US.html 301
+/clothing/clothing-women-tops-XL-UK-to-US.html /clothing/clothing-women-tops-14-UK-to-US.html 301
+/clothing/clothing-women-tops-XXL-EU-to-US.html /clothing/clothing-women-tops-44-EU-to-US.html 301
+/clothing/clothing-women-tops-XXL-UK-to-US.html /clothing/clothing-women-tops-16-UK-to-US.html 301
+/clothing/clothing-women-tops-XXXL-EU-to-US.html /clothing/clothing-women-tops-46-EU-to-US.html 301
+/clothing/clothing-women-tops-XXXL-UK-to-US.html /clothing/clothing-women-tops-18-UK-to-US.html 301
+/clothing/clothing-women-pants-0-EU-to-US.html /clothing/clothing-women-pants-32-EU-to-US.html 301
+/clothing/clothing-women-pants-0-UK-to-US.html /clothing/clothing-women-pants-4-UK-to-US.html 301
+/clothing/clothing-women-pants-2-EU-to-US.html /clothing/clothing-women-pants-34-EU-to-US.html 301
+/clothing/clothing-women-pants-2-UK-to-US.html /clothing/clothing-women-pants-6-UK-to-US.html 301
+/clothing/clothing-women-pants-4-EU-to-US.html /clothing/clothing-women-pants-36-EU-to-US.html 301
+/clothing/clothing-women-pants-6-EU-to-US.html /clothing/clothing-women-pants-38-EU-to-US.html 301
+/clothing/clothing-women-pants-8-EU-to-US.html /clothing/clothing-women-pants-40-EU-to-US.html 301
+/clothing/clothing-women-pants-10-EU-to-US.html /clothing/clothing-women-pants-42-EU-to-US.html 301
+/clothing/clothing-women-pants-12-EU-to-US.html /clothing/clothing-women-pants-44-EU-to-US.html 301
+/clothing/clothing-women-pants-14-EU-to-US.html /clothing/clothing-women-pants-46-EU-to-US.html 301
+
+# Phase 5F — jacket route retirement (2026-08-17)
+# eu-50-jacket-to-us-size.html claimed a numeric EU jacket size with no authoritative
+# jacket dataset backing it (jackets alias to letter-only tops data) — retired rather
+# than reclassified, since EU 50 is only valid for pants, which already has its own page
+/clothing/eu-50-jacket-to-us-size.html /clothing-size-converter.html 301

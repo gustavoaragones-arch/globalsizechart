@@ -203,7 +203,11 @@ const SHOE_REGION_LABEL_MAP = {
   'Centimeters (CM)': 'CM',
 };
 
-const REGION_NO_DATA_MSG = 'No data available for this region yet.';
+// Shared "no dataset for this combination" message (Phase 3 Step 4) — used for both
+// the shoe region-has-no-dataset gate and the clothing no-sizes-for-combo gate, so
+// the converter never shows two different messages for the same underlying cause.
+const NO_CONVERSION_AVAILABLE_MSG = 'No conversion is available for this combination yet. Try another region or size.';
+const REGION_NO_DATA_MSG = NO_CONVERSION_AVAILABLE_MSG;
 
 /**
  * Normalize region for shoe logic (dataset keys are lowercase us, uk, eu, jp, cn, cm).
@@ -328,8 +332,7 @@ const CLOTHING_TYPES_BY_GENDER = {
   ],
 };
 
-const NO_SIZES_COMBO_MSG =
-  'No sizes available for this combination. Try selecting a different category or gender.';
+const NO_SIZES_COMBO_MSG = NO_CONVERSION_AVAILABLE_MSG;
 
 function effectiveGenderForSizes(form, category) {
   const raw = form.querySelector('[name="gender"]')?.value || '';
@@ -360,6 +363,30 @@ function rebuildClothingTypeOptions(form) {
     o.textContent = label;
     sel.appendChild(o);
   });
+}
+
+/**
+ * Phase 3 Step 7: standalone (non-main-combo) clothing forms — e.g. the dedicated
+ * clothing-size-converter.html — have a static clothingCategory <select> that isn't
+ * rebuilt per gender. Reuses CLOTHING_TYPES_BY_GENDER (the same authority the main
+ * combo form uses) to hide/disable garment options the dataset has no data for
+ * (e.g. men's/kids' dresses), rather than duplicating that logic.
+ */
+function filterClothingCategoryByGender(form) {
+  const sel = form.querySelector('[name="clothingCategory"]');
+  if (!sel || isMainComboForm(form)) return;
+  const gender = form.querySelector('[name="gender"]')?.value || 'men';
+  const allowed = new Set((CLOTHING_TYPES_BY_GENDER[gender] || []).map((o) => o.value));
+  Array.from(sel.options).forEach((opt) => {
+    if (!opt.value) return; // leave any blank placeholder alone
+    const ok = allowed.has(opt.value);
+    opt.hidden = !ok;
+    opt.disabled = !ok;
+  });
+  if (sel.value && !allowed.has(sel.value)) {
+    const firstAllowed = Array.from(sel.options).find((o) => o.value && allowed.has(o.value));
+    if (firstAllowed) sel.value = firstAllowed.value;
+  }
 }
 
 function updateMainConverterFieldDisabled(form) {
@@ -497,10 +524,10 @@ async function loadData() {
     // Try to fetch updated data in background (optional, for future updates)
     try {
       const [shoeResponse, clothingResponse, regionsResponse, brandsResponse] = await Promise.all([
-        fetch('data/shoe_sizes.json'),
-        fetch('data/clothing_sizes.json'),
-        fetch('data/regions.json'),
-        fetch('data/brands.json')
+        fetch('/data/shoe_sizes.json'),
+        fetch('/data/clothing_sizes.json'),
+        fetch('/data/regions.json'),
+        fetch('/data/brands.json')
       ]);
 
       if (shoeResponse.ok && clothingResponse.ok && regionsResponse.ok) {
@@ -547,6 +574,60 @@ function applyRegionalDefault() {
   });
 }
 
+/**
+ * Phase 3 Step 8: task-completion deep link. A conversion-intent landing page
+ * (e.g. /clothing/clothing-men-tops-M-US-to-EU.html) links to the dedicated
+ * converter with ?gender=&clothing=&from=&size=&to= so the user's already-stated
+ * intent survives navigation instead of forcing them to re-enter everything.
+ * Only applies to standalone (non-main-combo) clothing forms — the homepage combo
+ * form has its own gender-first flow and is not a conversion-intent landing target.
+ */
+function applyDeepLinkParams(form) {
+  if (isMainComboForm(form)) return;
+  if (!form.querySelector('[name="clothingCategory"]')) return;
+  let params;
+  try {
+    params = new URLSearchParams(window.location.search);
+  } catch (e) {
+    return;
+  }
+  const gender = params.get('gender');
+  const clothing = params.get('clothing');
+  const from = params.get('from');
+  const size = params.get('size');
+  const to = params.get('to');
+  if (!gender && !clothing && !from && !size) return;
+
+  const genderSel = form.querySelector('[name="gender"]');
+  if (gender && genderSel && Array.from(genderSel.options).some((o) => o.value === gender)) {
+    genderSel.value = gender;
+  }
+  filterClothingCategoryByGender(form);
+
+  const clothingSel = form.querySelector('[name="clothingCategory"]');
+  if (clothing && clothingSel) {
+    const opt = Array.from(clothingSel.options).find((o) => o.value === clothing && !o.disabled);
+    if (opt) clothingSel.value = clothing;
+  }
+
+  const regionSel = form.querySelector('[name="fromRegion"]');
+  if (from && regionSel) {
+    const normFrom = normalizeShoeRegion(from) || from;
+    const opt = Array.from(regionSel.options).find((o) => o.value === normFrom);
+    if (opt) regionSel.value = normFrom;
+  }
+
+  const toRegionEl = form.querySelector('[name="toRegion"]');
+  if (to && toRegionEl) {
+    toRegionEl.value = normalizeShoeRegion(to) || to;
+  }
+
+  const sizeInput = form.querySelector('[name="size"]');
+  if (size && sizeInput && sizeInput.tagName === 'INPUT') {
+    sizeInput.value = size;
+  }
+}
+
 // Converter initialization: run only after DOM is ready. Form submit prevents default.
 function runConverterInit() {
   const forms = document.querySelectorAll('.converter-form');
@@ -571,7 +652,10 @@ function runConverterInit() {
       if (isMainComboForm(form)) {
         rebuildClothingTypeOptions(form);
         updateMainConverterFieldDisabled(form);
+      } else {
+        filterClothingCategoryByGender(form);
       }
+      applyDeepLinkParams(form);
       populateSizeOptions(form);
 
       const refreshSizeDropdown = () => {
@@ -587,6 +671,8 @@ function runConverterInit() {
           const c = form.querySelector('[name="clothingCategory"]');
           if (c) c.value = '';
           syncMainConverterForm(form, { rebuildTypes: true });
+        } else {
+          filterClothingCategoryByGender(form);
         }
         const sizeSelect = form.querySelector('#sizeSelect');
         if (sizeSelect) sizeSelect.value = '';
@@ -898,12 +984,80 @@ function getAllClothingConversions(size, fromRegion, gender, categoryUi) {
 }
 
 // ============================================
-// Validation (Phase 13.5 - strict numeric shoe, no auto-correct)
+// Converter Data Contract (Phase 3)
+// ============================================
+// One authoritative definition of "valid" for the whole converter: the dataset
+// itself, via sizeDatabase (built in buildSizeDatabase() from shoeData/clothingData).
+//
+// Invariant: if a value is offered as a selectable option (populateSizeOptions /
+// getAvailableSizes / any generator-built <option>), isValid*() below MUST accept
+// it. If isValid*() rejects a value, it MUST NOT be offered as a selectable option.
+// No hardcoded ranges or regexes duplicate the dataset here — see
+// scripts/test-converter-contract.js for the automated invariant check.
+
+/** Shoe regions with actual conversion data for this gender (uppercase codes). */
+function getAvailableShoeRegions(gender) {
+  const g = sizeDatabase.shoes?.[gender];
+  if (!g) return [];
+  return Object.keys(g)
+    .filter((rk) => g[rk]?.sizes?.length > 0)
+    .map((rk) => rk.toUpperCase());
+}
+
+/** Dataset-backed sizes for gender+region: [{ value, cm }]. Empty if no dataset. */
+function getAvailableShoeSizes(gender, region) {
+  const r = String(normalizeShoeRegion(region || '') || region || '').trim().toLowerCase();
+  const g = sizeDatabase.shoes?.[gender];
+  if (!g || !g[r]) return [];
+  return g[r].sizes || [];
+}
+
+/** True only if `size` is an actual dataset value for gender+region. */
+function isValidShoeSize(gender, region, size) {
+  if (size === null || size === undefined || size === '') return false;
+  const sizes = getAvailableShoeSizes(gender, region);
+  if (!sizes.length) return false;
+  return sizes.some((s) => s.value == size); // eslint-disable-line eqeqeq -- dataset numbers vs typed/select strings
+}
+
+/** Garment (clothingType) regions with actual conversion data for gender+garment. */
+function getAvailableClothingRegions(gender, clothingType) {
+  const dataKey = resolveClothingDataKey(gender, clothingType);
+  if (!dataKey) return [];
+  const cat = sizeDatabase.clothing?.[gender]?.[dataKey];
+  if (!cat) return [];
+  return Object.keys(cat).filter((rk) => cat[rk]?.length > 0);
+}
+
+/** Dataset-backed clothing sizes for gender+garment+region: [{ value, label }]. */
+function getAvailableClothingSizes(gender, clothingType, region) {
+  const dataKey = resolveClothingDataKey(gender, clothingType);
+  if (!dataKey) return [];
+  const cat = sizeDatabase.clothing?.[gender]?.[dataKey];
+  if (!cat) return [];
+  const list = cat[String(region || '').toUpperCase()];
+  return Array.isArray(list) ? list : [];
+}
+
+/** True only if `size` is an actual dataset value for gender+clothingType+region. */
+function isValidClothingSize(gender, clothingType, region, size) {
+  if (size === null || size === undefined) return false;
+  const norm = String(size).trim().toUpperCase();
+  if (!norm) return false;
+  const sizes = getAvailableClothingSizes(gender, clothingType, region);
+  if (!sizes.length) return false;
+  return sizes.some((s) => String(s.value).trim().toUpperCase() === norm);
+}
+
+// ============================================
+// Validation (Phase 13.5 → Phase 3 dataset-backed)
 // ============================================
 
 /**
- * Strict numeric shoe size validation. Allows whole numbers and decimals only.
- * No letters, words, symbols, trim, or auto-clean.
+ * Strict numeric shoe size *shape* check. Allows whole numbers and decimals only.
+ * No letters, words, symbols, trim, or auto-clean. This is a format gate only —
+ * whether the number is an actual convertible size is decided by validateSize()
+ * (the dataset contract), not by a hardcoded numeric range.
  * @param {string} value - Raw input value (do not trim)
  * @returns {boolean}
  */
@@ -914,48 +1068,19 @@ function validateShoeSize(value) {
 }
 
 /**
- * Task C: Validate size is within allowed range for category, gender, region.
- * Used for shoes only. No fallback conversion for invalid ranges.
+ * Validate size is an actual dataset-backed value for category, gender, region.
+ * Delegates to the shared data contract (isValidShoeSize) — no independent
+ * range table. If the dataset has the size, this accepts it; if not, it doesn't,
+ * regardless of what an older hardcoded range table might have said.
  * @param {string} category - 'shoes'
  * @param {string} gender - 'men' | 'women' | 'kids'
- * @param {string} region - 'US' | 'UK' | 'EU' | 'JP' | 'CM'
+ * @param {string} region - 'US' | 'UK' | 'EU' | 'JP' | 'CN' | 'CM'
  * @param {number} size - Parsed numeric size
  * @returns {boolean}
  */
 function validateSize(category, gender, region, size) {
-  const regionKey = normalizeShoeRegion(region || '') || region;
-  const ranges = {
-    shoes: {
-      men: {
-        US: [3, 18],
-        UK: [2, 17],
-        EU: [35, 52],
-        JP: [21, 32],
-        CN: [39, 47],
-        CM: [21, 32]
-      },
-      women: {
-        US: [4, 16],
-        UK: [2, 14],
-        EU: [34, 46],
-        JP: [21, 30],
-        CN: [35, 43],
-        CM: [21, 30]
-      },
-      kids: {
-        US: [1, 13],
-        EU: [16, 35],
-        CN: [27, 38],
-        CM: [9, 22]
-      }
-    }
-  };
-
-  const regionRanges =
-    ranges[category] && ranges[category][gender] && ranges[category][gender][regionKey];
-  if (!regionRanges) return false;
-  const [min, max] = regionRanges;
-  return size >= min && size <= max;
+  if (category !== 'shoes') return false;
+  return isValidShoeSize(gender, region, size);
 }
 
 // ============================================
@@ -966,21 +1091,26 @@ const SHOE_SIZE_ERROR_MSG = 'Please enter a valid numeric shoe size (e.g., 9, 9.
 const SHOE_SIZE_RANGE_ERROR_MSG = 'Please enter a valid size for the selected region.';
 
 /**
- * Validate clothing size: XS, S, M, L, XL, XXL, XXXL or numeric only (e.g. 32, 40).
- * Disallows words like "medium", "small", "size 10", mixed text.
+ * Validate clothing size *shape*: XS–XXXXXL or numeric only (e.g. 32, 40, 110).
+ * Disallows words like "medium", "small", "size 10", mixed text. This is a format
+ * gate only, matching the full range of label shapes that actually appear across
+ * the dataset (JP/CN run up to XXXXXL) — it does NOT mean every shape is valid for
+ * every gender/garment/region. That contextual acceptance is decided by
+ * isValidClothingSize() (the dataset contract), not by this regex.
  * @param {string} value - Raw input (will be trimmed and uppercased for letter check)
  * @returns {boolean}
  */
 function validateClothingSize(value) {
   if (value === null || value === undefined) return false;
   const normalized = value.trim().toUpperCase();
-  const letterPattern = /^(XS|S|M|L|XL|XXL|XXXL)$/;
+  const letterPattern = /^(XS|S|M|L|XL|XXL|XXXL|XXXXL|XXXXXL)$/;
   const numberPattern = /^\d+$/;
   if (letterPattern.test(normalized) || numberPattern.test(normalized)) return true;
   return false;
 }
 
-const CLOTHING_SIZE_ERROR_MSG = 'Use standard sizes only (XS–XXXL or numeric values like 32, 40).';
+const CLOTHING_SIZE_ERROR_MSG = 'Use standard sizes only (XS–XXXXXL or numeric values like 32, 40).';
+const CLOTHING_SIZE_UNAVAILABLE_MSG = 'Please enter a valid size for the selected region.';
 
 const CONVERTER_EMPTY_MSG = 'Select your size to see conversions';
 
@@ -1182,6 +1312,24 @@ function handleConversion(form) {
       const clothingErrorEl = formSection?.querySelector('#clothing-size-error') || form.querySelector('#clothing-size-error');
       if (clothingErrorEl) {
         clothingErrorEl.textContent = CLOTHING_SIZE_ERROR_MSG;
+        clothingErrorEl.style.display = 'block';
+      }
+      showConverterEmptyState(form);
+      return;
+    }
+    // Dataset contract: the shape is valid (XS-XXXXXL/numeric), but is this specific
+    // gender + garment + region + size combination actually backed by data?
+    const clothingRegionForCheck = fromRegionNorm || fromRegionRaw;
+    const clothingSizesForCombo = getAvailableClothingSizes(gender, clothingCategory || 'tops', clothingRegionForCheck);
+    if (clothingSizesForCombo.length === 0) {
+      showConverterEmptyState(form, NO_CONVERSION_AVAILABLE_MSG);
+      return;
+    }
+    if (!isValidClothingSize(gender, clothingCategory || 'tops', clothingRegionForCheck, sizeRaw)) {
+      const formSection = form.closest('.converter-card');
+      const clothingErrorEl = formSection?.querySelector('#clothing-size-error') || form.querySelector('#clothing-size-error');
+      if (clothingErrorEl) {
+        clothingErrorEl.textContent = CLOTHING_SIZE_UNAVAILABLE_MSG;
         clothingErrorEl.style.display = 'block';
       }
       showConverterEmptyState(form);
@@ -1415,6 +1563,34 @@ if (typeof module !== 'undefined' && module.exports) {
     getAllShoeConversions,
     getAllClothingConversions,
     adjustForBrand,
-    adjustClothingSizeForBrand
+    adjustClothingSizeForBrand,
+    // Phase 3 — converter data contract, exposed for scripts/test-converter-contract.js.
+    // Browsers never see this (guarded by the same `module` check as the exports above).
+    getAvailableShoeRegions,
+    getAvailableShoeSizes,
+    isValidShoeSize,
+    getAvailableClothingRegions,
+    getAvailableClothingSizes,
+    isValidClothingSize,
+    validateSize,
+    validateClothingSize,
+    validateShoeSize,
+    resolveClothingDataKey,
+    normalizeShoeRegion,
+    buildSizeDatabase,
+    filterClothingCategoryByGender,
+    applyDeepLinkParams,
+    isMainComboForm,
+    loadData,
+    _getRuntimeStateForTests() {
+      return { dataLoaded, shoeData, clothingData };
+    },
+    /** Load the embedded dataset (no fetch) and rebuild sizeDatabase — for tests only. */
+    _initEmbeddedDataForTests() {
+      shoeData = embeddedShoeData;
+      clothingData = embeddedClothingData;
+      buildSizeDatabase();
+      return sizeDatabase;
+    }
   };
 }

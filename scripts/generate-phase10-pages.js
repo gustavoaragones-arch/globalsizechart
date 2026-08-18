@@ -172,11 +172,56 @@ function expandMeasurementRoutes(shoeData, clothingData, existingSlugs) {
 }
 
 /**
- * Mass-expand clothing_size_pair routes from clothing_sizes.
+ * Dataset value for `fromRegion` on this clothing_sizes.json row. US/EU/UK are
+ * the only regions expandClothingRoutes() generates direction pairs for.
+ * Returns null (never a substituted value from a different region) when the
+ * row has no data for that region — callers must skip route generation in
+ * that case rather than fabricate one from another column.
  */
-function expandClothingRoutes(clothingData, existingSlugs) {
+function getSourceSize(row, fromRegion) {
+  if (fromRegion === 'US') return row.us != null ? row.us : null;
+  if (fromRegion === 'EU') return row.eu != null ? row.eu : null;
+  if (fromRegion === 'UK') return row.uk != null ? row.uk : null;
+  return null;
+}
+
+/** Five-field semantic identity key — see Phase 5E/5F reports. Two routes
+ * with the same key describe the identical conversion regardless of slug. */
+function clothingRouteIdentity(r) {
+  return `${r.gender}|${r.category}|${r.from_region}|${String(r.size)}|${r.to_region}`;
+}
+
+/**
+ * Mass-expand clothing_size_pair routes from clothing_sizes.
+ *
+ * Phase 5C fix: the route's functional `size` (validation, CTA params, title,
+ * description, on-page conversion preview) comes from the column matching
+ * that route's own `from_region` (getSourceSize), not unconditionally from
+ * `row.us` — see reports/phase-5b-generated-page-integrity-audit.md.
+ *
+ * Phase 5F fix: the URL slug now uses that same corrected `sourceSize`
+ * value too (previously it deliberately kept using `row.us` for every
+ * direction, which is exactly what made the filename disagree with the
+ * page's own title/content for EU->US and UK->US routes — see
+ * reports/phase-5e-url-migration-architecture-audit.md). For US-sourced
+ * pairs sourceSize === row.us, so those 82 filenames are unaffected; only
+ * the 38 EU/UK-sourced routes whose slug previously used the wrong column
+ * get a new filename now.
+ *
+ * Phase 5F also adds semantic-identity deduplication: `baseRoutes` (the
+ * hand-authored routes in data/clothing_routes.json) is checked via the
+ * five-field identity key (gender|category|from_region|size|to_region) in
+ * addition to the existing slug-string check, so a mass-expanded route is
+ * never generated when a base route already describes the identical
+ * conversion under a different slug (the root cause of the 3 known
+ * duplicate-semantic-intent pairs — see
+ * reports/phase-5e-url-migration-architecture-audit.md §7-8). This is a
+ * second, independent guard — it does not replace the slug-string check.
+ */
+function expandClothingRoutes(clothingData, existingSlugs, baseRoutes = []) {
   const out = [];
   const regionPairs = [['US', 'EU'], ['US', 'UK'], ['EU', 'US'], ['UK', 'US']];
+  const baseIdentitySet = new Set(baseRoutes.map(clothingRouteIdentity));
 
   for (const gender of ['men', 'women']) {
     const tops = clothingData[gender] && clothingData[gender].tops;
@@ -184,19 +229,97 @@ function expandClothingRoutes(clothingData, existingSlugs) {
     if (tops) {
       for (const row of tops) {
         for (const [fromR, toR] of regionPairs) {
-          const slugSimple = `clothing-${gender}-tops-${String(row.us).replace(/\s/g, '-')}-${fromR}-to-${toR}`;
+          const sourceSize = getSourceSize(row, fromR);
+          if (sourceSize == null) continue; // no data for this row's from-region — do not generate a route from a substituted value
+          const slugSimple = `clothing-${gender}-tops-${String(sourceSize).replace(/\s/g, '-')}-${fromR}-to-${toR}`;
           if (existingSlugs.has(slugSimple)) continue;
-          existingSlugs.add(slugSimple);
-          out.push({
+          const candidate = {
             type: 'clothing_size_pair',
             slug: slugSimple,
             category: 'tops',
             gender,
             from_region: fromR,
             to_region: toR,
-            size: row.us,
+            size: sourceSize,
             measurement_reference: 'chest_cm',
-            description: `Convert ${gender}'s ${fromR} ${row.us} to ${toR} for tops.`
+            description: `Convert ${gender}'s ${fromR} ${sourceSize} to ${toR} for tops.`
+          };
+          if (baseIdentitySet.has(clothingRouteIdentity(candidate))) continue; // a base route already covers this exact conversion
+          existingSlugs.add(slugSimple);
+          out.push(candidate);
+        }
+      }
+    }
+    if (pants) {
+      for (const row of pants) {
+        for (const [fromR, toR] of regionPairs) {
+          const sourceSize = getSourceSize(row, fromR);
+          if (sourceSize == null) continue; // no data for this row's from-region — do not generate a route from a substituted value
+          const slugSimple = `clothing-${gender}-pants-${String(sourceSize).replace(/\s/g, '-')}-${fromR}-to-${toR}`;
+          if (existingSlugs.has(slugSimple)) continue;
+          const candidate = {
+            type: 'clothing_size_pair',
+            slug: slugSimple,
+            category: 'pants',
+            gender,
+            from_region: fromR,
+            to_region: toR,
+            size: sourceSize,
+            measurement_reference: 'waist_cm',
+            description: `Convert ${gender}'s ${fromR} pants ${sourceSize} to ${toR}.`
+          };
+          if (baseIdentitySet.has(clothingRouteIdentity(candidate))) continue; // a base route already covers this exact conversion
+          existingSlugs.add(slugSimple);
+          out.push(candidate);
+        }
+      }
+    }
+  }
+  return out;
+}
+
+/**
+ * The inverse of expandClothingRoutes()'s semantic-dedup skip: reconstructs
+ * exactly the candidate routes that WOULD have been mass-expanded but were
+ * suppressed because a base route already covers the identical
+ * gender|category|from_region|size|to_region conversion (the 3 known
+ * duplicate-semantic-intent pairs — see
+ * reports/phase-5e-url-migration-architecture-audit.md §7-8).
+ *
+ * These candidates already have a published, indexed, cross-linked HTML
+ * file (they were generated under the pre-Phase-5F code, before semantic
+ * dedup existed). Phase 5F's migration keeps that file live rather than
+ * deleting it — see reports/phase-5e-url-migration-architecture-audit.md
+ * §8 (canonical, not deletion) — so the page-generation pass still needs a
+ * route object for each of them, tagged with `canonical_target` pointing at
+ * the base route's slug, instead of self-canonicalizing.
+ *
+ * Fully generic: derives the suppressed set from the current dataset and
+ * base routes, not from a hardcoded slug list — if clothing_sizes.json or
+ * clothing_routes.json changes, this recomputes correctly.
+ */
+function findCanonicalizedDuplicateRoutes(clothingData, baseRoutes) {
+  const out = [];
+  const regionPairs = [['US', 'EU'], ['US', 'UK'], ['EU', 'US'], ['UK', 'US']];
+  const baseByIdentity = new Map(baseRoutes.map((r) => [clothingRouteIdentity(r), r]));
+
+  for (const gender of ['men', 'women']) {
+    const tops = clothingData[gender] && clothingData[gender].tops;
+    const pants = clothingData[gender] && clothingData[gender].pants;
+    if (tops) {
+      for (const row of tops) {
+        for (const [fromR, toR] of regionPairs) {
+          const sourceSize = getSourceSize(row, fromR);
+          if (sourceSize == null) continue;
+          const candidate = { type: 'clothing_size_pair', category: 'tops', gender, from_region: fromR, to_region: toR, size: sourceSize };
+          const baseMatch = baseByIdentity.get(clothingRouteIdentity(candidate));
+          if (!baseMatch) continue;
+          out.push({
+            ...candidate,
+            slug: `clothing-${gender}-tops-${String(sourceSize).replace(/\s/g, '-')}-${fromR}-to-${toR}`,
+            measurement_reference: 'chest_cm',
+            description: `Convert ${gender}'s ${fromR} ${sourceSize} to ${toR} for tops.`,
+            canonical_target: baseMatch.slug
           });
         }
       }
@@ -204,19 +327,17 @@ function expandClothingRoutes(clothingData, existingSlugs) {
     if (pants) {
       for (const row of pants) {
         for (const [fromR, toR] of regionPairs) {
-          const slugSimple = `clothing-${gender}-pants-${String(row.us).replace(/\s/g, '-')}-${fromR}-to-${toR}`;
-          if (existingSlugs.has(slugSimple)) continue;
-          existingSlugs.add(slugSimple);
+          const sourceSize = getSourceSize(row, fromR);
+          if (sourceSize == null) continue;
+          const candidate = { type: 'clothing_size_pair', category: 'pants', gender, from_region: fromR, to_region: toR, size: sourceSize };
+          const baseMatch = baseByIdentity.get(clothingRouteIdentity(candidate));
+          if (!baseMatch) continue;
           out.push({
-            type: 'clothing_size_pair',
-            slug: slugSimple,
-            category: 'pants',
-            gender,
-            from_region: fromR,
-            to_region: toR,
-            size: row.us,
+            ...candidate,
+            slug: `clothing-${gender}-pants-${String(sourceSize).replace(/\s/g, '-')}-${fromR}-to-${toR}`,
             measurement_reference: 'waist_cm',
-            description: `Convert ${gender}'s ${fromR} pants ${row.us} to ${toR}.`
+            description: `Convert ${gender}'s ${fromR} pants ${sourceSize} to ${toR}.`,
+            canonical_target: baseMatch.slug
           });
         }
       }
@@ -274,7 +395,7 @@ function expandMassRoutes(shoeData, clothingData, options = {}) {
   const clothingPath = path.join(DATA_DIR, 'clothing_routes.json');
   const clothingRoutes = fs.existsSync(clothingPath) ? loadJson(clothingPath) : [];
   const existingClothingSlugs = new Set((clothingRoutes || []).map(r => r.slug));
-  const expandedClothing = expandClothingRoutes(clothingData, existingClothingSlugs);
+  const expandedClothing = expandClothingRoutes(clothingData, existingClothingSlugs, clothingRoutes);
   const mergedClothing = mergeRoutes(clothingRoutes, expandedClothing);
 
   const brandPath = path.join(DATA_DIR, 'brand_routes.json');
@@ -364,4 +485,10 @@ function main() {
   return result;
 }
 
-main();
+if (require.main === module) {
+  main();
+} else {
+  // Exposed for scripts/test-clothing-route-generator.js (Phase 5C regression
+  // test) — requiring this module must never trigger a full production run.
+  module.exports = { expandClothingRoutes, getSourceSize, clothingRouteIdentity, findCanonicalizedDuplicateRoutes };
+}

@@ -1,0 +1,138 @@
+{
+  "audit_date": "2026-08-16",
+  "total_html_files": 1172,
+  "families": [
+    {
+      "name": "programmatic-shoe-conversions",
+      "directory": "programmatic-pages/",
+      "approx_count": 765,
+      "representative_url": "/programmatic-pages/china-to-us-shoe-size.html",
+      "generator": "scripts/generate-programmatic-pages.js",
+      "template": "programmatic/templates/conversion-template.html",
+      "purpose": "Region/size-pair shoe conversion landing pages with embedded converter",
+      "primary_intent": "Convert specific shoe size between regions",
+      "shared_components": ["hero-tool", "converter-form", "Quick Converters", "why-vary-cards", "FAQ JSON-LD", "master footer"],
+      "hero_tool": true,
+      "known_risks": ["Broken Quick Converter hrefs", "KR/INCH in form without dataset", "Schema overload", "Repetitive bottom blocks"]
+    },
+    {
+      "name": "clothing-conversions",
+      "directory": "clothing/",
+      "approx_count": 126,
+      "representative_url": "/clothing/clothing-men-tops-M-US-to-EU.html",
+      "generator": "scripts/generate-programmatic-pages.js",
+      "template": "programmatic/templates/category-template.html",
+      "purpose": "Garment-specific clothing size conversion pages",
+      "primary_intent": "Convert clothing size for gender/category between regions",
+      "shared_components": ["converter", "FAQ", "schema", "footer"],
+      "hero_tool": false,
+      "known_risks": ["No hero-tool layout", "Duplicate FAQ on some hub-linked pages"]
+    },
+    {
+      "name": "measurement-conversions",
+      "directory": "measurement/",
+      "approx_count": 120,
+      "representative_url": "/measurement/24-cm-to-us-shoe-size.html",
+      "generator": "scripts/generate-programmatic-pages.js",
+      "purpose": "CM/waist/chest to size conversion pages",
+      "primary_intent": "Convert body measurement to apparel/shoe size",
+      "shared_components": ["schema", "footer", "AEO blocks"],
+      "hero_tool": false,
+      "known_risks": ["measurement/index.html thin (42 words)", "35 kids pages noindex"]
+    },
+    {
+      "name": "regional-hubs",
+      "directory": "us/, uk/, eu/, ca/",
+      "approx_count": 12,
+      "representative_url": "/us/index.html",
+      "generator": "Manual + migrate scripts",
+      "template": "N/A (hand-maintained hubs)",
+      "purpose": "Regional entry points with main combo converter",
+      "primary_intent": "Start conversion from a regional perspective",
+      "shared_components": ["hero-tool", "mainConverter form", "FAQ"],
+      "hero_tool": true,
+      "known_risks": ["Regional hub lead copy minimal on some hubs"]
+    },
+    {
+      "name": "core-converters",
+      "directory": "root",
+      "approx_count": 4,
+      "representative_url": "/index.html",
+      "files": ["index.html", "shoe-size-converter.html", "clothing-size-converter.html", "shoe-size-conversion-chart/index.html"],
+      "generator": "Manual",
+      "purpose": "Primary conversion tools",
+      "primary_intent": "Interactive size conversion",
+      "shared_components": ["hero-tool (index + clothing + chart hub)", "app.js"],
+      "hero_tool": "partial",
+      "known_risks": ["Homepage requires gender selection before sizes populate — correct but needs UX testing"]
+    },
+    {
+      "name": "shoe-conversion-hubs",
+      "directory": "shoe-size-conversions/",
+      "approx_count": 7,
+      "representative_url": "/shoe-size-conversions/us-to-eu/index.html",
+      "generator": "Manual / refactored",
+      "purpose": "Directional shoe conversion hub pages",
+      "primary_intent": "US→EU etc. chart + converter",
+      "shared_components": ["hero-tool on some", "duplicate FAQ pattern"],
+      "known_risks": ["Common questions + FAQ duplication"]
+    },
+    {
+      "name": "brand-guides",
+      "directory": "brands/",
+      "approx_count": 20,
+      "representative_url": "/brands/nike-shoe-size-chart.html",
+      "generator": "Manual + AEO injectors",
+      "purpose": "Brand-specific sizing reference",
+      "primary_intent": "Understand brand fit vs standard charts",
+      "shared_components": ["Quick answer", "ai-faq-block", "why-sizes-vary short"],
+      "hero_tool": false,
+      "known_risks": ["Generic Quick answer copy", "Duplicate FAQs"]
+    },
+    {
+      "name": "editorial-guides",
+      "directory": "root + semantic/ + guides/",
+      "approx_count": 50,
+      "representative_url": "/how-to-measure-feet-cm.html",
+      "generator": "Manual",
+      "purpose": "Educational sizing content",
+      "primary_intent": "Learn measurement and fit",
+      "shared_components": ["Quick answer", "AEO layer"],
+      "hero_tool": false,
+      "known_risks": ["109 pages with Quick answer label without explicit question"]
+    },
+    {
+      "name": "legal-trust",
+      "directory": "legal/",
+      "approx_count": 9,
+      "representative_url": "/legal/privacy.html",
+      "generator": "Manual",
+      "purpose": "Privacy, terms, disclaimer, contact",
+      "primary_intent": "Legal compliance and trust",
+      "shared_components": ["footer", "misplaced FAQ schema on privacy"],
+      "known_risks": ["Irrelevant FAQ schema on legal pages"]
+    },
+    {
+      "name": "ai-index",
+      "directory": "ai/",
+      "approx_count": "unknown (not fully enumerated)",
+      "representative_url": "/ai/",
+      "generator": "scripts/generate-ai-pages.js",
+      "purpose": "AI citation / answer index",
+      "primary_intent": "Aggregated conversion answers",
+      "shared_components": ["footer"],
+      "known_risks": ["EXTERNAL VERIFICATION REQUIRED for indexation strategy"]
+    },
+    {
+      "name": "printable-tools",
+      "directory": "printable/, tools/",
+      "approx_count": 9,
+      "representative_url": "/printable/cm-ruler.html",
+      "generator": "Mixed",
+      "purpose": "Printable charts and assistants",
+      "primary_intent": "Offline reference / fit help",
+      "shared_components": ["Mattress chart in nav (off-topic)"],
+      "known_risks": ["Mattress/duvet pages weaken topical focus"]
+    }
+  ]
+}

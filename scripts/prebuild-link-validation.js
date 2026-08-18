@@ -42,6 +42,10 @@ function resolveHref(href, fromRelPath) {
   let raw = (href || '').trim();
   const hashIndex = raw.indexOf('#');
   if (hashIndex >= 0) raw = raw.slice(0, hashIndex);
+  // Deep-link query strings (e.g. clothing-size-converter.html?gender=men&...) don't
+  // change which file must exist on disk — strip before existence-checking.
+  const queryIndex = raw.indexOf('?');
+  if (queryIndex >= 0) raw = raw.slice(0, queryIndex);
   if (!raw) return null;
   if (raw.startsWith('http://') || raw.startsWith('https://') || raw.startsWith('mailto:') || raw.startsWith('tel:')) return null;
   if (raw.startsWith('#')) return null;

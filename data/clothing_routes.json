@@ -15,11 +15,11 @@
     "slug": "womens-size-8-us-to-eu-dress",
     "category": "dresses",
     "gender": "women",
-    "from_region": "US",
+    "from_region": "UK",
     "to_region": "EU",
     "size": "8",
     "measurement_reference": "uk_dress",
-    "description": "Convert women's US size 8 to EU dress size."
+    "description": "Convert women's UK size 8 to EU dress size."
   },
   {
     "type": "clothing_size_pair",
@@ -31,17 +31,6 @@
     "size": "6",
     "measurement_reference": "height_cm",
     "description": "Convert kids US size 6 to EU clothing size."
-  },
-  {
-    "type": "clothing_size_pair",
-    "slug": "eu-50-jacket-to-us-size",
-    "category": "jackets",
-    "gender": "men",
-    "from_region": "EU",
-    "to_region": "US",
-    "size": "50",
-    "measurement_reference": "chest_cm",
-    "description": "Convert EU size 50 jacket to US men's size."
   },
   {
     "type": "clothing_size_pair",
