@@ -1,7 +1,13 @@
 # Phase 5F — Clothing URL Migration & Duplicate Consolidation
 
-**Status: PASS.** All required gates green. HEAD unchanged
-(`0dc41c5ad56cbdd1e34bc41d1f2b55d3e17b09b5`). Not committed, not pushed.
+**Status: PASS.** All required gates green. Implemented on top of HEAD
+`0dc41c5ad56cbdd1e34bc41d1f2b55d3e17b09b5`; committed as `9417dba` ("Fix
+clothing conversion routes and migrate clothing URLs") and pushed to
+`origin/main` on 2026-08-18, after the report reconciliation below and the
+production redirect certification in
+[`phase-5f-d-production-redirect-certification.md`](phase-5f-d-production-redirect-certification.md)
+both passed. See that report for live-production verification of all 32
+redirects and the 7 collision exclusions.
 
 ---
 
