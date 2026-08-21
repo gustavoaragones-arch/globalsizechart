@@ -206,15 +206,36 @@ Actions taken by this reconciliation, in order:
 3. **Pushed** that commit to `origin/main`.
 4. **Committed** this reconciliation report itself and pushed it.
 
-Exact SHAs are recorded in §10 after execution (this section is written
-before the commands run; §10 carries the final, verified values).
+Exact SHAs, verified after execution:
+
+| Step | Commit | Parent | Contents |
+|---|---|---|---|
+| 1. Pushed (pre-existing local commit) | `9f2ba94fbcea73045f1a3e0774530b48b7487fbb` | `9417dba` | 2 files: Phase 5F-D + 5F-E reports |
+| 2. New commit | `22793ac11ee3c38f40037d3224e3be3408d2375e` | `9f2ba94` | 4 files: Phase 5F-G, 5F-H, 5F-I reports + Phase 5F report header fix |
+| 3. New commit | `262703d558ba0d3075cbc94297f3f52f53dacfe7` | `22793ac` | 1 file: this reconciliation report |
+
+```
+9417dba → 9f2ba94 → 22793ac → 262703d   (origin/main, HEAD — all pushed)
+```
 
 ---
 
 ## 10. Final Working Tree State
 
-(Populated after the commits below are made and verified — see the
-closing block at the end of this document for the exact, final numbers.)
+```
+git status --short:      (empty — clean)
+HEAD:                     262703d558ba0d3075cbc94297f3f52f53dacfe7
+origin/main:              262703d558ba0d3075cbc94297f3f52f53dacfe7
+HEAD == origin/main:      YES
+```
+
+The working tree contains no pre-existing unrelated user changes, no
+Cloudflare/cache operational files, and nothing accidentally carried from
+completed GlobalSizeChart phases — it is fully clean. All legitimate
+completed documentation has been committed and pushed. No completed
+implementation work was found uncommitted (§6), so no implementation commit
+was required to satisfy "HEAD == origin/main for all committed project
+work."
 
 ---
 
