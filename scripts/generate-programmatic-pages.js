@@ -197,7 +197,15 @@ function buildFitGuideSnippet(fromLabel, toLabel) {
         <p>When in doubt, check the brand's size chart or order two sizes and return one.</p>`;
 }
 
-function buildFaqContent(route, toSize, fromLabel, toLabel) {
+/**
+ * Phase 9B: single canonical FAQ data source per route, consumed by both
+ * the visible-HTML renderer and the JSON-LD renderer below — replaces two
+ * independently hand-maintained copies that had drifted apart (confirmed
+ * in the Phase 9A audit, including a factual error: the JSON-LD copy's
+ * region-comparison answer was hardcoded to an EU/US-specific claim
+ * regardless of the actual region pair on the page).
+ */
+function buildFaqPairs(route, toSize, fromLabel, toLabel) {
   const size = route.size;
   const toSizeStr = toSize != null ? String(toSize) : '—';
   const q1 = `What is ${fromLabel} ${size} in ${toLabel} shoes?`;
@@ -216,44 +224,32 @@ function buildFaqContent(route, toSize, fromLabel, toLabel) {
   const q4 = 'Should I size up or down?';
   const a4 = sanitizeForApprovalMode('It depends on the brand. European and Asian brands often run smaller. If between sizes or buying athletic shoes, consider sizing up. Check reviews and the brand\'s fit guide.');
 
-  return `
-        <div class="faq-item">
-          <h3>${q1}</h3>
-          <p>${a1}</p>
-        </div>
-        <div class="faq-item">
-          <h3>${q2}</h3>
-          <p>${a2}</p>
-        </div>
-        <div class="faq-item">
-          <h3>${q3}</h3>
-          <p>${a3}</p>
-        </div>
-        <div class="faq-item">
-          <h3>${q4}</h3>
-          <p>${a4}</p>
-        </div>`;
+  return [[q1, a1], [q2, a2], [q3, a3], [q4, a4]];
 }
 
-function buildFaqJsonLd(route, toSize, fromLabel, toLabel) {
-  const size = route.size;
-  const toSizeStr = toSize != null ? String(toSize) : '—';
-  const q1 = `What is ${fromLabel} ${size} in ${toLabel} shoes?`;
-  const a1 = toSize != null
-    ? `${fromLabel} size ${size} typically converts to ${toLabel} size ${toSizeStr}. Use the converter above for your exact gender.`
-    : `Use the converter above to find your ${toLabel} equivalent for ${fromLabel} size ${size}.`;
+function renderFaqPairsHtml(pairs) {
+  return pairs.map(([q, a]) => `
+        <div class="faq-item">
+          <h3>${q}</h3>
+          <p>${a}</p>
+        </div>`).join('');
+}
 
+function renderFaqPairsJsonLd(pairs) {
   const faq = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: [
-      { '@type': 'Question', name: q1, acceptedAnswer: { '@type': 'Answer', text: a1 } },
-      { '@type': 'Question', name: 'Is ' + fromLabel + ' sizing bigger than ' + toLabel + '?', acceptedAnswer: { '@type': 'Answer', text: 'Sizing scales differ by region. EU sizes are often 1–1.5 larger than US. Use the converter for exact equivalents.' } },
-      { '@type': 'Question', name: 'Are shoe sizes standardized?', acceptedAnswer: { '@type': 'Answer', text: 'No. Shoe sizes vary by country and brand. Always check the brand\'s size chart when possible.' } },
-      { '@type': 'Question', name: 'Should I size up or down?', acceptedAnswer: { '@type': 'Answer', text: 'It depends on the brand. Consider sizing up for athletic shoes or if the brand runs small.' } }
-    ]
+    mainEntity: pairs.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
   };
   return JSON.stringify(faq);
+}
+
+function buildFaqContent(route, toSize, fromLabel, toLabel) {
+  return renderFaqPairsHtml(buildFaqPairs(route, toSize, fromLabel, toLabel));
+}
+
+function buildFaqJsonLd(route, toSize, fromLabel, toLabel) {
+  return renderFaqPairsJsonLd(buildFaqPairs(route, toSize, fromLabel, toLabel));
 }
 
 function buildInternalLinks(route, allRoutes) {
@@ -862,72 +858,40 @@ const MEASUREMENT_GUIDE_SNIPPET = `
         </ol>
         <p>Foot length in CM is the most reliable reference across all regional sizing systems.</p>`;
 
+/** Phase 9B: canonical data for region-pair FAQ (see buildFaqPairs comment above). */
+function buildRegionFaqPairs(fromLabel, toLabel) {
+  return [
+    [`How do I convert ${fromLabel} shoe sizes to ${toLabel}?`, `Use the converter above. Select your gender, choose ${fromLabel} as the source region, enter your size, and view ${toLabel} and other regional equivalents.`],
+    [`Is ${fromLabel} sizing different from ${toLabel}?`, `Yes. Each region uses its own scale. ${fromLabel} and ${toLabel} conversion is approximate; always check the brand's size chart when possible.`],
+    ['Are shoe sizes standardized?', 'No. Shoe sizes vary by country and brand. Conversion charts give approximate equivalents.'],
+    ['Should I size up or down?', 'It depends on the brand. European and Asian brands often run smaller. Consider sizing up for athletic shoes or wide feet.'],
+  ];
+}
+
 function buildRegionFaqContent(fromLabel, toLabel) {
-  return `
-        <div class="faq-item">
-          <h3>How do I convert ${fromLabel} shoe sizes to ${toLabel}?</h3>
-          <p>Use the converter above. Select your gender, choose ${fromLabel} as the source region, enter your size, and view ${toLabel} and other regional equivalents.</p>
-        </div>
-        <div class="faq-item">
-          <h3>Is ${fromLabel} sizing different from ${toLabel}?</h3>
-          <p>Yes. Each region uses its own scale. ${fromLabel} and ${toLabel} conversion is approximate; always check the brand's size chart when possible.</p>
-        </div>
-        <div class="faq-item">
-          <h3>Are shoe sizes standardized?</h3>
-          <p>No. Shoe sizes vary by country and brand. Conversion charts give approximate equivalents.</p>
-        </div>
-        <div class="faq-item">
-          <h3>Should I size up or down?</h3>
-          <p>It depends on the brand. European and Asian brands often run smaller. Consider sizing up for athletic shoes or wide feet.</p>
-        </div>`;
+  return renderFaqPairsHtml(buildRegionFaqPairs(fromLabel, toLabel));
 }
 
 function buildRegionFaqJsonLd(fromLabel, toLabel) {
-  const faq = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: [
-      { '@type': 'Question', name: `How do I convert ${fromLabel} shoe sizes to ${toLabel}?`, acceptedAnswer: { '@type': 'Answer', text: `Use the converter above. Select your gender, choose ${fromLabel} as source, enter your size, and view ${toLabel} equivalents.` } },
-      { '@type': 'Question', name: `Is ${fromLabel} sizing different from ${toLabel}?`, acceptedAnswer: { '@type': 'Answer', text: 'Yes. Each region uses its own scale. Conversion is approximate; check the brand size chart when possible.' } },
-      { '@type': 'Question', name: 'Are shoe sizes standardized?', acceptedAnswer: { '@type': 'Answer', text: 'No. Shoe sizes vary by country and brand.' } },
-      { '@type': 'Question', name: 'Should I size up or down?', acceptedAnswer: { '@type': 'Answer', text: 'It depends on the brand. Consider sizing up for athletic shoes or if the brand runs small.' } }
-    ]
-  };
-  return JSON.stringify(faq);
+  return renderFaqPairsJsonLd(buildRegionFaqPairs(fromLabel, toLabel));
+}
+
+/** Phase 9B: canonical data for gender-category FAQ (see buildFaqPairs comment above). */
+function buildCategoryFaqPairs(genderLabel) {
+  return [
+    [`How do I convert ${genderLabel} shoe sizes?`, `Use the converter above. Select your region and enter your ${genderLabel} size to see equivalents in US, UK, EU, Japan, China, and CM.`],
+    ["Do men's and women's shoe sizes use the same scale?", `No. ${genderLabel} sizes use a different scale than other genders. Always choose the correct gender in the converter.`],
+    ['Are shoe sizes standardized?', "No. Shoe sizes vary by country and brand. Always check the brand's size chart when possible."],
+    ['Should I size up or down?', 'It depends on the brand. Consider sizing up for athletic shoes or if the brand runs small.'],
+  ];
 }
 
 function buildCategoryFaqContent(genderLabel) {
-  return `
-        <div class="faq-item">
-          <h3>How do I convert ${genderLabel} shoe sizes?</h3>
-          <p>Use the converter above. Select your region and enter your ${genderLabel} size to see equivalents in US, UK, EU, Japan, China, and CM.</p>
-        </div>
-        <div class="faq-item">
-          <h3>Do men's and women's shoe sizes use the same scale?</h3>
-          <p>No. ${genderLabel} sizes use a different scale than other genders. Always choose the correct gender in the converter.</p>
-        </div>
-        <div class="faq-item">
-          <h3>Are shoe sizes standardized?</h3>
-          <p>No. Shoe sizes vary by country and brand. Always check the brand's size chart when possible.</p>
-        </div>
-        <div class="faq-item">
-          <h3>Should I size up or down?</h3>
-          <p>It depends on the brand. Consider sizing up for athletic shoes or if the brand runs small.</p>
-        </div>`;
+  return renderFaqPairsHtml(buildCategoryFaqPairs(genderLabel));
 }
 
 function buildCategoryFaqJsonLd(genderLabel) {
-  const faq = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: [
-      { '@type': 'Question', name: `How do I convert ${genderLabel} shoe sizes?`, acceptedAnswer: { '@type': 'Answer', text: `Use the converter above. Select your region and enter your ${genderLabel} size to see US, UK, EU, JP, CN, and CM equivalents.` } },
-      { '@type': 'Question', name: "Do men's and women's shoe sizes use the same scale?", acceptedAnswer: { '@type': 'Answer', text: 'No. Always choose the correct gender in the converter.' } },
-      { '@type': 'Question', name: 'Are shoe sizes standardized?', acceptedAnswer: { '@type': 'Answer', text: 'No. Shoe sizes vary by country and brand.' } },
-      { '@type': 'Question', name: 'Should I size up or down?', acceptedAnswer: { '@type': 'Answer', text: 'It depends on the brand. Consider sizing up for athletic shoes or if the brand runs small.' } }
-    ]
-  };
-  return JSON.stringify(faq);
+  return renderFaqPairsJsonLd(buildCategoryFaqPairs(genderLabel));
 }
 
 // --- SERP CTR: Enhanced structured data (HowTo, Article, QAPage, SoftwareApplication). Does NOT replace existing FAQ. ---

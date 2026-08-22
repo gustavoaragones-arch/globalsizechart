@@ -112,32 +112,20 @@ function injectHeadSchemas(html, headline, pageUrl, dateModified) {
     const script = `  <script type="application/ld+json">${JSON.stringify(article)}</script>\n`;
     out = out.replace(/<\/head>/i, `${script}</head>`);
   }
-  if (!/"@type"\s*:\s*"FAQPage"/.test(out) && !/'@type'\s*:\s*'FAQPage'/.test(out)) {
-    const faq = {
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      mainEntity: [
-        {
-          '@type': 'Question',
-          name: 'What is EU 42 in US shoe size?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: "EU 42 typically converts to US men's size 9 and US women's size 10.5; brand and width affect fit.",
-          },
-        },
-        {
-          '@type': 'Question',
-          name: 'Are EU and US shoe sizes the same?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'No. EU and US use different scales; use foot length in cm or a trusted converter for equivalents.',
-          },
-        },
-      ],
-    };
-    const script = `  <script type="application/ld+json">${JSON.stringify(faq)}</script>\n`;
-    out = out.replace(/<\/head>/i, `${script}</head>`);
-  }
+  /*
+   * Phase 9B: this used to unconditionally inject a hardcoded, generic
+   * two-question FAQPage schema here — with no matching visible FAQ
+   * content anywhere in buildBodyLayer()'s output. That produced exactly
+   * the "schema-only FAQ" architecture defect documented in the Phase 9A
+   * audit (12 pages found with this precise fallback pair as orphaned
+   * schema). Per the canonical architecture established in Phase 9B
+   * (visible FAQ and FAQPage JSON-LD must always be derived from the same
+   * data), this injector no longer writes FAQ schema at all — it has no
+   * page-specific question data to draw from, and manufacturing generic
+   * filler here would just reintroduce the same defect. If a page needs
+   * an FAQ, it must come from a renderer that also writes the matching
+   * visible HTML.
+   */
   return out;
 }
 

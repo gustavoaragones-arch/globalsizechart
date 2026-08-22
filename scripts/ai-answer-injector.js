@@ -91,7 +91,17 @@ function injectAuthorMeta(html, authorName) {
   return html.replace(/(<meta\s+name=["']viewport["'][^>]*>)/i, `$1\n${meta}`);
 }
 
-function buildArticleGraph({ headline, url, dateModified, authorName, faqPairs, includeFaq }) {
+/*
+ * Phase 9B: this graph builder used to optionally append a hardcoded,
+ * generic two-question FAQPage node (via the `faqPairs`/`includeFaq`
+ * params below) with no corresponding visible FAQ content on the page.
+ * That is exactly the "schema-only FAQ" defect the Phase 9A audit found
+ * and Phase 9B eliminated. FAQPage generation is intentionally removed
+ * from this function — Article schema only. A page that has a genuine,
+ * page-specific FAQ gets its schema from the same renderer that writes
+ * its visible FAQ HTML, never from this generic fallback.
+ */
+function buildArticleGraph({ headline, url, dateModified, authorName }) {
   const graph = [
     {
       '@type': 'Article',
@@ -101,16 +111,6 @@ function buildArticleGraph({ headline, url, dateModified, authorName, faqPairs, 
       mainEntityOfPage: { '@type': 'WebPage', '@id': url },
     },
   ];
-  if (includeFaq && faqPairs && faqPairs.length) {
-    graph.push({
-      '@type': 'FAQPage',
-      mainEntity: faqPairs.map(([q, a]) => ({
-        '@type': 'Question',
-        name: q,
-        acceptedAnswer: { '@type': 'Answer', text: a },
-      })),
-    });
-  }
   return {
     '@context': 'https://schema.org',
     '@graph': graph,
@@ -155,18 +155,11 @@ function main() {
     /* Page model: no separate "Quick answer" block — lead stays in intro / meta only. */
     html = injectBeforeAeoOrMainEnd(html, buildDataSourcesBlock());
 
-    const faqPairs = [
-      ['Is this conversion the same for every brand?', 'No—brands use different lasts and fits.'],
-      ['How accurate are shoe size conversions?', 'Standard tables map foot length; fit still varies by width and design.'],
-    ];
-    const includeFaqGraph = !hasFaqPageLd(html);
     const articleLd = buildArticleGraph({
       headline: topic,
       url: canonical,
       dateModified: today,
       authorName,
-      faqPairs,
-      includeFaq: includeFaqGraph,
     });
 
     html = injectAuthorMeta(html, authorName);
