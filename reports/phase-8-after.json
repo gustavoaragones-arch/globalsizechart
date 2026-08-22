@@ -1,0 +1,174 @@
+{
+  "homepage": {
+    "label": "homepage",
+    "file": "/Users/gus/Documents/APPS/globalsizechart/index.html",
+    "h1": "Global Size Chart",
+    "intro": "A \"size 9\" can mean something completely different depending on where you're shopping — and it's not just shoes. Whether you're eyeing Italian boots, Japanese streetwear, or a UK-cut jacket, the numbers rarely line up. This tool converts shoe and clothing sizes between US, UK, EU, Japan, and China, right down to the centimeter.",
+    "headingHierarchy": [
+      "Quick Converters",
+      "How to Measure Shoe Size Accurately at Home",
+      "How to Measure Clothing Size Correctly",
+      "Fit & Garment Guide: Slim, Regular & Oversized Explained",
+      "Fit Types",
+      "Why sizes don't always line up",
+      "Frequently Asked Questions"
+    ],
+    "seeAlsoPresent": false,
+    "seeAlsoBeforeConverter": false,
+    "quickAnswerPresent": false,
+    "commonQuestionsPresent": false,
+    "faqH2Count": 1,
+    "visibleFaqQuestions": [
+      "What is EU shoe size 42 in US?",
+      "Why do sizes differ between countries?",
+      "How accurate is CM measurement?",
+      "Are clothing sizes universal?",
+      "Why does my size change by brand?"
+    ],
+    "visibleFaqAnswers": [
+      "An EU 42 typically converts to a US men's size 8.5–9, but sizing varies between brands. Use our shoe size converter for accurate comparisons.",
+      "Sizing systems were developed independently, using different measurement models and manufacturing standards.",
+      "Centimeter measurements are the most reliable method because they represent the actual physical length of your foot or body.",
+      "No. Clothing sizes vary significantly across regions and brands, even when labeled the same.",
+      "Brands use different sizing charts and fits. Factors include fabric stretch, target audience, and regional manufacturing norms."
+    ],
+    "schemaFaqQuestions": [
+      "What is EU shoe size 42 in US?",
+      "Why do sizes differ between countries?",
+      "How accurate is CM measurement?",
+      "Are clothing sizes universal?",
+      "Why does my size change by brand?"
+    ],
+    "schemaFaqAnswers": [
+      "An EU 42 typically converts to a US men's size 8.5–9, but sizing varies between brands. Use our shoe size converter for accurate comparisons.",
+      "Sizing systems were developed independently, using different measurement models and manufacturing standards.",
+      "Centimeter measurements are the most reliable method because they represent the actual physical length of your foot or body.",
+      "No. Clothing sizes vary significantly across regions and brands, even when labeled the same.",
+      "Brands use different sizing charts and fits. Factors include fabric stretch, target audience, and regional manufacturing norms."
+    ],
+    "faqExactMatch": true,
+    "quickConverterCards": [
+      {
+        "title": "Shoe Size Converter",
+        "href": "/shoe-size-converter.html"
+      },
+      {
+        "title": "Clothing Size Converter",
+        "href": "/clothing-size-converter.html"
+      },
+      {
+        "title": "CM to US Shoe Size",
+        "href": "/cm-to-us-shoe-size.html"
+      },
+      {
+        "title": "US to EU Size",
+        "href": "/us-to-eu-size.html"
+      },
+      {
+        "title": "UK to US Size",
+        "href": "/uk-to-us-size.html"
+      },
+      {
+        "title": "EU to US Size",
+        "href": "/eu-to-us-shoe-size/"
+      },
+      {
+        "title": "Mattress Size Chart",
+        "href": "/tools/home/mattress-size-chart.html"
+      },
+      {
+        "title": "Measurement Tools",
+        "href": "/measurement/"
+      }
+    ],
+    "navigationBlocks": [],
+    "explanationSectionHeadings": [
+      "Why sizes don't always line up"
+    ],
+    "fitGuidePresent": true,
+    "dataSourcesInMain": 0,
+    "trustStatementPresent": false,
+    "adPositions": [
+      "ad-container ad-top",
+      "ad-container ad-after-tool",
+      "ad-container ad-mid-content",
+      "ad-container ad-before-faq",
+      "ad-container ad-bottom"
+    ],
+    "converterPresent": true,
+    "converterId": "mainConverter",
+    "converterOffsetFromH1": 440,
+    "footerPresent": true,
+    "footerHash": "23760c4f90af5c600164fb753a79bb3c"
+  },
+  "shoehub": {
+    "label": "shoe-hub",
+    "file": "/Users/gus/Documents/APPS/globalsizechart/shoe-size-conversion-chart/index.html",
+    "h1": "International Shoe Size Conversion Chart",
+    "intro": "A \"size 9\" can mean a different shoe entirely depending on whether you're shopping in the US, UK, EU, or Asia. This chart converts between them instantly — pick your gender, region, and size below to see the exact match.",
+    "headingHierarchy": [
+      "Men's, Women's & Kids' Shoe Charts",
+      "Quick reference chart (men's scale)",
+      "Explore more size guides",
+      "Why sizes don't always line up",
+      "Frequently Asked Questions"
+    ],
+    "seeAlsoPresent": false,
+    "seeAlsoBeforeConverter": false,
+    "quickAnswerPresent": false,
+    "commonQuestionsPresent": false,
+    "faqH2Count": 1,
+    "visibleFaqQuestions": [
+      "What is EU 42 in US shoe size?",
+      "How do I convert US shoe size to CM?",
+      "Are UK and US shoe sizes the same?",
+      "Why do shoe sizes vary by country?",
+      "How do I measure my foot in cm?"
+    ],
+    "visibleFaqAnswers": [
+      "EU 42 typically converts to a US men's size 9 and a US women's size 10.5, depending on brand and width — use the converter above for your exact size.",
+      "Select US as the region, enter your size, and the CM equivalent appears automatically. You can also measure your foot in centimeters directly and enter that for the most accurate result.",
+      "No. UK sizes are typically about one size smaller than US for the same foot length (e.g. US 9 ≈ UK 8).",
+      "Each region built its own sizing system using a different scale — the EU uses a formula based on foot length in cm, while the US and UK use different scales entirely. Comparing foot length in centimeters is the most reliable way to check a size across regions.",
+      "Stand on paper with your heel against a wall, mark your longest toe, then measure the distance in centimeters. Repeat for both feet and use the larger measurement."
+    ],
+    "schemaFaqQuestions": [
+      "What is EU 42 in US shoe size?",
+      "How do I convert US shoe size to CM?",
+      "Are UK and US shoe sizes the same?",
+      "Why do shoe sizes vary by country?",
+      "How do I measure my foot in cm?"
+    ],
+    "schemaFaqAnswers": [
+      "EU 42 typically converts to a US men's size 9 and a US women's size 10.5, depending on brand and width — use the converter above for your exact size.",
+      "Select US as the region, enter your size, and the CM equivalent appears automatically. You can also measure your foot in centimeters directly and enter that for the most accurate result.",
+      "No. UK sizes are typically about one size smaller than US for the same foot length (e.g. US 9 ≈ UK 8).",
+      "Each region built its own sizing system using a different scale — the EU uses a formula based on foot length in cm, while the US and UK use different scales entirely. Comparing foot length in centimeters is the most reliable way to check a size across regions.",
+      "Stand on paper with your heel against a wall, mark your longest toe, then measure the distance in centimeters. Repeat for both feet and use the larger measurement."
+    ],
+    "faqExactMatch": true,
+    "quickConverterCards": [],
+    "navigationBlocks": [
+      {
+        "heading": "Men's, Women's & Kids' Shoe Charts",
+        "linkCount": 3
+      },
+      {
+        "heading": "Explore more size guides",
+        "linkCount": 3
+      }
+    ],
+    "explanationSectionHeadings": [
+      "Why sizes don't always line up"
+    ],
+    "fitGuidePresent": false,
+    "dataSourcesInMain": 0,
+    "trustStatementPresent": true,
+    "adPositions": [],
+    "converterPresent": true,
+    "converterId": "mainConverter",
+    "converterOffsetFromH1": 354,
+    "footerPresent": true,
+    "footerHash": "23760c4f90af5c600164fb753a79bb3c"
+  }
+}
