@@ -1,0 +1,1389 @@
+{
+  "adidas-eu-to-us-shoe-sizing.html": {
+    "filename": "adidas-eu-to-us-shoe-sizing.html",
+    "h1": "Adidas Shoe Size Guide & Conversion",
+    "introText": "Shopping Adidas from another country? This page converts Adidas shoe sizes to your region and explains how Adidas's sizing tends to run. Often runs true to EU size; US customers may find half-size differences from standard US charts.",
+    "metaDescriptionEqualsIntro": false,
+    "quickAnswerPresent": false,
+    "commonQuestionsPresent": false,
+    "faqBlockCount": 1,
+    "visibleFaqQuestions": [
+      "How do I use this converter?",
+      "Does Adidas run true to size?",
+      "How does Adidas sizing compare to standard charts?",
+      "Does Adidas sizing vary by product line?",
+      "Should I check Adidas's official size chart too?"
+    ],
+    "visibleFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Often runs true to EU size; US customers may find half-size differences from standard US charts.",
+      "Adidas sizing is typically EU-based; US and UK sizes are derived from EU. Consistency across sport and lifestyle lines varies.",
+      "EU to US conversion differs by product line. Originals vs. performance fit can vary.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking Adidas's own size chart for the specific product reduces the chance of a return."
+    ],
+    "schemaFaqQuestions": [
+      "How do I use this converter?",
+      "Does Adidas run true to size?",
+      "How does Adidas sizing compare to standard charts?",
+      "Does Adidas sizing vary by product line?",
+      "Should I check Adidas's official size chart too?"
+    ],
+    "schemaFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Often runs true to EU size; US customers may find half-size differences from standard US charts.",
+      "Adidas sizing is typically EU-based; US and UK sizes are derived from EU. Consistency across sport and lifestyle lines varies.",
+      "EU to US conversion differs by product line. Originals vs. performance fit can vary.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking Adidas's own size chart for the specific product reduces the chance of a return."
+    ],
+    "faqExactMatch": true,
+    "fitSizingCards": [
+      "Fit Problems Explained",
+      "Why Sizes Vary",
+      "Brand Differences",
+      "Regional Differences"
+    ],
+    "navigationBlockTypes": [
+      "nav-explore-more"
+    ],
+    "navigationDestinationCount": 14,
+    "navigationDestinations": [
+      "../index.html",
+      "../shoe-size-converter.html",
+      "../semantic/how-to-measure-feet-cm.html",
+      "../semantic/common-shoe-sizing-mistakes.html",
+      "../semantic/how-shoe-sizing-works.html",
+      "../brand-size-guides.html",
+      "nike-shoe-size-chart.html",
+      "../semantic/why-eu-and-us-sizes-differ.html",
+      "../semantic/how-japanese-shoe-sizes-work.html",
+      "../semantic/how-uk-shoe-sizes-differ.html",
+      "../clothing-size-converter.html",
+      "../tools/measurement-assistant.html",
+      "puma-shoe-size-chart.html",
+      "new-balance-shoe-size-chart.html"
+    ],
+    "monetizationModulePresent": 0,
+    "commercialModulePresent": 1,
+    "whySizesMayVaryPresent": 0,
+    "adPositions": [
+      "ad-slot ad-top",
+      "ad-slot ad-inline",
+      "ad-slot ad-inline",
+      "ad-slot ad-bottom",
+      "ad-slot ad-sticky-mobile"
+    ],
+    "converterPresent": true,
+    "converterId": "shoeConverter",
+    "converterOffsetFromH1CharDistance": 448
+  },
+  "adidas-size-guide.html": {
+    "filename": "adidas-size-guide.html",
+    "h1": "Adidas Size Guide",
+    "introText": "Shopping Adidas from another country? This page converts Adidas shoe sizes to your region and explains how Adidas's sizing tends to run. Adidas tends to run true to size with a medium width; some running and soccer styles run long. Check product-specific fit notes.",
+    "metaDescriptionEqualsIntro": false,
+    "quickAnswerPresent": false,
+    "commonQuestionsPresent": false,
+    "faqBlockCount": 1,
+    "visibleFaqQuestions": [
+      "How do I use this converter?",
+      "Does Adidas run true to size?",
+      "How does Adidas sizing compare to standard charts?",
+      "Does Adidas sizing vary by product line?",
+      "Should I check Adidas's official size chart too?"
+    ],
+    "visibleFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Adidas tends to run true to size with a medium width; some running and soccer styles run long. Check product-specific fit notes.",
+      "Adidas uses its own fit models and lasts; sizes often differ from generic conversion charts. Shoes may run small or large depending on the line.",
+      "EU and US sizing don't align 1:1. Adidas products sold in Europe may be labeled in EU sizes; when buying from the US site you'll see US sizes. Use our converters below to translate between regions.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking Adidas's own size chart for the specific product reduces the chance of a return."
+    ],
+    "schemaFaqQuestions": [
+      "How do I use this converter?",
+      "Does Adidas run true to size?",
+      "How does Adidas sizing compare to standard charts?",
+      "Does Adidas sizing vary by product line?",
+      "Should I check Adidas's official size chart too?"
+    ],
+    "schemaFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Adidas tends to run true to size with a medium width; some running and soccer styles run long. Check product-specific fit notes.",
+      "Adidas uses its own fit models and lasts; sizes often differ from generic conversion charts. Shoes may run small or large depending on the line.",
+      "EU and US sizing don't align 1:1. Adidas products sold in Europe may be labeled in EU sizes; when buying from the US site you'll see US sizes. Use our converters below to translate between regions.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking Adidas's own size chart for the specific product reduces the chance of a return."
+    ],
+    "faqExactMatch": true,
+    "fitSizingCards": [],
+    "navigationBlockTypes": [
+      "nav-explore-more"
+    ],
+    "navigationDestinationCount": 9,
+    "navigationDestinations": [
+      "../index.html",
+      "../brand-size-guides.html",
+      "../shoe-size-converter.html",
+      "../clothing-size-converter.html",
+      "nike-size-guide.html",
+      "new-balance-size-guide.html",
+      "puma-size-guide.html",
+      "reebok-size-guide.html",
+      "zara-size-guide.html"
+    ],
+    "monetizationModulePresent": 0,
+    "commercialModulePresent": 0,
+    "whySizesMayVaryPresent": 0,
+    "adPositions": [],
+    "converterPresent": true,
+    "converterId": "shoeConverter",
+    "converterOffsetFromH1CharDistance": 458
+  },
+  "asics-size-guide.html": {
+    "filename": "asics-size-guide.html",
+    "h1": "ASICS Size Guide",
+    "introText": "Shopping ASICS from another country? This page converts ASICS shoe sizes to your region and explains how ASICS's sizing tends to run. ASICS running shoes come in multiple widths. Standard (D) runs true to size; consider wide (2E) if you have wider feet.",
+    "metaDescriptionEqualsIntro": false,
+    "quickAnswerPresent": false,
+    "commonQuestionsPresent": false,
+    "faqBlockCount": 1,
+    "visibleFaqQuestions": [
+      "How do I use this converter?",
+      "Does ASICS run true to size?",
+      "How does ASICS sizing compare to standard charts?",
+      "Does ASICS sizing vary by product line?",
+      "Should I check ASICS's official size chart too?"
+    ],
+    "visibleFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "ASICS running shoes come in multiple widths. Standard (D) runs true to size; consider wide (2E) if you have wider feet.",
+      "ASICS uses its own fit models and lasts; sizes often differ from generic conversion charts. Shoes may run small or large depending on the line.",
+      "EU and US sizing don't align 1:1. ASICS products sold in Europe may be labeled in EU sizes; when buying from the US site you'll see US sizes. Use our converters below to translate between regions.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking ASICS's own size chart for the specific product reduces the chance of a return."
+    ],
+    "schemaFaqQuestions": [
+      "How do I use this converter?",
+      "Does ASICS run true to size?",
+      "How does ASICS sizing compare to standard charts?",
+      "Does ASICS sizing vary by product line?",
+      "Should I check ASICS's official size chart too?"
+    ],
+    "schemaFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "ASICS running shoes come in multiple widths. Standard (D) runs true to size; consider wide (2E) if you have wider feet.",
+      "ASICS uses its own fit models and lasts; sizes often differ from generic conversion charts. Shoes may run small or large depending on the line.",
+      "EU and US sizing don't align 1:1. ASICS products sold in Europe may be labeled in EU sizes; when buying from the US site you'll see US sizes. Use our converters below to translate between regions.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking ASICS's own size chart for the specific product reduces the chance of a return."
+    ],
+    "faqExactMatch": true,
+    "fitSizingCards": [],
+    "navigationBlockTypes": [
+      "nav-explore-more"
+    ],
+    "navigationDestinationCount": 9,
+    "navigationDestinations": [
+      "../index.html",
+      "../brand-size-guides.html",
+      "../shoe-size-converter.html",
+      "../clothing-size-converter.html",
+      "nike-size-guide.html",
+      "adidas-size-guide.html",
+      "new-balance-size-guide.html",
+      "puma-size-guide.html",
+      "zara-size-guide.html"
+    ],
+    "monetizationModulePresent": 0,
+    "commercialModulePresent": 0,
+    "whySizesMayVaryPresent": 0,
+    "adPositions": [],
+    "converterPresent": true,
+    "converterId": "shoeConverter",
+    "converterOffsetFromH1CharDistance": 444
+  },
+  "asos-size-guide.html": {
+    "filename": "asos-size-guide.html",
+    "h1": "ASOS Clothing Size Guide & Conversion",
+    "introText": "Shopping ASOS from another country? This page converts ASOS clothing sizes to your region and explains how ASOS's sizing tends to run. UK sizing; often runs true to size. Check each product's size guide.",
+    "metaDescriptionEqualsIntro": false,
+    "quickAnswerPresent": false,
+    "commonQuestionsPresent": false,
+    "faqBlockCount": 1,
+    "visibleFaqQuestions": [
+      "How do I use this converter?",
+      "Does ASOS run true to size?",
+      "How does ASOS sizing compare to standard charts?",
+      "Does ASOS sizing vary by product line?",
+      "Should I check ASOS's official size chart too?"
+    ],
+    "visibleFaqAnswers": [
+      "Select your gender, category, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "UK sizing; often runs true to size. Check each product's size guide.",
+      "ASOS is UK-based; sizes are in UK with US, EU, and AU equivalents. Multiple brands and own-label.",
+      "Fit varies by brand and product. Own-brand vs. third-party sizing differs.",
+      "Yes. This converter gives a standardized international equivalent, but individual clothing items can run differently by style or season — checking ASOS's own size chart for the specific product reduces the chance of a return."
+    ],
+    "schemaFaqQuestions": [
+      "How do I use this converter?",
+      "Does ASOS run true to size?",
+      "How does ASOS sizing compare to standard charts?",
+      "Does ASOS sizing vary by product line?",
+      "Should I check ASOS's official size chart too?"
+    ],
+    "schemaFaqAnswers": [
+      "Select your gender, category, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "UK sizing; often runs true to size. Check each product's size guide.",
+      "ASOS is UK-based; sizes are in UK with US, EU, and AU equivalents. Multiple brands and own-label.",
+      "Fit varies by brand and product. Own-brand vs. third-party sizing differs.",
+      "Yes. This converter gives a standardized international equivalent, but individual clothing items can run differently by style or season — checking ASOS's own size chart for the specific product reduces the chance of a return."
+    ],
+    "faqExactMatch": true,
+    "fitSizingCards": [
+      "Fit Problems Explained",
+      "Why Sizes Vary",
+      "Brand Differences",
+      "Regional Differences"
+    ],
+    "navigationBlockTypes": [
+      "nav-explore-more"
+    ],
+    "navigationDestinationCount": 15,
+    "navigationDestinations": [
+      "../index.html",
+      "../clothing-size-converter.html",
+      "../semantic/how-to-measure-feet-cm.html",
+      "../semantic/common-shoe-sizing-mistakes.html",
+      "../semantic/how-shoe-sizing-works.html",
+      "../brand-size-guides.html",
+      "nike-shoe-size-chart.html",
+      "../semantic/why-eu-and-us-sizes-differ.html",
+      "../semantic/how-japanese-shoe-sizes-work.html",
+      "../semantic/how-uk-shoe-sizes-differ.html",
+      "../shoe-size-converter.html",
+      "../tools/measurement-assistant.html",
+      "zara-clothing-size-guide.html",
+      "hm-size-converter.html",
+      "shein-size-converter.html"
+    ],
+    "monetizationModulePresent": 0,
+    "commercialModulePresent": 1,
+    "whySizesMayVaryPresent": 0,
+    "adPositions": [
+      "ad-slot ad-top",
+      "ad-slot ad-inline",
+      "ad-slot ad-inline",
+      "ad-slot ad-bottom",
+      "ad-slot ad-sticky-mobile"
+    ],
+    "converterPresent": true,
+    "converterId": "clothingConverter",
+    "converterOffsetFromH1CharDistance": 418
+  },
+  "converse-size-guide.html": {
+    "filename": "converse-size-guide.html",
+    "h1": "Converse Size Guide",
+    "introText": "Shopping Converse from another country? This page converts Converse shoe sizes to your region and explains how Converse's sizing tends to run. Converse Chuck Taylors often run large; many buyers size down half. Newer lines may fit differently—check reviews.",
+    "metaDescriptionEqualsIntro": false,
+    "quickAnswerPresent": false,
+    "commonQuestionsPresent": false,
+    "faqBlockCount": 1,
+    "visibleFaqQuestions": [
+      "How do I use this converter?",
+      "Does Converse run true to size?",
+      "How does Converse sizing compare to standard charts?",
+      "Does Converse sizing vary by product line?",
+      "Should I check Converse's official size chart too?"
+    ],
+    "visibleFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Converse Chuck Taylors often run large; many buyers size down half. Newer lines may fit differently—check reviews.",
+      "Converse uses its own fit models and lasts; sizes often differ from generic conversion charts. Shoes may run small or large depending on the line.",
+      "EU and US sizing don't align 1:1. Converse products sold in Europe may be labeled in EU sizes; when buying from the US site you'll see US sizes. Use our converters below to translate between regions.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking Converse's own size chart for the specific product reduces the chance of a return."
+    ],
+    "schemaFaqQuestions": [
+      "How do I use this converter?",
+      "Does Converse run true to size?",
+      "How does Converse sizing compare to standard charts?",
+      "Does Converse sizing vary by product line?",
+      "Should I check Converse's official size chart too?"
+    ],
+    "schemaFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Converse Chuck Taylors often run large; many buyers size down half. Newer lines may fit differently—check reviews.",
+      "Converse uses its own fit models and lasts; sizes often differ from generic conversion charts. Shoes may run small or large depending on the line.",
+      "EU and US sizing don't align 1:1. Converse products sold in Europe may be labeled in EU sizes; when buying from the US site you'll see US sizes. Use our converters below to translate between regions.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking Converse's own size chart for the specific product reduces the chance of a return."
+    ],
+    "faqExactMatch": true,
+    "fitSizingCards": [],
+    "navigationBlockTypes": [
+      "nav-explore-more"
+    ],
+    "navigationDestinationCount": 9,
+    "navigationDestinations": [
+      "../index.html",
+      "../brand-size-guides.html",
+      "../shoe-size-converter.html",
+      "../clothing-size-converter.html",
+      "nike-size-guide.html",
+      "adidas-size-guide.html",
+      "new-balance-size-guide.html",
+      "puma-size-guide.html",
+      "zara-size-guide.html"
+    ],
+    "monetizationModulePresent": 0,
+    "commercialModulePresent": 0,
+    "whySizesMayVaryPresent": 0,
+    "adPositions": [],
+    "converterPresent": true,
+    "converterId": "shoeConverter",
+    "converterOffsetFromH1CharDistance": 454
+  },
+  "hm-size-converter.html": {
+    "filename": "hm-size-converter.html",
+    "h1": "H&M Clothing Size Guide & Conversion",
+    "introText": "Shopping H&M from another country? This page converts H&M clothing sizes to your region and explains how H&M's sizing tends to run. Often runs small; EU size may feel one size smaller than US equivalent.",
+    "metaDescriptionEqualsIntro": false,
+    "quickAnswerPresent": false,
+    "commonQuestionsPresent": false,
+    "faqBlockCount": 1,
+    "visibleFaqQuestions": [
+      "How do I use this converter?",
+      "Does H&M run true to size?",
+      "How does H&M sizing compare to standard charts?",
+      "Does H&M sizing vary by product line?",
+      "Should I check H&M's official size chart too?"
+    ],
+    "visibleFaqAnswers": [
+      "Select your gender, category, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Often runs small; EU size may feel one size smaller than US equivalent.",
+      "H&M uses EU sizing. Affordable fashion with European fit standards across men's, women's, and kids.",
+      "Quality and consistency vary by line. Basic vs. premium lines may fit differently.",
+      "Yes. This converter gives a standardized international equivalent, but individual clothing items can run differently by style or season — checking H&M's own size chart for the specific product reduces the chance of a return."
+    ],
+    "schemaFaqQuestions": [
+      "How do I use this converter?",
+      "Does H&M run true to size?",
+      "How does H&M sizing compare to standard charts?",
+      "Does H&M sizing vary by product line?",
+      "Should I check H&M's official size chart too?"
+    ],
+    "schemaFaqAnswers": [
+      "Select your gender, category, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Often runs small; EU size may feel one size smaller than US equivalent.",
+      "H&M uses EU sizing. Affordable fashion with European fit standards across men's, women's, and kids.",
+      "Quality and consistency vary by line. Basic vs. premium lines may fit differently.",
+      "Yes. This converter gives a standardized international equivalent, but individual clothing items can run differently by style or season — checking H&M's own size chart for the specific product reduces the chance of a return."
+    ],
+    "faqExactMatch": true,
+    "fitSizingCards": [
+      "Fit Problems Explained",
+      "Why Sizes Vary",
+      "Brand Differences",
+      "Regional Differences"
+    ],
+    "navigationBlockTypes": [
+      "nav-explore-more"
+    ],
+    "navigationDestinationCount": 15,
+    "navigationDestinations": [
+      "../index.html",
+      "../clothing-size-converter.html",
+      "../semantic/how-to-measure-feet-cm.html",
+      "../semantic/common-shoe-sizing-mistakes.html",
+      "../semantic/how-shoe-sizing-works.html",
+      "../brand-size-guides.html",
+      "nike-shoe-size-chart.html",
+      "../semantic/why-eu-and-us-sizes-differ.html",
+      "../semantic/how-japanese-shoe-sizes-work.html",
+      "../semantic/how-uk-shoe-sizes-differ.html",
+      "../shoe-size-converter.html",
+      "../tools/measurement-assistant.html",
+      "zara-clothing-size-guide.html",
+      "shein-size-converter.html",
+      "uniqlo-size-guide.html"
+    ],
+    "monetizationModulePresent": 0,
+    "commercialModulePresent": 1,
+    "whySizesMayVaryPresent": 0,
+    "adPositions": [
+      "ad-slot ad-top",
+      "ad-slot ad-inline",
+      "ad-slot ad-inline",
+      "ad-slot ad-bottom",
+      "ad-slot ad-sticky-mobile"
+    ],
+    "converterPresent": true,
+    "converterId": "clothingConverter",
+    "converterOffsetFromH1CharDistance": 436
+  },
+  "hm-size-guide.html": {
+    "filename": "hm-size-guide.html",
+    "h1": "H&M Size Guide",
+    "introText": "Shopping H&M from another country? This page converts H&M clothing sizes to your region and explains how H&M's sizing tends to run. H&M offers regular and sometimes narrow or wide options for apparel. Check the product page for width (e.g. narrow/wide) and compare to your usual fit.",
+    "metaDescriptionEqualsIntro": false,
+    "quickAnswerPresent": false,
+    "commonQuestionsPresent": false,
+    "faqBlockCount": 1,
+    "visibleFaqQuestions": [
+      "How do I use this converter?",
+      "Does H&M run true to size?",
+      "How does H&M sizing compare to standard charts?",
+      "Does H&M sizing vary by product line?",
+      "Should I check H&M's official size chart too?"
+    ],
+    "visibleFaqAnswers": [
+      "Select your gender, category, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "H&M offers regular and sometimes narrow or wide options for apparel. Check the product page for width (e.g. narrow/wide) and compare to your usual fit.",
+      "H&M uses EU sizing; conversion to US/UK can vary by category. Fast-fashion cuts often run small—consider sizing up.",
+      "EU and US sizing don't align 1:1. H&M products sold in Europe may be labeled in EU sizes; when buying from the US site you'll see US sizes. Use our converters below to translate between regions.",
+      "Yes. This converter gives a standardized international equivalent, but individual clothing items can run differently by style or season — checking H&M's own size chart for the specific product reduces the chance of a return."
+    ],
+    "schemaFaqQuestions": [
+      "How do I use this converter?",
+      "Does H&M run true to size?",
+      "How does H&M sizing compare to standard charts?",
+      "Does H&M sizing vary by product line?",
+      "Should I check H&M's official size chart too?"
+    ],
+    "schemaFaqAnswers": [
+      "Select your gender, category, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "H&M offers regular and sometimes narrow or wide options for apparel. Check the product page for width (e.g. narrow/wide) and compare to your usual fit.",
+      "H&M uses EU sizing; conversion to US/UK can vary by category. Fast-fashion cuts often run small—consider sizing up.",
+      "EU and US sizing don't align 1:1. H&M products sold in Europe may be labeled in EU sizes; when buying from the US site you'll see US sizes. Use our converters below to translate between regions.",
+      "Yes. This converter gives a standardized international equivalent, but individual clothing items can run differently by style or season — checking H&M's own size chart for the specific product reduces the chance of a return."
+    ],
+    "faqExactMatch": true,
+    "fitSizingCards": [],
+    "navigationBlockTypes": [
+      "nav-explore-more"
+    ],
+    "navigationDestinationCount": 9,
+    "navigationDestinations": [
+      "../index.html",
+      "../brand-size-guides.html",
+      "../shoe-size-converter.html",
+      "../clothing-size-converter.html",
+      "zara-size-guide.html",
+      "nike-size-guide.html",
+      "adidas-size-guide.html",
+      "new-balance-size-guide.html",
+      "puma-size-guide.html"
+    ],
+    "monetizationModulePresent": 0,
+    "commercialModulePresent": 0,
+    "whySizesMayVaryPresent": 0,
+    "adPositions": [],
+    "converterPresent": true,
+    "converterId": "clothingConverter",
+    "converterOffsetFromH1CharDistance": 494
+  },
+  "levis-jeans-size-guide.html": {
+    "filename": "levis-jeans-size-guide.html",
+    "h1": "Levi's Clothing Size Guide & Conversion",
+    "introText": "Shopping Levi's from another country? This page converts Levi's clothing sizes to your region and explains how Levi's's sizing tends to run. Jeans often run true to waist; inseam is critical. Stretch vs. rigid fits differently.",
+    "metaDescriptionEqualsIntro": false,
+    "quickAnswerPresent": false,
+    "commonQuestionsPresent": false,
+    "faqBlockCount": 1,
+    "visibleFaqQuestions": [
+      "How do I use this converter?",
+      "Does Levi's run true to size?",
+      "How does Levi's sizing compare to standard charts?",
+      "Does Levi's sizing vary by product line?",
+      "Should I check Levi's's official size chart too?"
+    ],
+    "visibleFaqAnswers": [
+      "Select your gender, category, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Jeans often run true to waist; inseam is critical. Stretch vs. rigid fits differently.",
+      "Levi's uses US waist/inseam for jeans. Numbered waist (e.g. 32) and length (e.g. 30L) are standard.",
+      "Fit (501, 511, etc.) changes how sizing feels. EU and UK use cm or local equivalents.",
+      "Yes. This converter gives a standardized international equivalent, but individual clothing items can run differently by style or season — checking Levi's's own size chart for the specific product reduces the chance of a return."
+    ],
+    "schemaFaqQuestions": [
+      "How do I use this converter?",
+      "Does Levi's run true to size?",
+      "How does Levi's sizing compare to standard charts?",
+      "Does Levi's sizing vary by product line?",
+      "Should I check Levi's's official size chart too?"
+    ],
+    "schemaFaqAnswers": [
+      "Select your gender, category, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Jeans often run true to waist; inseam is critical. Stretch vs. rigid fits differently.",
+      "Levi's uses US waist/inseam for jeans. Numbered waist (e.g. 32) and length (e.g. 30L) are standard.",
+      "Fit (501, 511, etc.) changes how sizing feels. EU and UK use cm or local equivalents.",
+      "Yes. This converter gives a standardized international equivalent, but individual clothing items can run differently by style or season — checking Levi's's own size chart for the specific product reduces the chance of a return."
+    ],
+    "faqExactMatch": true,
+    "fitSizingCards": [
+      "Fit Problems Explained",
+      "Why Sizes Vary",
+      "Brand Differences",
+      "Regional Differences"
+    ],
+    "navigationBlockTypes": [
+      "nav-explore-more"
+    ],
+    "navigationDestinationCount": 15,
+    "navigationDestinations": [
+      "../index.html",
+      "../clothing-size-converter.html",
+      "../semantic/how-to-measure-feet-cm.html",
+      "../semantic/common-shoe-sizing-mistakes.html",
+      "../semantic/how-shoe-sizing-works.html",
+      "../brand-size-guides.html",
+      "nike-shoe-size-chart.html",
+      "../semantic/why-eu-and-us-sizes-differ.html",
+      "../semantic/how-japanese-shoe-sizes-work.html",
+      "../semantic/how-uk-shoe-sizes-differ.html",
+      "../shoe-size-converter.html",
+      "../tools/measurement-assistant.html",
+      "zara-clothing-size-guide.html",
+      "hm-size-converter.html",
+      "shein-size-converter.html"
+    ],
+    "monetizationModulePresent": 0,
+    "commercialModulePresent": 1,
+    "whySizesMayVaryPresent": 0,
+    "adPositions": [
+      "ad-slot ad-top",
+      "ad-slot ad-inline",
+      "ad-slot ad-inline",
+      "ad-slot ad-bottom",
+      "ad-slot ad-sticky-mobile"
+    ],
+    "converterPresent": true,
+    "converterId": "clothingConverter",
+    "converterOffsetFromH1CharDistance": 446
+  },
+  "new-balance-shoe-size-chart.html": {
+    "filename": "new-balance-shoe-size-chart.html",
+    "h1": "New Balance Shoe Size Guide & Conversion",
+    "introText": "Shopping New Balance from another country? This page converts New Balance shoe sizes to your region and explains how New Balance's sizing tends to run. Generally true to US size; wide fits run roomy. Consider half size for narrow feet.",
+    "metaDescriptionEqualsIntro": false,
+    "quickAnswerPresent": false,
+    "commonQuestionsPresent": false,
+    "faqBlockCount": 1,
+    "visibleFaqQuestions": [
+      "How do I use this converter?",
+      "Does New Balance run true to size?",
+      "How does New Balance sizing compare to standard charts?",
+      "Does New Balance sizing vary by product line?",
+      "Should I check New Balance's official size chart too?"
+    ],
+    "visibleFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Generally true to US size; wide fits run roomy. Consider half size for narrow feet.",
+      "New Balance uses US sizing as primary. Wide width options (2E, 4E) are a key differentiator.",
+      "US to UK and EU conversion is standard; width options vary by model.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking New Balance's own size chart for the specific product reduces the chance of a return."
+    ],
+    "schemaFaqQuestions": [
+      "How do I use this converter?",
+      "Does New Balance run true to size?",
+      "How does New Balance sizing compare to standard charts?",
+      "Does New Balance sizing vary by product line?",
+      "Should I check New Balance's official size chart too?"
+    ],
+    "schemaFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Generally true to US size; wide fits run roomy. Consider half size for narrow feet.",
+      "New Balance uses US sizing as primary. Wide width options (2E, 4E) are a key differentiator.",
+      "US to UK and EU conversion is standard; width options vary by model.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking New Balance's own size chart for the specific product reduces the chance of a return."
+    ],
+    "faqExactMatch": true,
+    "fitSizingCards": [
+      "Fit Problems Explained",
+      "Why Sizes Vary",
+      "Brand Differences",
+      "Regional Differences"
+    ],
+    "navigationBlockTypes": [
+      "nav-explore-more"
+    ],
+    "navigationDestinationCount": 14,
+    "navigationDestinations": [
+      "../index.html",
+      "../shoe-size-converter.html",
+      "../semantic/how-to-measure-feet-cm.html",
+      "../semantic/common-shoe-sizing-mistakes.html",
+      "../semantic/how-shoe-sizing-works.html",
+      "../brand-size-guides.html",
+      "nike-shoe-size-chart.html",
+      "../semantic/why-eu-and-us-sizes-differ.html",
+      "../semantic/how-japanese-shoe-sizes-work.html",
+      "../semantic/how-uk-shoe-sizes-differ.html",
+      "../clothing-size-converter.html",
+      "../tools/measurement-assistant.html",
+      "adidas-eu-to-us-shoe-sizing.html",
+      "puma-shoe-size-chart.html"
+    ],
+    "monetizationModulePresent": 0,
+    "commercialModulePresent": 1,
+    "whySizesMayVaryPresent": 0,
+    "adPositions": [
+      "ad-slot ad-top",
+      "ad-slot ad-inline",
+      "ad-slot ad-inline",
+      "ad-slot ad-bottom",
+      "ad-slot ad-sticky-mobile"
+    ],
+    "converterPresent": true,
+    "converterId": "shoeConverter",
+    "converterOffsetFromH1CharDistance": 460
+  },
+  "new-balance-size-guide.html": {
+    "filename": "new-balance-size-guide.html",
+    "h1": "New Balance Size Guide",
+    "introText": "Shopping New Balance from another country? This page converts New Balance shoe sizes to your region and explains how New Balance's sizing tends to run. New Balance is known for wide width availability (2E, 4E). Standard width runs true to size for many.",
+    "metaDescriptionEqualsIntro": false,
+    "quickAnswerPresent": false,
+    "commonQuestionsPresent": false,
+    "faqBlockCount": 1,
+    "visibleFaqQuestions": [
+      "How do I use this converter?",
+      "Does New Balance run true to size?",
+      "How does New Balance sizing compare to standard charts?",
+      "Does New Balance sizing vary by product line?",
+      "Should I check New Balance's official size chart too?"
+    ],
+    "visibleFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "New Balance is known for wide width availability (2E, 4E). Standard width runs true to size for many.",
+      "New Balance uses its own fit models and lasts; sizes often differ from generic conversion charts. Shoes may run small or large depending on the line.",
+      "EU and US sizing don't align 1:1. New Balance products sold in Europe may be labeled in EU sizes; when buying from the US site you'll see US sizes. Use our converters below to translate between regions.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking New Balance's own size chart for the specific product reduces the chance of a return."
+    ],
+    "schemaFaqQuestions": [
+      "How do I use this converter?",
+      "Does New Balance run true to size?",
+      "How does New Balance sizing compare to standard charts?",
+      "Does New Balance sizing vary by product line?",
+      "Should I check New Balance's official size chart too?"
+    ],
+    "schemaFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "New Balance is known for wide width availability (2E, 4E). Standard width runs true to size for many.",
+      "New Balance uses its own fit models and lasts; sizes often differ from generic conversion charts. Shoes may run small or large depending on the line.",
+      "EU and US sizing don't align 1:1. New Balance products sold in Europe may be labeled in EU sizes; when buying from the US site you'll see US sizes. Use our converters below to translate between regions.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking New Balance's own size chart for the specific product reduces the chance of a return."
+    ],
+    "faqExactMatch": true,
+    "fitSizingCards": [],
+    "navigationBlockTypes": [
+      "nav-explore-more"
+    ],
+    "navigationDestinationCount": 9,
+    "navigationDestinations": [
+      "../index.html",
+      "../brand-size-guides.html",
+      "../shoe-size-converter.html",
+      "../clothing-size-converter.html",
+      "nike-size-guide.html",
+      "adidas-size-guide.html",
+      "puma-size-guide.html",
+      "reebok-size-guide.html",
+      "zara-size-guide.html"
+    ],
+    "monetizationModulePresent": 0,
+    "commercialModulePresent": 0,
+    "whySizesMayVaryPresent": 0,
+    "adPositions": [],
+    "converterPresent": true,
+    "converterId": "shoeConverter",
+    "converterOffsetFromH1CharDistance": 456
+  },
+  "nike-shoe-size-chart.html": {
+    "filename": "nike-shoe-size-chart.html",
+    "h1": "Nike Shoe Size Guide & Conversion",
+    "introText": "Shopping Nike from another country? This page converts Nike shoe sizes to your region and explains how Nike's sizing tends to run. Tends to run slightly small; many buyers size up half for a comfortable fit, especially in running.",
+    "metaDescriptionEqualsIntro": false,
+    "quickAnswerPresent": false,
+    "commonQuestionsPresent": false,
+    "faqBlockCount": 1,
+    "visibleFaqQuestions": [
+      "How do I use this converter?",
+      "Does Nike run true to size?",
+      "How does Nike sizing compare to standard charts?",
+      "Does Nike sizing vary by product line?",
+      "Should I check Nike's official size chart too?"
+    ],
+    "visibleFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Tends to run slightly small; many buyers size up half for a comfortable fit, especially in running.",
+      "Nike uses US sizing as the base for most markets; international sizes are converted from US. Athletic shoes often run narrow and slightly small.",
+      "Running vs. basketball vs. lifestyle models can vary. Women's and men's scales differ; kids use age-based sizing in some regions.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking Nike's own size chart for the specific product reduces the chance of a return."
+    ],
+    "schemaFaqQuestions": [
+      "How do I use this converter?",
+      "Does Nike run true to size?",
+      "How does Nike sizing compare to standard charts?",
+      "Does Nike sizing vary by product line?",
+      "Should I check Nike's official size chart too?"
+    ],
+    "schemaFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Tends to run slightly small; many buyers size up half for a comfortable fit, especially in running.",
+      "Nike uses US sizing as the base for most markets; international sizes are converted from US. Athletic shoes often run narrow and slightly small.",
+      "Running vs. basketball vs. lifestyle models can vary. Women's and men's scales differ; kids use age-based sizing in some regions.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking Nike's own size chart for the specific product reduces the chance of a return."
+    ],
+    "faqExactMatch": true,
+    "fitSizingCards": [
+      "Fit Problems Explained",
+      "Why Sizes Vary",
+      "Brand Differences",
+      "Regional Differences"
+    ],
+    "navigationBlockTypes": [
+      "nav-explore-more"
+    ],
+    "navigationDestinationCount": 15,
+    "navigationDestinations": [
+      "../index.html",
+      "../shoe-size-converter.html",
+      "../semantic/how-to-measure-feet-cm.html",
+      "../semantic/common-shoe-sizing-mistakes.html",
+      "../semantic/how-shoe-sizing-works.html",
+      "../brand-size-guides.html",
+      "nike-shoe-size-chart.html",
+      "../semantic/why-eu-and-us-sizes-differ.html",
+      "../semantic/how-japanese-shoe-sizes-work.html",
+      "../semantic/how-uk-shoe-sizes-differ.html",
+      "../clothing-size-converter.html",
+      "../tools/measurement-assistant.html",
+      "adidas-eu-to-us-shoe-sizing.html",
+      "puma-shoe-size-chart.html",
+      "new-balance-shoe-size-chart.html"
+    ],
+    "monetizationModulePresent": 0,
+    "commercialModulePresent": 1,
+    "whySizesMayVaryPresent": 0,
+    "adPositions": [
+      "ad-slot ad-top",
+      "ad-slot ad-inline",
+      "ad-slot ad-inline",
+      "ad-slot ad-bottom",
+      "ad-slot ad-sticky-mobile"
+    ],
+    "converterPresent": true,
+    "converterId": "shoeConverter",
+    "converterOffsetFromH1CharDistance": 441
+  },
+  "nike-size-guide.html": {
+    "filename": "nike-size-guide.html",
+    "h1": "Nike Size Guide",
+    "introText": "Shopping Nike from another country? This page converts Nike shoe sizes to your region and explains how Nike's sizing tends to run. Nike shoes often run narrow and slightly short; many buyers go half a size up. Width options exist for some running models.",
+    "metaDescriptionEqualsIntro": false,
+    "quickAnswerPresent": false,
+    "commonQuestionsPresent": false,
+    "faqBlockCount": 1,
+    "visibleFaqQuestions": [
+      "How do I use this converter?",
+      "Does Nike run true to size?",
+      "How does Nike sizing compare to standard charts?",
+      "Does Nike sizing vary by product line?",
+      "Should I check Nike's official size chart too?"
+    ],
+    "visibleFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Nike shoes often run narrow and slightly short; many buyers go half a size up. Width options exist for some running models.",
+      "Nike uses its own fit models and lasts; sizes often differ from generic conversion charts. Shoes may run small or large depending on the line.",
+      "EU and US sizing don't align 1:1. Nike products sold in Europe may be labeled in EU sizes; when buying from the US site you'll see US sizes. Use our converters below to translate between regions.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking Nike's own size chart for the specific product reduces the chance of a return."
+    ],
+    "schemaFaqQuestions": [
+      "How do I use this converter?",
+      "Does Nike run true to size?",
+      "How does Nike sizing compare to standard charts?",
+      "Does Nike sizing vary by product line?",
+      "Should I check Nike's official size chart too?"
+    ],
+    "schemaFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Nike shoes often run narrow and slightly short; many buyers go half a size up. Width options exist for some running models.",
+      "Nike uses its own fit models and lasts; sizes often differ from generic conversion charts. Shoes may run small or large depending on the line.",
+      "EU and US sizing don't align 1:1. Nike products sold in Europe may be labeled in EU sizes; when buying from the US site you'll see US sizes. Use our converters below to translate between regions.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking Nike's own size chart for the specific product reduces the chance of a return."
+    ],
+    "faqExactMatch": true,
+    "fitSizingCards": [],
+    "navigationBlockTypes": [
+      "nav-explore-more"
+    ],
+    "navigationDestinationCount": 9,
+    "navigationDestinations": [
+      "../index.html",
+      "../brand-size-guides.html",
+      "../shoe-size-converter.html",
+      "../clothing-size-converter.html",
+      "adidas-size-guide.html",
+      "new-balance-size-guide.html",
+      "puma-size-guide.html",
+      "reebok-size-guide.html",
+      "zara-size-guide.html"
+    ],
+    "monetizationModulePresent": 0,
+    "commercialModulePresent": 0,
+    "whySizesMayVaryPresent": 0,
+    "adPositions": [],
+    "converterPresent": true,
+    "converterId": "shoeConverter",
+    "converterOffsetFromH1CharDistance": 443
+  },
+  "puma-shoe-size-chart.html": {
+    "filename": "puma-shoe-size-chart.html",
+    "h1": "Puma Shoe Size Guide & Conversion",
+    "introText": "Shopping Puma from another country? This page converts Puma shoe sizes to your region and explains how Puma's sizing tends to run. Generally true to size for EU; slightly narrow in some styles.",
+    "metaDescriptionEqualsIntro": false,
+    "quickAnswerPresent": false,
+    "commonQuestionsPresent": false,
+    "faqBlockCount": 1,
+    "visibleFaqQuestions": [
+      "How do I use this converter?",
+      "Does Puma run true to size?",
+      "How does Puma sizing compare to standard charts?",
+      "Does Puma sizing vary by product line?",
+      "Should I check Puma's official size chart too?"
+    ],
+    "visibleFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Generally true to size for EU; slightly narrow in some styles.",
+      "Puma uses EU sizing as primary. Conversion to US and UK is standardized but can differ by category.",
+      "Suede and lifestyle vs. running may fit differently. Regional labels sometimes differ.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking Puma's own size chart for the specific product reduces the chance of a return."
+    ],
+    "schemaFaqQuestions": [
+      "How do I use this converter?",
+      "Does Puma run true to size?",
+      "How does Puma sizing compare to standard charts?",
+      "Does Puma sizing vary by product line?",
+      "Should I check Puma's official size chart too?"
+    ],
+    "schemaFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Generally true to size for EU; slightly narrow in some styles.",
+      "Puma uses EU sizing as primary. Conversion to US and UK is standardized but can differ by category.",
+      "Suede and lifestyle vs. running may fit differently. Regional labels sometimes differ.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking Puma's own size chart for the specific product reduces the chance of a return."
+    ],
+    "faqExactMatch": true,
+    "fitSizingCards": [
+      "Fit Problems Explained",
+      "Why Sizes Vary",
+      "Brand Differences",
+      "Regional Differences"
+    ],
+    "navigationBlockTypes": [
+      "nav-explore-more"
+    ],
+    "navigationDestinationCount": 14,
+    "navigationDestinations": [
+      "../index.html",
+      "../shoe-size-converter.html",
+      "../semantic/how-to-measure-feet-cm.html",
+      "../semantic/common-shoe-sizing-mistakes.html",
+      "../semantic/how-shoe-sizing-works.html",
+      "../brand-size-guides.html",
+      "nike-shoe-size-chart.html",
+      "../semantic/why-eu-and-us-sizes-differ.html",
+      "../semantic/how-japanese-shoe-sizes-work.html",
+      "../semantic/how-uk-shoe-sizes-differ.html",
+      "../clothing-size-converter.html",
+      "../tools/measurement-assistant.html",
+      "adidas-eu-to-us-shoe-sizing.html",
+      "new-balance-shoe-size-chart.html"
+    ],
+    "monetizationModulePresent": 0,
+    "commercialModulePresent": 1,
+    "whySizesMayVaryPresent": 0,
+    "adPositions": [
+      "ad-slot ad-top",
+      "ad-slot ad-inline",
+      "ad-slot ad-inline",
+      "ad-slot ad-bottom",
+      "ad-slot ad-sticky-mobile"
+    ],
+    "converterPresent": true,
+    "converterId": "shoeConverter",
+    "converterOffsetFromH1CharDistance": 404
+  },
+  "puma-size-guide.html": {
+    "filename": "puma-size-guide.html",
+    "h1": "Puma Size Guide",
+    "introText": "Shopping Puma from another country? This page converts Puma shoe sizes to your region and explains how Puma's sizing tends to run. Puma shoes typically run true to size with a medium width; some lifestyle models run slightly large.",
+    "metaDescriptionEqualsIntro": false,
+    "quickAnswerPresent": false,
+    "commonQuestionsPresent": false,
+    "faqBlockCount": 1,
+    "visibleFaqQuestions": [
+      "How do I use this converter?",
+      "Does Puma run true to size?",
+      "How does Puma sizing compare to standard charts?",
+      "Does Puma sizing vary by product line?",
+      "Should I check Puma's official size chart too?"
+    ],
+    "visibleFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Puma shoes typically run true to size with a medium width; some lifestyle models run slightly large.",
+      "Puma uses its own fit models and lasts; sizes often differ from generic conversion charts. Shoes may run small or large depending on the line.",
+      "EU and US sizing don't align 1:1. Puma products sold in Europe may be labeled in EU sizes; when buying from the US site you'll see US sizes. Use our converters below to translate between regions.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking Puma's own size chart for the specific product reduces the chance of a return."
+    ],
+    "schemaFaqQuestions": [
+      "How do I use this converter?",
+      "Does Puma run true to size?",
+      "How does Puma sizing compare to standard charts?",
+      "Does Puma sizing vary by product line?",
+      "Should I check Puma's official size chart too?"
+    ],
+    "schemaFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Puma shoes typically run true to size with a medium width; some lifestyle models run slightly large.",
+      "Puma uses its own fit models and lasts; sizes often differ from generic conversion charts. Shoes may run small or large depending on the line.",
+      "EU and US sizing don't align 1:1. Puma products sold in Europe may be labeled in EU sizes; when buying from the US site you'll see US sizes. Use our converters below to translate between regions.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking Puma's own size chart for the specific product reduces the chance of a return."
+    ],
+    "faqExactMatch": true,
+    "fitSizingCards": [],
+    "navigationBlockTypes": [
+      "nav-explore-more"
+    ],
+    "navigationDestinationCount": 9,
+    "navigationDestinations": [
+      "../index.html",
+      "../brand-size-guides.html",
+      "../shoe-size-converter.html",
+      "../clothing-size-converter.html",
+      "nike-size-guide.html",
+      "adidas-size-guide.html",
+      "new-balance-size-guide.html",
+      "reebok-size-guide.html",
+      "zara-size-guide.html"
+    ],
+    "monetizationModulePresent": 0,
+    "commercialModulePresent": 0,
+    "whySizesMayVaryPresent": 0,
+    "adPositions": [],
+    "converterPresent": true,
+    "converterId": "shoeConverter",
+    "converterOffsetFromH1CharDistance": 420
+  },
+  "reebok-size-guide.html": {
+    "filename": "reebok-size-guide.html",
+    "h1": "Reebok Size Guide",
+    "introText": "Shopping Reebok from another country? This page converts Reebok shoe sizes to your region and explains how Reebok's sizing tends to run. Reebok athletic shoes often run true to size; classic styles may run slightly large. Width options available for some lines.",
+    "metaDescriptionEqualsIntro": false,
+    "quickAnswerPresent": false,
+    "commonQuestionsPresent": false,
+    "faqBlockCount": 1,
+    "visibleFaqQuestions": [
+      "How do I use this converter?",
+      "Does Reebok run true to size?",
+      "How does Reebok sizing compare to standard charts?",
+      "Does Reebok sizing vary by product line?",
+      "Should I check Reebok's official size chart too?"
+    ],
+    "visibleFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Reebok athletic shoes often run true to size; classic styles may run slightly large. Width options available for some lines.",
+      "Reebok uses its own fit models and lasts; sizes often differ from generic conversion charts. Shoes may run small or large depending on the line.",
+      "EU and US sizing don't align 1:1. Reebok products sold in Europe may be labeled in EU sizes; when buying from the US site you'll see US sizes. Use our converters below to translate between regions.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking Reebok's own size chart for the specific product reduces the chance of a return."
+    ],
+    "schemaFaqQuestions": [
+      "How do I use this converter?",
+      "Does Reebok run true to size?",
+      "How does Reebok sizing compare to standard charts?",
+      "Does Reebok sizing vary by product line?",
+      "Should I check Reebok's official size chart too?"
+    ],
+    "schemaFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Reebok athletic shoes often run true to size; classic styles may run slightly large. Width options available for some lines.",
+      "Reebok uses its own fit models and lasts; sizes often differ from generic conversion charts. Shoes may run small or large depending on the line.",
+      "EU and US sizing don't align 1:1. Reebok products sold in Europe may be labeled in EU sizes; when buying from the US site you'll see US sizes. Use our converters below to translate between regions.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking Reebok's own size chart for the specific product reduces the chance of a return."
+    ],
+    "faqExactMatch": true,
+    "fitSizingCards": [],
+    "navigationBlockTypes": [
+      "nav-explore-more"
+    ],
+    "navigationDestinationCount": 9,
+    "navigationDestinations": [
+      "../index.html",
+      "../brand-size-guides.html",
+      "../shoe-size-converter.html",
+      "../clothing-size-converter.html",
+      "nike-size-guide.html",
+      "adidas-size-guide.html",
+      "new-balance-size-guide.html",
+      "puma-size-guide.html",
+      "zara-size-guide.html"
+    ],
+    "monetizationModulePresent": 0,
+    "commercialModulePresent": 0,
+    "whySizesMayVaryPresent": 0,
+    "adPositions": [],
+    "converterPresent": true,
+    "converterId": "shoeConverter",
+    "converterOffsetFromH1CharDistance": 454
+  },
+  "shein-size-converter.html": {
+    "filename": "shein-size-converter.html",
+    "h1": "Shein Clothing Size Guide & Conversion",
+    "introText": "Shopping Shein from another country? This page converts Shein clothing sizes to your region and explains how Shein's sizing tends to run. Typically runs small. Reviews recommend sizing up; measure yourself and compare to chart.",
+    "metaDescriptionEqualsIntro": false,
+    "quickAnswerPresent": false,
+    "commonQuestionsPresent": false,
+    "faqBlockCount": 1,
+    "visibleFaqQuestions": [
+      "How do I use this converter?",
+      "Does Shein run true to size?",
+      "How does Shein sizing compare to standard charts?",
+      "Does Shein sizing vary by product line?",
+      "Should I check Shein's official size chart too?"
+    ],
+    "visibleFaqAnswers": [
+      "Select your gender, category, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Typically runs small. Reviews recommend sizing up; measure yourself and compare to chart.",
+      "Shein uses Asian/EU-influenced sizing. Charts are provided per garment; conversion is not standardized.",
+      "Sizing is highly inconsistent between items. Always check the product-specific size chart.",
+      "Yes. This converter gives a standardized international equivalent, but individual clothing items can run differently by style or season — checking Shein's own size chart for the specific product reduces the chance of a return."
+    ],
+    "schemaFaqQuestions": [
+      "How do I use this converter?",
+      "Does Shein run true to size?",
+      "How does Shein sizing compare to standard charts?",
+      "Does Shein sizing vary by product line?",
+      "Should I check Shein's official size chart too?"
+    ],
+    "schemaFaqAnswers": [
+      "Select your gender, category, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Typically runs small. Reviews recommend sizing up; measure yourself and compare to chart.",
+      "Shein uses Asian/EU-influenced sizing. Charts are provided per garment; conversion is not standardized.",
+      "Sizing is highly inconsistent between items. Always check the product-specific size chart.",
+      "Yes. This converter gives a standardized international equivalent, but individual clothing items can run differently by style or season — checking Shein's own size chart for the specific product reduces the chance of a return."
+    ],
+    "faqExactMatch": true,
+    "fitSizingCards": [
+      "Fit Problems Explained",
+      "Why Sizes Vary",
+      "Brand Differences",
+      "Regional Differences"
+    ],
+    "navigationBlockTypes": [
+      "nav-explore-more"
+    ],
+    "navigationDestinationCount": 15,
+    "navigationDestinations": [
+      "../index.html",
+      "../clothing-size-converter.html",
+      "../semantic/how-to-measure-feet-cm.html",
+      "../semantic/common-shoe-sizing-mistakes.html",
+      "../semantic/how-shoe-sizing-works.html",
+      "../brand-size-guides.html",
+      "nike-shoe-size-chart.html",
+      "../semantic/why-eu-and-us-sizes-differ.html",
+      "../semantic/how-japanese-shoe-sizes-work.html",
+      "../semantic/how-uk-shoe-sizes-differ.html",
+      "../shoe-size-converter.html",
+      "../tools/measurement-assistant.html",
+      "zara-clothing-size-guide.html",
+      "hm-size-converter.html",
+      "uniqlo-size-guide.html"
+    ],
+    "monetizationModulePresent": 0,
+    "commercialModulePresent": 1,
+    "whySizesMayVaryPresent": 0,
+    "adPositions": [
+      "ad-slot ad-top",
+      "ad-slot ad-inline",
+      "ad-slot ad-inline",
+      "ad-slot ad-bottom",
+      "ad-slot ad-sticky-mobile"
+    ],
+    "converterPresent": true,
+    "converterId": "clothingConverter",
+    "converterOffsetFromH1CharDistance": 444
+  },
+  "uniqlo-size-guide.html": {
+    "filename": "uniqlo-size-guide.html",
+    "h1": "Uniqlo Clothing Size Guide & Conversion",
+    "introText": "Shopping Uniqlo from another country? This page converts Uniqlo clothing sizes to your region and explains how Uniqlo's sizing tends to run. Often runs slightly small in the shoulders and length; some size up for comfort.",
+    "metaDescriptionEqualsIntro": false,
+    "quickAnswerPresent": false,
+    "commonQuestionsPresent": false,
+    "faqBlockCount": 1,
+    "visibleFaqQuestions": [
+      "How do I use this converter?",
+      "Does Uniqlo run true to size?",
+      "How does Uniqlo sizing compare to standard charts?",
+      "Does Uniqlo sizing vary by product line?",
+      "Should I check Uniqlo's official size chart too?"
+    ],
+    "visibleFaqAnswers": [
+      "Select your gender, category, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Often runs slightly small in the shoulders and length; some size up for comfort.",
+      "Uniqlo uses Japanese sizing with US, EU, and UK equivalents. Focus on consistent basics and technical wear.",
+      "JP cm-based sizing is consistent; letter sizes (S/M/L) can differ from Western brands.",
+      "Yes. This converter gives a standardized international equivalent, but individual clothing items can run differently by style or season — checking Uniqlo's own size chart for the specific product reduces the chance of a return."
+    ],
+    "schemaFaqQuestions": [
+      "How do I use this converter?",
+      "Does Uniqlo run true to size?",
+      "How does Uniqlo sizing compare to standard charts?",
+      "Does Uniqlo sizing vary by product line?",
+      "Should I check Uniqlo's official size chart too?"
+    ],
+    "schemaFaqAnswers": [
+      "Select your gender, category, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Often runs slightly small in the shoulders and length; some size up for comfort.",
+      "Uniqlo uses Japanese sizing with US, EU, and UK equivalents. Focus on consistent basics and technical wear.",
+      "JP cm-based sizing is consistent; letter sizes (S/M/L) can differ from Western brands.",
+      "Yes. This converter gives a standardized international equivalent, but individual clothing items can run differently by style or season — checking Uniqlo's own size chart for the specific product reduces the chance of a return."
+    ],
+    "faqExactMatch": true,
+    "fitSizingCards": [
+      "Fit Problems Explained",
+      "Why Sizes Vary",
+      "Brand Differences",
+      "Regional Differences"
+    ],
+    "navigationBlockTypes": [
+      "nav-explore-more"
+    ],
+    "navigationDestinationCount": 15,
+    "navigationDestinations": [
+      "../index.html",
+      "../clothing-size-converter.html",
+      "../semantic/how-to-measure-feet-cm.html",
+      "../semantic/common-shoe-sizing-mistakes.html",
+      "../semantic/how-shoe-sizing-works.html",
+      "../brand-size-guides.html",
+      "nike-shoe-size-chart.html",
+      "../semantic/why-eu-and-us-sizes-differ.html",
+      "../semantic/how-japanese-shoe-sizes-work.html",
+      "../semantic/how-uk-shoe-sizes-differ.html",
+      "../shoe-size-converter.html",
+      "../tools/measurement-assistant.html",
+      "zara-clothing-size-guide.html",
+      "hm-size-converter.html",
+      "shein-size-converter.html"
+    ],
+    "monetizationModulePresent": 0,
+    "commercialModulePresent": 1,
+    "whySizesMayVaryPresent": 0,
+    "adPositions": [
+      "ad-slot ad-top",
+      "ad-slot ad-inline",
+      "ad-slot ad-inline",
+      "ad-slot ad-bottom",
+      "ad-slot ad-sticky-mobile"
+    ],
+    "converterPresent": true,
+    "converterId": "clothingConverter",
+    "converterOffsetFromH1CharDistance": 440
+  },
+  "vans-size-guide.html": {
+    "filename": "vans-size-guide.html",
+    "h1": "Vans Size Guide",
+    "introText": "Shopping Vans from another country? This page converts Vans shoe sizes to your region and explains how Vans's sizing tends to run. Vans sneakers often run true to size but can feel snug at first; they tend to break in. Consider half size up for a relaxed fit.",
+    "metaDescriptionEqualsIntro": false,
+    "quickAnswerPresent": false,
+    "commonQuestionsPresent": false,
+    "faqBlockCount": 1,
+    "visibleFaqQuestions": [
+      "How do I use this converter?",
+      "Does Vans run true to size?",
+      "How does Vans sizing compare to standard charts?",
+      "Does Vans sizing vary by product line?",
+      "Should I check Vans's official size chart too?"
+    ],
+    "visibleFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Vans sneakers often run true to size but can feel snug at first; they tend to break in. Consider half size up for a relaxed fit.",
+      "Vans uses its own fit models and lasts; sizes often differ from generic conversion charts. Shoes may run small or large depending on the line.",
+      "EU and US sizing don't align 1:1. Vans products sold in Europe may be labeled in EU sizes; when buying from the US site you'll see US sizes. Use our converters below to translate between regions.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking Vans's own size chart for the specific product reduces the chance of a return."
+    ],
+    "schemaFaqQuestions": [
+      "How do I use this converter?",
+      "Does Vans run true to size?",
+      "How does Vans sizing compare to standard charts?",
+      "Does Vans sizing vary by product line?",
+      "Should I check Vans's official size chart too?"
+    ],
+    "schemaFaqAnswers": [
+      "Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Vans sneakers often run true to size but can feel snug at first; they tend to break in. Consider half size up for a relaxed fit.",
+      "Vans uses its own fit models and lasts; sizes often differ from generic conversion charts. Shoes may run small or large depending on the line.",
+      "EU and US sizing don't align 1:1. Vans products sold in Europe may be labeled in EU sizes; when buying from the US site you'll see US sizes. Use our converters below to translate between regions.",
+      "Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking Vans's own size chart for the specific product reduces the chance of a return."
+    ],
+    "faqExactMatch": true,
+    "fitSizingCards": [],
+    "navigationBlockTypes": [
+      "nav-explore-more"
+    ],
+    "navigationDestinationCount": 9,
+    "navigationDestinations": [
+      "../index.html",
+      "../brand-size-guides.html",
+      "../shoe-size-converter.html",
+      "../clothing-size-converter.html",
+      "nike-size-guide.html",
+      "adidas-size-guide.html",
+      "new-balance-size-guide.html",
+      "puma-size-guide.html",
+      "zara-size-guide.html"
+    ],
+    "monetizationModulePresent": 0,
+    "commercialModulePresent": 0,
+    "whySizesMayVaryPresent": 0,
+    "adPositions": [],
+    "converterPresent": true,
+    "converterId": "shoeConverter",
+    "converterOffsetFromH1CharDistance": 448
+  },
+  "zara-clothing-size-guide.html": {
+    "filename": "zara-clothing-size-guide.html",
+    "h1": "Zara Clothing Size Guide & Conversion",
+    "introText": "Shopping Zara from another country? This page converts Zara clothing sizes to your region and explains how Zara's sizing tends to run. Runs small compared to US; many shoppers size up one or two for a relaxed fit.",
+    "metaDescriptionEqualsIntro": false,
+    "quickAnswerPresent": false,
+    "commonQuestionsPresent": false,
+    "faqBlockCount": 1,
+    "visibleFaqQuestions": [
+      "How do I use this converter?",
+      "Does Zara run true to size?",
+      "How does Zara sizing compare to standard charts?",
+      "Does Zara sizing vary by product line?",
+      "Should I check Zara's official size chart too?"
+    ],
+    "visibleFaqAnswers": [
+      "Select your gender, category, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Runs small compared to US; many shoppers size up one or two for a relaxed fit.",
+      "Zara uses European (EU/ES) sizing for clothing. Cuts are often slim and fashion-forward.",
+      "Sizing can vary significantly between collections and garment types. No universal conversion.",
+      "Yes. This converter gives a standardized international equivalent, but individual clothing items can run differently by style or season — checking Zara's own size chart for the specific product reduces the chance of a return."
+    ],
+    "schemaFaqQuestions": [
+      "How do I use this converter?",
+      "Does Zara run true to size?",
+      "How does Zara sizing compare to standard charts?",
+      "Does Zara sizing vary by product line?",
+      "Should I check Zara's official size chart too?"
+    ],
+    "schemaFaqAnswers": [
+      "Select your gender, category, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Runs small compared to US; many shoppers size up one or two for a relaxed fit.",
+      "Zara uses European (EU/ES) sizing for clothing. Cuts are often slim and fashion-forward.",
+      "Sizing can vary significantly between collections and garment types. No universal conversion.",
+      "Yes. This converter gives a standardized international equivalent, but individual clothing items can run differently by style or season — checking Zara's own size chart for the specific product reduces the chance of a return."
+    ],
+    "faqExactMatch": true,
+    "fitSizingCards": [
+      "Fit Problems Explained",
+      "Why Sizes Vary",
+      "Brand Differences",
+      "Regional Differences"
+    ],
+    "navigationBlockTypes": [
+      "nav-explore-more"
+    ],
+    "navigationDestinationCount": 15,
+    "navigationDestinations": [
+      "../index.html",
+      "../clothing-size-converter.html",
+      "../semantic/how-to-measure-feet-cm.html",
+      "../semantic/common-shoe-sizing-mistakes.html",
+      "../semantic/how-shoe-sizing-works.html",
+      "../brand-size-guides.html",
+      "nike-shoe-size-chart.html",
+      "../semantic/why-eu-and-us-sizes-differ.html",
+      "../semantic/how-japanese-shoe-sizes-work.html",
+      "../semantic/how-uk-shoe-sizes-differ.html",
+      "../shoe-size-converter.html",
+      "../tools/measurement-assistant.html",
+      "hm-size-converter.html",
+      "shein-size-converter.html",
+      "uniqlo-size-guide.html"
+    ],
+    "monetizationModulePresent": 0,
+    "commercialModulePresent": 1,
+    "whySizesMayVaryPresent": 0,
+    "adPositions": [
+      "ad-slot ad-top",
+      "ad-slot ad-inline",
+      "ad-slot ad-inline",
+      "ad-slot ad-bottom",
+      "ad-slot ad-sticky-mobile"
+    ],
+    "converterPresent": true,
+    "converterId": "clothingConverter",
+    "converterOffsetFromH1CharDistance": 428
+  },
+  "zara-size-guide.html": {
+    "filename": "zara-size-guide.html",
+    "h1": "Zara Size Guide",
+    "introText": "Shopping Zara from another country? This page converts Zara clothing sizes to your region and explains how Zara's sizing tends to run. Zara offers regular and sometimes narrow or wide options for apparel. Check the product page for width (e.g. narrow/wide) and compare to your usual fit.",
+    "metaDescriptionEqualsIntro": false,
+    "quickAnswerPresent": false,
+    "commonQuestionsPresent": false,
+    "faqBlockCount": 1,
+    "visibleFaqQuestions": [
+      "How do I use this converter?",
+      "Does Zara run true to size?",
+      "How does Zara sizing compare to standard charts?",
+      "Does Zara sizing vary by product line?",
+      "Should I check Zara's official size chart too?"
+    ],
+    "visibleFaqAnswers": [
+      "Select your gender, category, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Zara offers regular and sometimes narrow or wide options for apparel. Check the product page for width (e.g. narrow/wide) and compare to your usual fit.",
+      "Zara uses European sizing; items often run small compared to US. Dresses and tops may be cut slim.",
+      "EU and US sizing don't align 1:1. Zara products sold in Europe may be labeled in EU sizes; when buying from the US site you'll see US sizes. Use our converters below to translate between regions.",
+      "Yes. This converter gives a standardized international equivalent, but individual clothing items can run differently by style or season — checking Zara's own size chart for the specific product reduces the chance of a return."
+    ],
+    "schemaFaqQuestions": [
+      "How do I use this converter?",
+      "Does Zara run true to size?",
+      "How does Zara sizing compare to standard charts?",
+      "Does Zara sizing vary by product line?",
+      "Should I check Zara's official size chart too?"
+    ],
+    "schemaFaqAnswers": [
+      "Select your gender, category, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.",
+      "Zara offers regular and sometimes narrow or wide options for apparel. Check the product page for width (e.g. narrow/wide) and compare to your usual fit.",
+      "Zara uses European sizing; items often run small compared to US. Dresses and tops may be cut slim.",
+      "EU and US sizing don't align 1:1. Zara products sold in Europe may be labeled in EU sizes; when buying from the US site you'll see US sizes. Use our converters below to translate between regions.",
+      "Yes. This converter gives a standardized international equivalent, but individual clothing items can run differently by style or season — checking Zara's own size chart for the specific product reduces the chance of a return."
+    ],
+    "faqExactMatch": true,
+    "fitSizingCards": [],
+    "navigationBlockTypes": [
+      "nav-explore-more"
+    ],
+    "navigationDestinationCount": 9,
+    "navigationDestinations": [
+      "../index.html",
+      "../brand-size-guides.html",
+      "../shoe-size-converter.html",
+      "../clothing-size-converter.html",
+      "hm-size-guide.html",
+      "nike-size-guide.html",
+      "adidas-size-guide.html",
+      "new-balance-size-guide.html",
+      "puma-size-guide.html"
+    ],
+    "monetizationModulePresent": 0,
+    "commercialModulePresent": 0,
+    "whySizesMayVaryPresent": 0,
+    "adPositions": [],
+    "converterPresent": true,
+    "converterId": "clothingConverter",
+    "converterOffsetFromH1CharDistance": 476
+  }
+}

@@ -20,7 +20,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Nike Size Guide","description":"Nike size guide: brand sizing differences, EU vs US discrepancies, fit type (narrow/wide), and real-world fit tips. Convert Nike sizes with our tools.","url":"https://globalsizechart.com/brands/nike-size-guide.html","publisher":{"@id":"https://globalsizechart.com/#organization"},"isPartOf":{"@id":"https://globalsizechart.com/#website"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://globalsizechart.com/"},{"@type":"ListItem","position":2,"name":"Brand Size Guides","item":"https://globalsizechart.com/brand-size-guides.html"},{"@type":"ListItem","position":3,"name":"Nike Size Guide","item":"https://globalsizechart.com/brands/nike-size-guide.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Nike Size Guide","description":"Nike size guide: brand sizing differences, EU vs US discrepancies, fit type (narrow/wide), and real-world fit tips. Convert Nike sizes with our tools.","url":"https://globalsizechart.com/brands/nike-size-guide.html","datePublished":"2024-01-01","publisher":{"@id":"https://globalsizechart.com/#organization"}}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is EU 42 in US shoe size?","acceptedAnswer":{"@type":"Answer","text":"EU 42 typically converts to US men's size 9 and US women's size 10.5; brand and width affect fit."}},{"@type":"Question","name":"Are EU and US shoe sizes the same?","acceptedAnswer":{"@type":"Answer","text":"No. EU and US use different scales; use foot length in cm or a trusted converter for equivalents."}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I use this converter?","acceptedAnswer":{"@type":"Answer","text":"Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed."}},{"@type":"Question","name":"Does Nike run true to size?","acceptedAnswer":{"@type":"Answer","text":"Nike shoes often run narrow and slightly short; many buyers go half a size up. Width options exist for some running models."}},{"@type":"Question","name":"How does Nike sizing compare to standard charts?","acceptedAnswer":{"@type":"Answer","text":"Nike uses its own fit models and lasts; sizes often differ from generic conversion charts. Shoes may run small or large depending on the line."}},{"@type":"Question","name":"Does Nike sizing vary by product line?","acceptedAnswer":{"@type":"Answer","text":"EU and US sizing don't align 1:1. Nike products sold in Europe may be labeled in EU sizes; when buying from the US site you'll see US sizes. Use our converters below to translate between regions."}},{"@type":"Question","name":"Should I check Nike's official size chart too?","acceptedAnswer":{"@type":"Answer","text":"Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking Nike's own size chart for the specific product reduces the chance of a return."}}]}</script>
 
   <script type="application/ld+json" data-authority-org-global="1">
   {
@@ -63,15 +63,42 @@
       <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="../index.html">Home</a> &gt; <a href="../brand-size-guides.html">Brand Size Guides</a> &gt; <span>Nike Size Guide</span></nav>
 
       <section class="content-section">
-        <h1>Nike Size Guide</h1>
+        <h1>Nike Size Guide</h1><p class="lead brand-intro">Shopping Nike from another country? This page converts Nike shoe sizes to your region and explains how Nike's sizing tends to run. Nike shoes often run narrow and slightly short; many buyers go half a size up. Width options exist for some running models.</p><section class="converter-section" aria-label="Nike size converter"><div class="converter-wrapper"><div class="converter-card"><form class="converter-form" id="shoeConverter">
+          <div class="form-group">
+            <label for="gender">Gender</label>
+            <select name="gender" id="gender" required="">
+              <option value="men">Men</option>
+              <option value="women">Women</option>
+              <option value="kids">Kids</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="fromRegion">From Region</label>
+            <select name="fromRegion" id="fromRegion" required="">
+              <option value="US">United States (US)</option>
+              <option value="UK">United Kingdom (UK)</option>
+              <option value="EU">European Union (EU)</option>
+              <option value="JP">Japan (JP)</option>
+              <option value="CN">China (CN)</option>
+              <option value="CM">Centimeters (CM)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="sizeInput">Size</label>
+            <input type="number" name="size" id="sizeInput" min="0" max="60" step="0.5" placeholder="Enter numeric size (e.g. 9 or 42)" inputmode="decimal">
+            <p class="size-input-helper">Enter a valid size for your selected region.</p>
+            <p class="converter-error" id="shoe-size-error" role="alert" aria-live="polite" style="display: none;"></p>
+          </div>
+          <input type="hidden" name="category" value="shoes">
+        </form><div class="auto-note">Results update automatically as you select options</div><div class="results result-box">
+          <h3>Converted Sizes</h3>
+          <div class="results-grid"></div>
+          <p class="converter-trust-bar">Independent conversion tool — not an official brand calculator. Fit may vary by brand, width, and foot shape.</p>
+        </div></div></div></section>
 
-        <section class="ai-answer-block" data-ai-answer-block="1" data-ai-answer="1" aria-label="Quick answer">
-          <p><strong>Quick answer:</strong></p>
-          <p>Nike size guide: brand sizing differences, EU vs US discrepancies, fit type (narrow/wide), and real-world fit tips. Convert Nike sizes with our tools.</p>
-          
-        </section>
+        
   
-        <p class="mb-lg">Nike size guide: brand sizing differences, EU vs US discrepancies, fit type (narrow/wide), and real-world fit tips. Convert Nike sizes with our tools. Use the sections below to understand how Nike sizes compare to standard charts, EU vs US differences, fit width, and real-world fit tips. For exact conversions, use our converters linked at the bottom.</p>
+        
       </section>
 
       <section class="content-section">
@@ -96,80 +123,70 @@
         <p>Measure yourself and compare to Nike's official size chart for the specific item. When between sizes, many buyers size up for comfort. Read recent customer reviews for fit notes.</p>
       </section>
 
-      <section class="content-section">
-        <h2>Converters</h2>
-        <p>Use our tools to convert between regions and measurements:</p>
-        <ul>
-          <li><a href="../shoe-size-converter.html">Shoe Size Converter</a></li>
-          <li><a href="../clothing-size-converter.html">Clothing Size Converter</a></li>
-          <li><a href="../cm-to-us-shoe-size.html">CM to US Shoe Size</a></li>
-          <li><a href="../us-to-eu-size.html">US to EU Size</a></li>
-          <li><a href="../uk-to-us-size.html">UK to US Size</a></li>
-          <li><a href="../measurement-tools.html">Measurement Tools</a></li>
-          <li><a href="../shoe-sizing-guides.html">Shoe Sizing Guides</a></li>
-        </ul>
-      </section>
-      <section class="content-section">
-        <h2>Size conversion pages</h2>
-        <p>Direct links to specific conversion pages:</p>
-        <ul>
-          <li><a href="../programmatic-pages/eu-to-us-shoe-size.html">EU to US Shoe Size</a></li>
-          <li><a href="../programmatic-pages/us-to-eu-shoe-size.html">US to EU Shoe Size</a></li>
-          <li><a href="../programmatic-pages/uk-to-us-shoe-size.html">UK to US Shoe Size</a></li>
-          <li><a href="../programmatic-pages/us-to-uk-shoe-size.html">US to UK Shoe Size</a></li>
-          <li><a href="../measurement/24-cm-to-us-shoe-size.html">24 cm to US Shoe Size</a></li>
-          <li><a href="../measurement/26-cm-to-us-shoe-size.html">26 cm to US Shoe Size</a></li>
-          <li><a href="../measurement/90cm-chest-to-us-shirt-size.html">90 cm Chest to US Shirt</a></li>
-          <li><a href="../clothing/clothing-men-tops-L-EU-to-US.html">Men's EU L to US Tops</a></li>
-          <li><a href="../shoe-size-pages.html">Shoe Size Pages Index</a></li>
-          <li><a href="../clothing-size-pages.html">Clothing Size Pages</a></li>
-        </ul>
-      </section>
+      
+      
 
-      <section class="content-section">
-        <h2>Other brand guides</h2>
-        <ul>
-          <li><a href="adidas-size-guide.html">Adidas Size Guide</a></li>
-          <li><a href="zara-size-guide.html">Zara Size Guide</a></li>
-          <li><a href="hm-size-guide.html">H&amp;M Size Guide</a></li>
-          <li><a href="new-balance-size-guide.html">New Balance Size Guide</a></li>
-          <li><a href="puma-size-guide.html">Puma Size Guide</a></li>
-          <li><a href="reebok-size-guide.html">Reebok Size Guide</a></li>
-        </ul>
-      </section>
+      
     </div>
   
       
-      <section class="ai-faq-block" data-ai-faq-block="1" aria-label="Common questions">
-    <h2>Common questions</h2>
-    <h3>How should I use this converter?</h3>
-    <p>Pick your region and size, then read the equivalents. When in doubt, measure in centimeters and compare to the brand chart.</p>
-    <h3>Why do sizes differ between countries?</h3>
-    <p>Each region uses its own scale; mapping through foot length (cm) reduces error.</p>
-    <h3>More on Nike Size Guide</h3>
-    <p>See linked guides on this site for measurement tips and regional differences.</p>
-  </section>
+      
 
-      <div class="aeo-ai-layer" data-aeo-ai-layer="">
-      
-      <section class="why-sizes-vary content-section" aria-labelledby="aeo-why-h2">
-        <h2 id="aeo-why-h2">Why Sizes May Vary</h2>
-        <p>Shoe and clothing sizes can vary between brands due to manufacturing differences, materials, and regional sizing standards.</p>
-      </section>
-      <section class="faq-block content-section" id="aeo-faq-block">
-        <h2>Frequently Asked Questions</h2>
-        <div class="faq-item">
-          <h3>What is EU 42 in US shoe size?</h3>
-          <p>EU 42 typically converts to US men's size 9 and US women's size 10.5, depending on brand and width. Use any converter on this page when available.</p>
-        </div>
-        <div class="faq-item">
-          <h3>Are EU and US shoe sizes the same?</h3>
-          <p>No. The <strong>EU sizing system</strong> and <strong>US shoe sizing scale</strong> use different scales. <strong>International shoe size conversion</strong> is most reliable when you anchor to <strong>foot length in cm</strong>.</p>
-        </div>
-      </section>
-      
-      
+      <section class="card nav-explore-more">
+  <h2>Explore more size guides</h2>
+  <div class="grid grid-3">
+  <a href="../shoe-size-converter.html" class="card-link">
+    <h3>Shoe Size Converter</h3>
+    <p>Convert any shoe size across US, UK, EU, Japan, China, and CM.</p>
+  </a>
+  <a href="../clothing-size-converter.html" class="card-link">
+    <h3>Clothing Size Converter</h3>
+    <p>Convert tops, pants, and dress sizes across regions.</p>
+  </a>
+  <a href="adidas-size-guide.html" class="card-link">
+    <h3>Adidas Size Guide</h3>
+    <p>See sizing and conversion details for Adidas.</p>
+  </a>
+  <a href="new-balance-size-guide.html" class="card-link">
+    <h3>New Balance Size Guide</h3>
+    <p>See sizing and conversion details for New Balance.</p>
+  </a>
+  <a href="puma-size-guide.html" class="card-link">
+    <h3>Puma Size Guide</h3>
+    <p>See sizing and conversion details for Puma.</p>
+  </a>
+  <a href="reebok-size-guide.html" class="card-link">
+    <h3>Reebok Size Guide</h3>
+    <p>See sizing and conversion details for Reebok.</p>
+  </a>
+  <a href="zara-size-guide.html" class="card-link">
+    <h3>Zara Size Guide</h3>
+    <p>See sizing and conversion details for Zara.</p>
+  </a>
+  </div>
+</section><section class="content-section faq-block" id="faq">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-item">
+        <h3>How do I use this converter?</h3>
+        <p>Select your gender, region, and size above. The converted sizes for other regions appear automatically — no separate submit step needed.</p>
       </div>
+      <div class="faq-item">
+        <h3>Does Nike run true to size?</h3>
+        <p>Nike shoes often run narrow and slightly short; many buyers go half a size up. Width options exist for some running models.</p>
+      </div>
+      <div class="faq-item">
+        <h3>How does Nike sizing compare to standard charts?</h3>
+        <p>Nike uses its own fit models and lasts; sizes often differ from generic conversion charts. Shoes may run small or large depending on the line.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Does Nike sizing vary by product line?</h3>
+        <p>EU and US sizing don't align 1:1. Nike products sold in Europe may be labeled in EU sizes; when buying from the US site you'll see US sizes. Use our converters below to translate between regions.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Should I check Nike's official size chart too?</h3>
+        <p>Yes. This converter gives a standardized international equivalent, but individual shoe items can run differently by style or season — checking Nike's own size chart for the specific product reduces the chance of a return.</p>
+      </div>
+    </section>
 </main>
   
 
