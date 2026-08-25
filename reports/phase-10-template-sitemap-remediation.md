@@ -1,5 +1,18 @@
 # Phase 10B — Programmatic Template Exposure Remediation
 
+## FINAL STATUS: PHASE 10B — BLOCKED
+
+**Failing gate: Part 13 (new-location public-exposure test).** All local
+implementation, regression, and sitemap gates passed (§1-§10, §13-§20)
+and were committed and pushed
+(`e2ddb721df2d0d69c021947241a9da59f8084ada`). Production verification
+(§21) found the relocated templates under `scripts/lib/programmatic-
+templates/` are still live, uncached, and publicly served with 200
+status and raw `{{TOKEN}}` content — confirmed not a caching artifact.
+Repository relocation alone does not create a non-public path under the
+current deployment architecture. No workaround has been implemented; see
+§22 for candidate next steps awaiting Director authorization.
+
 **Baseline commit:** `bbb40309f0af6f8542a846245a16b1074a8b4c17` (`HEAD` =
 `origin/main` confirmed at phase start). **Working tree was NOT reported
 as clean at phase start** — actual state, not assumed: 1 unrelated,
@@ -210,14 +223,59 @@ unrelated to and unaffected by this phase's change.
 
 ## 11. Old Production URL Results
 
-**Not yet tested — requires deployment.** Per the phase brief, production
-verification happens after push, not before (§21 below covers deploy
-timing and results, or their absence if not yet live at report-writing
-time).
+Tested after confirming deploy was live (production `sitemap-medium.xml`
+no longer listed the 3 template URLs — verified by polling, not assumed).
 
-## 12. New Template-Path Production Results
+| URL | HTTP | Content |
+|---|---|---|
+| `/programmatic/templates/conversion-template.html` | 308 | redirect (Cloudflare's universal `.html`-stripping behavior, pre-existing/unrelated) |
+| `/programmatic/templates/conversion-template` | **200** | **raw template, byte-identical to the pre-move git blob at `bbb4030`** |
+| `/programmatic/templates/category-template.html` / (extensionless) | 308 / **200** | same pattern |
+| `/programmatic/templates/region-template.html` / (extensionless) | 308 / **200** | same pattern |
 
-**Not yet tested — requires deployment**, same reasoning as §11.
+All three old-form URLs still resolve to 200 with the exact raw template
+content. **This is assessed as stale CDN cache, not evidence the file
+still exists in the deployment**: the response's own headers carry
+`cache-control: public, s-maxage=604800` (7-day edge cache) and an `age`
+header of ~2,750–2,800 seconds (~46 minutes) — consistent with a
+still-valid cached copy from before the move propagated, well inside its
+7-day freshness window. Repeating the request with a cache-busting query
+parameter (`?cb=<timestamp>`, which defeats URL-keyed caching) did not
+change the result, which is not conclusive either way for a Cache
+Reserve/tiered-cache layer that keys independently of the query string —
+this finding is reported as the most likely explanation, not a certainty,
+and is a secondary issue: the new-path finding in §12 is the dispositive
+one regardless of how the old-path caching resolves over time.
+
+## 12. New Template-Path Production Results — CRITICAL FINDING
+
+| URL | HTTP | Content |
+|---|---|---|
+| `/scripts/lib/programmatic-templates/conversion-template.html` | 308 | redirect |
+| `/scripts/lib/programmatic-templates/conversion-template` | **200** | **raw template, byte-identical to the post-move repo blob** |
+| `/scripts/lib/programmatic-templates/category-template` (extensionless) | **200** | raw template, byte-identical |
+| `/scripts/lib/programmatic-templates/region-template` (extensionless) | **200** | raw template, byte-identical |
+
+**Confirmed genuinely live, not cached**: repeated with a cache-busting
+query parameter — response headers show `cache-control: public,
+max-age=0, must-revalidate` (explicitly not cacheable) and **no `age`
+header at all**, versus the old path's `s-maxage=604800`/`age: ~2750`.
+This is a fresh, uncached, direct-from-deployment response, confirmed
+byte-identical to `git show HEAD:scripts/lib/programmatic-templates/*.html`
+for all three files.
+
+**This is the exact condition anticipated by Part 14 of the phase brief.**
+The relocation moved the templates out of the *site's page tree*
+(sitemap, generator output, internal links) but did **not** move them out
+of the *repository's publicly-served filesystem*, because this site's
+Cloudflare Pages deployment has no build step and no build-output
+exclusion mechanism — every committed file is served verbatim at its
+literal repository path, regardless of which directory it lives under.
+`scripts/` was never a non-public directory; it was simply a directory
+nothing else happened to link to or list.
+
+Per the explicit instruction: **"Repository relocation alone does not
+create a non-public path under the current deployment architecture."**
 
 ## 13. Converter Regression
 
@@ -369,7 +427,71 @@ production verification (§21, populated after deploy).
 
 ## 21. Production Deploy Certification
 
-*(To be completed after push and deployment — see the follow-up section
-of this report, appended once production has been verified live, per the
-explicit instruction not to claim production success before it is
-actually tested post-deploy.)*
+Deployment confirmed live by polling production's `sitemap-medium.xml`
+until it stopped listing the 3 template URLs (2 polling attempts, ~15s
+apart), rather than assuming a fixed propagation delay.
+
+**Old-form URLs (§11)**: all 3 templates still return HTTP 200 with raw
+template content at their pre-move paths, assessed as stale edge cache
+(7-day `s-maxage`, ~46-minute `age`) rather than evidence the files still
+exist in the deployment — a secondary, likely-self-resolving finding.
+
+**New-path URLs (§12) — CRITICAL, dispositive finding**: all 3 relocated
+templates are being served **live, uncached, byte-identical** to their
+repository content at `scripts/lib/programmatic-templates/{name}`
+(extensionless form; the `.html` form 308-redirects to it, per this
+site's pre-existing universal extension-stripping behavior). Confirmed
+not a caching artifact via cache-busting query parameters and direct
+header inspection (`cache-control: public, max-age=0, must-revalidate`,
+no `age` header).
+
+**Conclusion: repository relocation alone does not create a non-public
+path under the current deployment architecture.** This is the exact
+condition Part 14 of the phase brief anticipated and pre-authorized a
+hard stop for. Per that instruction, no Cloudflare-specific or other
+workaround has been invented or implemented. This report stops here for
+Director authorization on next steps (§22).
+
+## 22. Options for Director Consideration (NOT implemented, NOT authorized)
+
+The phase brief referenced pre-defined "Options A/B/C" for this exact
+contingency; their original text was written earlier in this engagement
+and is not available to consult while writing this report. Rather than
+guess at their content and risk misrepresenting the Director's own prior
+instructions, the following are offered as this implementer's own
+reasoned candidates for consideration — explicitly not implemented,
+and requiring explicit authorization before any one of them proceeds:
+
+1. **Cloudflare Pages "ignore" / build-exclude configuration** — if the
+   Pages project can be given a build step (even a trivial one, e.g. `rsync`
+   copying only the served page tree to a build output directory) or an
+   `_ignore`/exclude list, `scripts/` (and any other non-page directory)
+   could be excluded from what gets deployed at all, rather than merely
+   relocated within the same publicly-served tree. This is the most
+   structurally correct fix but is the largest change to the deployment
+   model and needs to be verified against how the current no-build setup
+   was chosen (there may be a reason it's no-build, e.g. simplicity,
+   deploy speed, or another team preference documented elsewhere).
+2. **Cloudflare `_redirects`/`_headers` rule** to force these 3 (or any
+   `scripts/**`) paths to 404/410 explicitly, overriding the default
+   verbatim-serve behavior — smaller blast radius than (1), but is a
+   per-path patch rather than an architectural fix, and would need to be
+   kept in sync if more non-page files are ever added under `scripts/`.
+3. **Move the templates out of the git repository entirely** — e.g., into
+   a private location the generator reads from at a path outside the
+   repository (not committed at all), or fetched at generation time from
+   a non-public source. Eliminates public exposure by construction, at
+   the cost of the templates no longer being version-controlled alongside
+   the generator that depends on them, which has its own trade-offs
+   (reproducibility, review visibility, onboarding).
+4. **Accept and mitigate rather than eliminate** — leave the current
+   relocation as-is (it does remove the templates from the sitemap,
+   internal links, and generator's own indexable-page population, which
+   was part of the original problem) and rely on `noindex`/robots
+   directives for anything under `scripts/`, treating "publicly
+   fetchable but not indexed or linked" as a reduced, acceptable risk
+   rather than pursuing full non-public status. This is the weakest
+   option and likely does not satisfy the original audit's finding, but
+   is listed for completeness.
+
+No option above has been implemented. Awaiting Director direction.
