@@ -10,7 +10,13 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const DATA_DIR = path.join(ROOT, 'data');
-const TEMPLATES_DIR = path.join(ROOT, 'programmatic', 'templates');
+// Phase 10B: relocated from programmatic/templates/ (see the identical
+// change and rationale in scripts/generate-programmatic-pages.js). This
+// script has had no callers found anywhere in the repository as of
+// Phase 10B and has not been modified since Feb 2026, predating this
+// engagement — updated anyway so it cannot fail with a stale path if
+// ever invoked directly in the future.
+const TEMPLATES_DIR = path.join(ROOT, 'scripts', 'lib', 'programmatic-templates');
 const OUTPUT_DIR = path.join(ROOT, 'programmatic-pages');
 const BASE_URL = 'https://globalsizechart.com';
 

@@ -1,0 +1,148 @@
+{
+  "baselineCommit": "bbb40309f0af6f8542a846245a16b1074a8b4c17",
+  "templateCount": 3,
+  "templates": [
+    {
+      "file": "programmatic/templates/category-template.html",
+      "sizeBytes": 8644,
+      "lines": 226,
+      "completeHtmlDocument": true,
+      "hasHtml": true,
+      "hasHead": true,
+      "hasBody": true,
+      "hasCanonical": true,
+      "canonicalValue": "{{CANONICAL_URL}}",
+      "hasRobotsMeta": true,
+      "robotsMetaValue": "index, follow",
+      "hasJsonLd": true,
+      "hasInternalLinks": true,
+      "hasFooter": true,
+      "hasNavigation": true,
+      "hasPlaceholderVariables": true,
+      "classification": "A (source template only)",
+      "activelyReadByGenerator": false,
+      "generatorReference": "none found in scripts/*.js or generators/*.js (only referenced by Phase 9's own scripts/consolidate-faq-architecture.js, as a D-classification page to reclassify)"
+    },
+    {
+      "file": "programmatic/templates/conversion-template.html",
+      "sizeBytes": 13532,
+      "lines": 353,
+      "completeHtmlDocument": true,
+      "hasHtml": true,
+      "hasHead": true,
+      "hasBody": true,
+      "hasCanonical": true,
+      "canonicalValue": "{{CANONICAL_URL}}",
+      "hasRobotsMeta": true,
+      "robotsMetaValue": "index, follow",
+      "hasJsonLd": true,
+      "hasInternalLinks": true,
+      "hasFooter": true,
+      "hasNavigation": true,
+      "hasPlaceholderVariables": true,
+      "classification": "A (source template only)",
+      "activelyReadByGenerator": true,
+      "generatorReference": "scripts/generate-programmatic-pages.js:5216 (runPhase10Generator, via TEMPLATES_DIR), scripts/generate-pages.js:302 — both fs.readFileSync this exact file; runPhase10Generator is called from scripts/generate-phase10-pages.js:472 and generate-programmatic-pages.js's own require.main guard",
+      "note": "The embedded header nav's hardcoded links (e.g. /programmatic/shoe-size-converter.html) do not match the live site's actual URL structure and do NOT appear in real generated output in programmatic-pages/ — generatePage() replaces this section rather than substituting it in place. Confirmed by direct comparison against a live generated file."
+    },
+    {
+      "file": "programmatic/templates/region-template.html",
+      "sizeBytes": 8692,
+      "lines": 226,
+      "completeHtmlDocument": true,
+      "hasHtml": true,
+      "hasHead": true,
+      "hasBody": true,
+      "hasCanonical": true,
+      "canonicalValue": "{{CANONICAL_URL}}",
+      "hasRobotsMeta": true,
+      "robotsMetaValue": "index, follow",
+      "hasJsonLd": true,
+      "hasInternalLinks": true,
+      "hasFooter": true,
+      "hasNavigation": true,
+      "hasPlaceholderVariables": true,
+      "classification": "A (source template only)",
+      "activelyReadByGenerator": false,
+      "generatorReference": "none found in scripts/*.js or generators/*.js (only referenced by Phase 9's own scripts/consolidate-faq-architecture.js, as a D-classification page to reclassify)"
+    }
+  ],
+  "productionExposure": [
+    {
+      "url": "https://globalsizechart.com/programmatic/templates/category-template.html",
+      "requestStatus": 308,
+      "redirectLocation": "/programmatic/templates/category-template",
+      "finalStatus": 200,
+      "finalContentType": "text/html",
+      "servedCanonical": "{{CANONICAL_URL}}",
+      "servedRobotsMeta": "index, follow",
+      "cfCacheStatus": "HIT",
+      "isRawTemplateContent": true
+    },
+    {
+      "url": "https://globalsizechart.com/programmatic/templates/conversion-template.html",
+      "requestStatus": 308,
+      "redirectLocation": "/programmatic/templates/conversion-template",
+      "finalStatus": 200,
+      "finalContentType": "text/html",
+      "servedCanonical": "{{CANONICAL_URL}}",
+      "servedRobotsMeta": "index, follow",
+      "cfCacheStatus": "HIT",
+      "isRawTemplateContent": true
+    },
+    {
+      "url": "https://globalsizechart.com/programmatic/templates/region-template.html",
+      "requestStatus": 308,
+      "redirectLocation": "/programmatic/templates/region-template",
+      "finalStatus": 200,
+      "finalContentType": "text/html",
+      "servedCanonical": "{{CANONICAL_URL}}",
+      "servedRobotsMeta": "index, follow",
+      "cfCacheStatus": "HIT",
+      "isRawTemplateContent": true
+    }
+  ],
+  "sitemapUrls": {
+    "totalRawLocEntries": 2125,
+    "uniqueUrlsAcrossAllSitemaps": 1115,
+    "perFile": {
+      "sitemaps/sitemap-high.xml": 14,
+      "sitemaps/sitemap-medium.xml": 371,
+      "sitemaps/sitemap-low.xml": 730,
+      "sitemaps/indexing-feed.xml": 1010
+    }
+  },
+  "templateSitemapReferences": [
+    { "file": "sitemaps/sitemap-medium.xml", "url": "https://globalsizechart.com/programmatic/templates/category-template.html" },
+    { "file": "sitemaps/sitemap-medium.xml", "url": "https://globalsizechart.com/programmatic/templates/conversion-template.html" },
+    { "file": "sitemaps/sitemap-medium.xml", "url": "https://globalsizechart.com/programmatic/templates/region-template.html" },
+    { "file": "sitemaps/indexing-feed.xml", "url": "https://globalsizechart.com/programmatic/templates/category-template.html" },
+    { "file": "sitemaps/indexing-feed.xml", "url": "https://globalsizechart.com/programmatic/templates/conversion-template.html" },
+    { "file": "sitemaps/indexing-feed.xml", "url": "https://globalsizechart.com/programmatic/templates/region-template.html" }
+  ],
+  "internalReferences": {
+    "userFacingHtmlLinksToTemplates": 0,
+    "scriptReferencesExcludingTemplatesFromPageEnumeration": [
+      "scripts/fix-orphans.js:92",
+      "scripts/missing-programmatic-pages.js:120",
+      "scripts/phase1275-structure-audit.js:113",
+      "scripts/prebuild-link-validation.js:83",
+      "scripts/standardize-quick-converters.js:22"
+    ],
+    "scriptReferencesReadingTemplateAsSource": [
+      "scripts/generate-programmatic-pages.js:21 (TEMPLATES_DIR), :5216 (fs.readFileSync conversion-template.html)",
+      "scripts/generate-pages.js:13 (TEMPLATES_DIR), :302 (fs.readFileSync conversion-template.html)"
+    ],
+    "sitemapGeneratorHasNoExclusion": true,
+    "sitemapGeneratorIgnoreDirs": ["node_modules", ".git", "scripts", "sitemaps", "components"],
+    "note": "generate-sitemaps.js's IGNORE_DIRS does not include 'templates' or 'programmatic/templates' — it walks into programmatic/ (not ignored) and then templates/ (not ignored), picking up all 3 files as ordinary content pages. Five OTHER unrelated tools (page-population/link-validation scripts) already independently exclude 'programmatic/templates' from their own enumeration, confirming this exclusion is a known, established pattern elsewhere in the codebase that the sitemap generator alone lacks."
+  },
+  "classifications": {
+    "category-template.html": "B (crawlable + indexable + unintended)",
+    "conversion-template.html": "B (crawlable + indexable + unintended)",
+    "region-template.html": "B (crawlable + indexable + unintended)"
+  },
+  "rootCause": "R6 (multiple root causes): R3 (all 3 templates are publicly crawlable and indexable in their current, broken, unsubstituted form — real production defect, not merely theoretical) directly caused by R4 (scripts/generate-sitemaps.js's filesystem walk does not exclude the templates/ directory, so all 3 files were enumerated into sitemap-medium.xml and indexing-feed.xml, actively publishing them to crawlers) combined with the site's general no-build-exclusion Cloudflare Pages deployment model (every repository file is served verbatim; there is no build-output directory that could have kept programmatic/templates/ out of the deployed tree). This is not a deployment 'mistake' specific to this case (R5) since it is the same architecture used correctly for the rest of the static site — it is the interaction of that general architecture with the sitemap generator's missing exclusion and the absence of any other gate (no robots.txt disallow, no page-level noindex) that makes this a real, live defect rather than a harmless repository artifact.",
+  "productionImpact": "Confirmed real: https://globalsizechart.com/programmatic/templates/{category,conversion,region}-template(.html) all return HTTP 200 (after Cloudflare's universal, unrelated .html-extension-stripping 308) with raw, unsubstituted {{PLACEHOLDER}} tokens visible in the canonical tag, meta description, keywords, title, and body content, and an explicit <meta name=\"robots\" content=\"index, follow\"> directive. All 3 URLs are listed in 2 of the site's 4 sitemap files (sitemap-medium.xml, indexing-feed.xml), which are actively submitted for crawling. robots.txt has a blanket Allow: / for all crawlers including Googlebot, Bingbot, and several AI crawlers, with no disallow rule for /programmatic/ or /programmatic/templates/. All 3 URLs showed cf-cache-status: HIT on first test in this audit, indicating at least one prior fetch already occurred (not a first-touch MISS) - this does not by itself prove indexation, and no direct evidence of indexation in search results was found, but the absence-from-search-results is disclosed as supporting evidence only, not proof of non-indexation, per this phase's explicit instruction not to overclaim.",
+  "recommendedRemediation": "Combination of Option A (guarantee the templates directory can never enter deployed/crawlable output) and Option C (explicitly exclude programmatic/templates from sitemap generation), applied asymmetrically per file: conversion-template.html is a live, actively-used generator input (scripts/generate-programmatic-pages.js, scripts/generate-pages.js) and must not be deleted or moved without updating both scripts' TEMPLATES_DIR-relative reference; category-template.html and region-template.html have zero current generator dependents and can be handled with fewer constraints. See Part 19/20 of the audit report for the deterministic Phase 10B implementation spec."
+}

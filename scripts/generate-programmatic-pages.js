@@ -18,7 +18,13 @@ const { QUICK_CONVERTERS_HTML } = require('./lib/quick-converters-snippet');
 const ROOT = path.resolve(__dirname, '..');
 const CONFIG_DIR = path.join(ROOT, 'config');
 const DATA_DIR = path.join(ROOT, 'data');
-const TEMPLATES_DIR = path.join(ROOT, 'programmatic', 'templates');
+// Phase 10B: relocated from programmatic/templates/ — that path was
+// publicly served (Cloudflare Pages has no build-output exclusion for
+// this no-build static site), and the raw, unsubstituted {{TOKEN}}
+// template HTML was live and indexable in production. scripts/ is
+// already outside the site's served page population (confirmed via
+// production URL tests before this change shipped).
+const TEMPLATES_DIR = path.join(ROOT, 'scripts', 'lib', 'programmatic-templates');
 const OUTPUT_DIR = path.join(ROOT, 'programmatic-pages');
 const SEMANTIC_DIR = path.join(ROOT, 'semantic');
 const CLOTHING_DIR = path.join(ROOT, 'clothing');

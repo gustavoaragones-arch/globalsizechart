@@ -30,7 +30,15 @@ const BASE_URL = 'https://globalsizechart.com';
 const MAX_URLS_PER_SITEMAP = 50000;
 const INDEXING_FEED_DAYS = 7;
 
-const IGNORE_DIRS = new Set(['node_modules', '.git', 'scripts', 'sitemaps', 'components']);
+// Phase 10B: 'templates' added as explicit defense-in-depth. The
+// relocated programmatic/templates/*.html source templates now live
+// under scripts/lib/programmatic-templates/, which 'scripts' above
+// already excludes from this walk — but that protection was incidental,
+// not purpose-built for this case (it depended on the templates living
+// under scripts/). Naming 'templates' directly means any future
+// templates/ directory, at any depth, is excluded on its own merits,
+// not merely because of where it happens to be nested today.
+const IGNORE_DIRS = new Set(['node_modules', '.git', 'scripts', 'sitemaps', 'components', 'templates']);
 
 /** Convert file path to full URL. index.html → directory URL with trailing slash. */
 function pathToUrl(relPath) {
