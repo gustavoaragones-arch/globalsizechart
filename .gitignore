@@ -21,3 +21,7 @@ npm-debug.log*
 # Environment variables
 .env
 .env.local
+
+# Phase 10C build output (generated fresh by Cloudflare Pages' build step;
+# never committed — see scripts/build-public-dir.js)
+/dist/
