@@ -6,6 +6,80 @@ behavior, or `_headers` behavior (beyond copying the existing files
 verbatim into `dist/`) was touched. Nothing was pushed or deployed. This
 report certifies the local build artifact only.
 
+## Addendum — Cloudflare Build-Environment Failure & Fix
+
+**The first real Cloudflare deployment of commit `a4014ca` failed during
+the Build step**, before any production content was affected (the prior
+deployment remained live throughout). Cloudflare's own error:
+
+```
+Error: EACCES: permission denied, mkdir
+'/private/tmp/claude-501/-Users-gus-Documents-APPS-globalsizechart/4285c84c-4684-4712-941e-5c92c631856d/...'
+```
+
+**Root cause**: `scripts/build-public-dir.js` line 237 hardcoded this
+developer's local Claude Code session scratchpad directory as the
+destination for its debugging/certification inventory file:
+
+```js
+const inventoryDir = '/private/tmp/claude-501/-Users-gus-Documents-APPS-globalsizechart/4285c84c-4684-4712-941e-5c92c63185d6/scratchpad/phase10c';
+fs.mkdirSync(inventoryDir, { recursive: true });
+```
+
+This path is meaningless outside this one development machine's session
+— it does not exist, and cannot be created (`EACCES`), inside Cloudflare's
+ephemeral Linux build container. **This is a real, previously-undetected
+gap in Phase 10C-1's local certification**: every certification check in
+that phase ran on this same development machine, where the hardcoded path
+happened to already exist and be writable, so nothing exercised the
+portability of that one line until Cloudflare's own build environment did.
+
+**Fix**: replaced the hardcoded path with `os.tmpdir()` +
+`fs.mkdtempSync()` — the standard, environment-portable Node idiom for
+"a uniquely-named, already-created, already-writable temporary directory,"
+which resolves correctly on this machine, in CI, and inside Cloudflare's
+build container alike, since it derives from the runtime's own
+`TMPDIR`/`TMP`/`TEMP` environment variable (or `/tmp` if unset) rather
+than any fixed string.
+
+**Verified unchanged**: the build's actual output — `dist/`'s 1,178
+files and its certified inventory hash
+(`5bcf850671a782c639948db8d72cef18e735ca375afe8c6c83aee9b280046987`) —
+is identical before and after this fix, since only the location of the
+(non-deployed, debugging-only) inventory file changed, never the copied
+site content. Full re-certification results in the addendum sections
+below.
+
+**New regression coverage added**: `scripts/test-phase-10c-portable-tmp.js`
+— a static source scan (fails if the exact forbidden substrings
+`/Users/`, `claude-501`, `/private/tmp/claude-` ever reappear in the
+script) plus a dynamic run of the real script as a child process with
+`TMPDIR` redirected to a freshly created, distinctly-named directory
+simulating a different machine's temp root, proving the script actually
+honors the environment's temp-directory setting rather than falling back
+to anything fixed. Confirmed non-vacuous: run against the actually-
+committed buggy version of the script (via `git show a4014ca:...`), the
+static-scan portion of this test would have failed.
+
+**Test-harness finding, disclosed and worked around without touching
+out-of-scope files**: running the general regression suite (`footer:check`,
+`scripts/prebuild-link-validation.js`) while `dist/` existed on local
+disk produced inflated/spurious results — `footer:check` reported 2,298
+files scanned (expected ~1,151) and the link validator reported entries
+like `dist/measurement/28-cm-to-us-shoe-size.html` and `dist.html` that
+are artifacts of these older, pre-existing scripts having no awareness of
+`dist/` (they were written before this build-output concept existed, and
+were never taught to skip it). Neither script is in this phase's
+authorized change scope, and `dist/` is gitignored and never part of a
+real CI/production checkout, so this only manifests when running these
+particular developer-tooling scripts locally on a machine that happens to
+already have a `dist/` sitting on disk. Worked around by removing `dist/`
+immediately before running the general regression suite, then rebuilding
+it afterward — both established baselines (footer: 1,151 files, all
+match; link validator: 47, unchanged) confirmed clean once `dist/` was
+out of the way. Flagged here as a real, worth-fixing-eventually gap in
+those two scripts, out of scope for this fix.
+
 ## 1. Baseline HEAD
 
 `86c5706883dca37341b23e00fc7d88966ef63eb2` — verified equal to

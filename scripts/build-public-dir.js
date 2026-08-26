@@ -21,6 +21,7 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const os = require('os');
 
 const ROOT = path.resolve(__dirname, '..');
 const OUT = path.join(ROOT, 'dist');
@@ -234,8 +235,14 @@ function main() {
     }
   })(OUT);
 
-  const inventoryDir = '/private/tmp/claude-501/-Users-gus-Documents-APPS-globalsizechart/4285c84c-4684-4712-941e-5c92c63185d6/scratchpad/phase10c';
-  fs.mkdirSync(inventoryDir, { recursive: true });
+  // The inventory is a debugging/certification aid, not something the
+  // Cloudflare build itself depends on — it must never hardcode a
+  // developer-machine path (that was the root cause of the Cloudflare
+  // build failure this fix addresses). os.tmpdir() resolves correctly in
+  // any environment (this machine, CI, Cloudflare's Linux build
+  // container); mkdtempSync guarantees a fresh, uniquely-named,
+  // already-created, already-writable directory in one call.
+  const inventoryDir = fs.mkdtempSync(path.join(os.tmpdir(), 'phase10c-dist-inventory-'));
   const inventoryPath = path.join(inventoryDir, 'dist-inventory.json');
   fs.writeFileSync(inventoryPath, JSON.stringify(inventory, null, 2));
 
